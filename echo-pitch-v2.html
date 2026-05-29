@@ -1737,12 +1737,109 @@ hr.rule {
   border-top: 2px solid var(--accent) !important;
 }
 
+/* ============================================
+   EDIT MODE — in-browser text editing
+   ============================================ */
+html.edit-mode { scroll-snap-type: none; }
+
+/* Show all reveal content immediately while editing */
+body.edit-mode .reveal,
+body.edit-mode .reveal-left,
+body.edit-mode .reveal-scale {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+/* Let tall slides scroll so every block is reachable */
+body.edit-mode .slide { overflow: visible; }
+
+/* Editable affordances */
+body.edit-mode [contenteditable="true"] {
+  outline: 1px dashed transparent;
+  transition: outline 0.15s ease;
+  cursor: text;
+  min-height: 1em;
+  border-radius: 2px;
+}
+body.edit-mode [contenteditable="true"]:hover {
+  outline: 1px dashed var(--text-dim);
+}
+body.edit-mode [contenteditable="true"]:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Amber progress bar signals edit mode is on */
+body.edit-mode #progress-bar { background: #D4A017; }
+
+/* Edit-mode controls */
+.edit-toggle-btn {
+  position: fixed;
+  bottom: clamp(0.85rem, 2vw, 1.5rem);
+  left: clamp(0.85rem, 2vw, 1.5rem);
+  z-index: 1000;
+  font-family: var(--font-b);
+  font-size: var(--t-label);
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: var(--text-dim);
+  background: var(--bg-2);
+  border: 1px solid var(--line-strong);
+  padding: 0.4em 0.9em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.edit-toggle-btn:hover {
+  color: var(--text);
+  border-color: var(--text);
+}
+.edit-toggle-btn.active {
+  color: #fff;
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.edit-export-group {
+  position: fixed;
+  bottom: clamp(0.85rem, 2vw, 1.5rem);
+  left: calc(clamp(0.85rem, 2vw, 1.5rem) + 5.25rem);
+  z-index: 1000;
+  display: none;
+  gap: 0.4rem;
+}
+body.edit-mode .edit-export-group { display: flex; }
+
+.edit-export-btn {
+  font-family: var(--font-b);
+  font-size: var(--t-label);
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: var(--text-dim);
+  background: var(--bg-2);
+  border: 1px solid var(--line-strong);
+  padding: 0.4em 0.9em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.edit-export-btn:hover {
+  color: var(--text);
+  border-color: var(--text);
+}
+
 </style>
 </head>
 <body>
 
 <div id="progress-bar"></div>
 <nav id="nav-dots" aria-label="Slide navigation"></nav>
+
+<!-- Edit-mode controls -->
+<button class="edit-toggle-btn" id="editToggle" title="Toggle edit mode (Ctrl/Cmd+E)">EDIT</button>
+<div class="edit-export-group">
+  <button class="edit-export-btn" id="exportHTML" title="Download edited HTML">SAVE HTML</button>
+  <button class="edit-export-btn" id="resetEdits" title="Discard all edits">RESET</button>
+</div>
 
 <!-- ══════════════════════════════════════
      SLIDE 01 — TITLE
@@ -3069,6 +3166,196 @@ hr.rule {
   let current     = 0;
   let isScrolling = false;
 
+  /* ============================================
+     EDIT MODE — in-browser text editing
+     Click EDIT (or Ctrl/Cmd+E), edit any text in
+     place, SAVE HTML to download a copy, RESET to
+     discard. Edits persist in localStorage.
+     ============================================ */
+  class EditMode {
+    constructor() {
+      this.active = false;
+      this.STORAGE_KEY = 'echo-pitch-v2-edits';
+      this.originalContent = new Map();
+      this.saveTimeout = null;
+
+      // Compute the editable set ONCE and hold element references, so
+      // indices stay stable even if an edit empties a block's text.
+      this.editables = this._computeEditables();
+
+      this._cacheOriginals();
+      this.applyStoredEdits();
+
+      this.toggleBtn = document.getElementById('editToggle');
+      this.exportBtn = document.getElementById('exportHTML');
+      this.resetBtn  = document.getElementById('resetEdits');
+
+      if (this.toggleBtn) this.toggleBtn.addEventListener('click', () => this.toggle());
+      if (this.exportBtn) this.exportBtn.addEventListener('click', () => this.exportHTML());
+      if (this.resetBtn)  this.resetBtn.addEventListener('click', () => this.resetAll());
+    }
+
+    /* Generically collect every text-owning leaf block in a slide.
+       An element qualifies if it owns a direct non-whitespace text
+       node and lives outside chrome (nav, slide badge, svg, count-up
+       KPI numbers). Nested matches are dropped so only the outermost
+       text block becomes editable — inline <strong>/<span>/<br> are
+       edited within it, never as separate fields. */
+    _ownsText(el) {
+      for (const node of el.childNodes) {
+        if (node.nodeType === 3 && node.nodeValue.trim() !== '') return true;
+      }
+      return false;
+    }
+
+    _isExcluded(el) {
+      return !!el.closest('.slide-bar, #nav-dots, svg') || el.hasAttribute('data-count-to');
+    }
+
+    _slideEditables(slide) {
+      const owners = Array.from(slide.querySelectorAll('*'))
+        .filter(el => this._ownsText(el) && !this._isExcluded(el));
+      // Keep only the outermost owner in any nested chain
+      return owners.filter(el => !owners.some(other => other !== el && other.contains(el)));
+    }
+
+    _computeEditables() {
+      const result = [];
+      document.querySelectorAll('.slide').forEach((slide, si) => {
+        this._slideEditables(slide).forEach((el, ei) => {
+          result.push({ el, key: si + ':' + ei });
+        });
+      });
+      return result;
+    }
+
+    _getEditableElements() { return this.editables; }
+
+    _cacheOriginals() {
+      this._getEditableElements().forEach(({ el, key }) => {
+        this.originalContent.set(key, el.innerHTML);
+      });
+    }
+
+    toggle() { this.active ? this.deactivate() : this.activate(); }
+
+    activate() {
+      this.active = true;
+      document.documentElement.classList.add('edit-mode');
+      document.body.classList.add('edit-mode');
+      if (this.toggleBtn) this.toggleBtn.classList.add('active');
+
+      // Reveal every slide's content so nothing is hidden mid-edit
+      document.querySelectorAll('.slide').forEach(s => s.classList.add('visible'));
+
+      this._getEditableElements().forEach(({ el }) => {
+        el.setAttribute('contenteditable', 'true');
+      });
+
+      document.addEventListener('input', this._onInput);
+      document.addEventListener('paste', this._onPaste);
+    }
+
+    deactivate() {
+      this.active = false;
+      document.documentElement.classList.remove('edit-mode');
+      document.body.classList.remove('edit-mode');
+      if (this.toggleBtn) this.toggleBtn.classList.remove('active');
+
+      this._getEditableElements().forEach(({ el }) => {
+        el.removeAttribute('contenteditable');
+      });
+
+      document.removeEventListener('input', this._onInput);
+      document.removeEventListener('paste', this._onPaste);
+
+      if (this.saveTimeout) { clearTimeout(this.saveTimeout); this.saveTimeout = null; }
+      this.saveToStorage();
+    }
+
+    _onInput = () => {
+      if (this.saveTimeout) clearTimeout(this.saveTimeout);
+      this.saveTimeout = setTimeout(() => this.saveToStorage(), 500);
+    };
+
+    _onPaste = (e) => {
+      const target = e.target;
+      if (target && target.getAttribute && target.getAttribute('contenteditable') === 'true') {
+        e.preventDefault();
+        const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+        document.execCommand('insertText', false, text);
+      }
+    };
+
+    saveToStorage() {
+      const edits = {};
+      this._getEditableElements().forEach(({ el, key }) => {
+        if (el.innerHTML !== this.originalContent.get(key)) edits[key] = el.innerHTML;
+      });
+      if (Object.keys(edits).length > 0) {
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(edits));
+      } else {
+        localStorage.removeItem(this.STORAGE_KEY);
+      }
+    }
+
+    applyStoredEdits() {
+      const raw = localStorage.getItem(this.STORAGE_KEY);
+      if (!raw) return;
+      try {
+        const edits = JSON.parse(raw);
+        const all = this._getEditableElements();
+        const byKey = new Map(all.map(({ el, key }) => [key, el]));
+        for (const [key, html] of Object.entries(edits)) {
+          const el = byKey.get(key);
+          if (el) el.innerHTML = html;
+        }
+      } catch (e) {
+        console.warn('EditMode: failed to apply stored edits', e);
+      }
+    }
+
+    exportHTML() {
+      const clone = document.documentElement.cloneNode(true);
+
+      clone.classList.remove('edit-mode');
+      const body = clone.querySelector('body');
+      if (body) body.classList.remove('edit-mode');
+
+      clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+
+      // Strip baked-in runtime state so the exported file replays fresh
+      clone.querySelectorAll('.slide').forEach(s => s.classList.remove('visible'));
+      const nav = clone.querySelector('#nav-dots');
+      if (nav) nav.innerHTML = '';
+      const bar = clone.querySelector('#progress-bar');
+      if (bar) bar.removeAttribute('style');
+      // Restore count-up KPIs to their displayed final value (markup already holds it)
+
+      const html = '<!DOCTYPE html>\n' + clone.outerHTML;
+      const blob = new Blob([html], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'echo-pitch-edited.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    resetAll() {
+      if (!confirm('Discard all edits and restore original content?')) return;
+      localStorage.removeItem(this.STORAGE_KEY);
+      this._getEditableElements().forEach(({ el, key }) => {
+        const original = this.originalContent.get(key);
+        if (original !== undefined) el.innerHTML = original;
+      });
+    }
+  }
+
+  const editMode = new EditMode();
+
   /* Build nav dots */
   slides.forEach((slide, i) => {
     const btn = document.createElement('button');
@@ -3117,6 +3404,14 @@ hr.rule {
 
   /* === KEYBOARD NAVIGATION === */
   document.addEventListener('keydown', (e) => {
+    /* Ctrl/Cmd+E toggles edit mode */
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'e' || e.key === 'E')) {
+      e.preventDefault();
+      editMode.toggle();
+      return;
+    }
+    /* Don't navigate while editing text */
+    if (editMode.active) return;
     switch(e.key) {
       case 'ArrowDown': case 'ArrowRight': case ' ': case 'PageDown':
         e.preventDefault(); goTo(current + 1); break;
@@ -3130,6 +3425,7 @@ hr.rule {
   /* === MOUSE WHEEL NAVIGATION === */
   let wheelCooldown = false;
   document.addEventListener('wheel', (e) => {
+    if (editMode.active) return;
     if (wheelCooldown) return;
     wheelCooldown = true;
     setTimeout(() => { wheelCooldown = false; }, 800);
@@ -3143,6 +3439,7 @@ hr.rule {
     touchStartY = e.touches[0].clientY;
   }, { passive: true });
   document.addEventListener('touchend', e => {
+    if (editMode.active) return;
     const delta = touchStartY - e.changedTouches[0].clientY;
     if (Math.abs(delta) > 50) {
       if (delta > 0) goTo(current + 1);
