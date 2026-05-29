@@ -3,25 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Echo — From Proof of Concept to Proof of Value (Light)</title>
-<link rel="preconnect" href="https://api.fontshare.com">
-<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&f[]=general-sans@300,400,500,600&display=swap">
+<title>Echo — Design System Intelligence Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
 <style>
 
 /* === THEME VARIABLES === */
 :root {
-  --bg:         #FAF7F4;
-  --bg-2:       #EDE9E3;
-  --bg-3:       #DDD8D0;
-  --text:       #0C0A09;
-  --text-dim:   #9A9088;
-  --text-mid:   #3A3430;
-  --accent:     #FF6B35;
-  --accent-2:   #FF6B35;
-  --line:       rgba(12, 10, 9, 0.08);
-  --line-strong: rgba(12, 10, 9, 0.14);
-  --font-d:     'Clash Display', 'Arial Black', sans-serif;
-  --font-b:     'General Sans', 'Helvetica Neue', sans-serif;
+  --bg:         #FAFAFA;
+  --bg-2:       #F2F3F4;
+  --bg-3:       #E4E5E8;
+  --text:       #0B0B0B;
+  --text-dim:   #8A8B96;
+  --text-mid:   #3A3B45;
+  --accent:     #173DED;
+  --accent-2:   #173DED;
+  --navy:       #000051;
+  --line:       rgba(11,11,11,0.08);
+  --line-strong: rgba(11,11,11,0.14);
+  --font-d:     'Aeonik', 'DM Sans', 'Helvetica Neue', sans-serif;
+  --font-b:     'Aeonik', 'DM Sans', 'Helvetica Neue', sans-serif;
 
   /* Fluid type scale */
   --t-hero:     clamp(4.5rem, 14vw, 14rem);
@@ -204,29 +206,39 @@ img, .image-container {
 
 /* Background grid pattern */
 .grid-bg {
-  background-image:
-    linear-gradient(var(--line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--line) 1px, transparent 1px);
-  background-size: clamp(30px, 4vw, 50px) clamp(30px, 4vw, 50px);
+  background-image: radial-gradient(circle, rgba(11,11,11,0.12) 1px, transparent 1px);
+  background-size: clamp(22px, 3vw, 32px) clamp(22px, 3vw, 32px);
 }
 
 /* ============================================
    SHARED COMPONENTS
    ============================================ */
 .tag {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
   font-family: var(--font-b);
   font-size: var(--t-label);
-  font-weight: 500;
-  letter-spacing: 0.15em;
+  font-weight: 600;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--accent);
   margin-bottom: clamp(0.5rem, 1.2vw, 1rem);
 }
+.tag::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--accent);
+  transform: rotate(45deg);
+  flex-shrink: 0;
+  display: inline-block;
+}
 .tag.lime { color: var(--accent-2); }
+.tag.lime::before { background: var(--accent-2); }
 .tag.dim  { color: var(--text-dim); }
+.tag.dim::before  { background: var(--text-dim); }
 
-h1, h2, h3 { font-family: var(--font-d); line-height: 1.1; font-weight: 600; }
+h1, h2, h3 { font-family: var(--font-d); line-height: 1.1; font-weight: 700; }
 
 .display { font-size: var(--t-display); color: var(--text); }
 .h2      { font-size: var(--t-h2); }
@@ -289,14 +301,8 @@ hr.rule {
 #s1 .client-line span.sep {
   width: 1px; height: 1em; background: var(--text-dim); opacity: 0.4;
 }
-#s1 .glow {
-  position: absolute;
-  width: clamp(300px, 50vw, 700px);
-  height: clamp(200px, 35vw, 450px);
-  border-radius: 50%;
-  background: radial-gradient(ellipse, rgba(255,107,53,0.1) 0%, transparent 70%);
-  top: 30%; left: 10%;
-  pointer-events: none;
+#s1 .op-grid-mark {
+  z-index: 0;
 }
 
 /* ============================================
@@ -398,10 +404,10 @@ hr.rule {
   transition: border-color 0.25s;
   overflow: hidden;
 }
-#s_intro .screen-ph:hover { border-color: rgba(255,107,53,0.3); }
+#s_intro .screen-ph:hover { border-color: rgba(23,61,237,0.3); }
 #s_intro .screen-ph.hero {
-  border-color: rgba(255,107,53,0.22);
-  background: rgba(255,107,53,0.025);
+  border-color: rgba(23,61,237,0.22);
+  background: rgba(23,61,237,0.025);
   height: 100%;
 }
 #s_intro .screen-side .screen-ph { flex: 1; }
@@ -409,7 +415,7 @@ hr.rule {
   width: clamp(32px, 3.5vw, 50px);
   height: clamp(32px, 3.5vw, 50px);
   display: flex; align-items: center; justify-content: center;
-  background: rgba(255,107,53,0.08);
+  background: rgba(23,61,237,0.08);
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -434,7 +440,7 @@ hr.rule {
   font-size: var(--t-label);
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(255,107,53,0.5);
+  color: rgba(23,61,237,0.5);
   text-align: center;
 }
 @media (max-width: 700px) {
@@ -476,8 +482,8 @@ hr.rule {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255,107,53,0.08);
-  border: 1px solid rgba(255,107,53,0.18);
+  background: rgba(23,61,237,0.08);
+  border: 1px solid rgba(23,61,237,0.18);
   border-radius: 8px;
   margin-bottom: clamp(0.6rem, 1vw, 0.9rem);
   flex-shrink: 0;
@@ -581,7 +587,7 @@ hr.rule {
   text-transform: uppercase;
   color: var(--text-mid);
   font-weight: 500;
-  background: rgba(12,10,9,0.04);
+  background: rgba(11,11,11,0.04);
   border: 1px solid var(--line-strong);
   border-radius: 100px;
   text-align: center;
@@ -589,7 +595,7 @@ hr.rule {
 }
 #s5 .tl-ph-p1 {
   grid-column: 2 / span 3;
-  background: rgba(12,10,9,0.04);
+  background: rgba(11,11,11,0.04);
   border: 1px solid var(--line-strong);
   border-radius: 100px;
   text-align: center;
@@ -640,7 +646,7 @@ hr.rule {
   left: 0;
   width: 69%;
   height: 2px;
-  background: linear-gradient(to right, var(--accent), rgba(255,107,53,0.55));
+  background: linear-gradient(to right, var(--accent), rgba(23,61,237,0.55));
   z-index: 1;
   border-radius: 2px;
 }
@@ -663,7 +669,7 @@ hr.rule {
   width: clamp(14px, 1.8vw, 18px);
   height: clamp(14px, 1.8vw, 18px);
   background: var(--accent);
-  box-shadow: 0 0 0 4px rgba(255,107,53,0.2), 0 0 14px rgba(255,107,53,0.22);
+  box-shadow: 0 0 0 4px rgba(23,61,237,0.2), 0 0 14px rgba(23,61,237,0.22);
 }
 #s5 .tl-nd.future {
   background: var(--bg);
@@ -753,7 +759,7 @@ hr.rule {
   font-size: clamp(9rem, 20vw, 20rem);
   font-weight: 700;
   color: transparent;
-  -webkit-text-stroke: 1px rgba(12,10,9,0.06);
+  -webkit-text-stroke: 1px rgba(11,11,11,0.06);
   line-height: 1;
   letter-spacing: -0.05em;
   pointer-events: none;
@@ -830,8 +836,8 @@ hr.rule {
   display: flex;
   align-items: flex-start;
   gap: 0.55em;
-  background: rgba(255,107,53,0.05);
-  border: 1px solid rgba(255,107,53,0.18);
+  background: rgba(23,61,237,0.05);
+  border: 1px solid rgba(23,61,237,0.18);
   border-radius: 8px;
   padding: clamp(0.45rem, 0.9vw, 0.7rem) clamp(0.6rem, 1.2vw, 0.95rem);
   font-size: var(--t-small);
@@ -870,7 +876,7 @@ hr.rule {
   overflow: hidden;
   transition: border-color 0.2s;
 }
-.sv-slide .sv-ph:hover { border-color: rgba(255,107,53,0.3); }
+.sv-slide .sv-ph:hover { border-color: rgba(23,61,237,0.3); }
 .sv-slide .sv-ph .ph-icon {
   width: clamp(1.2rem, 2vw, 1.8rem);
   height: clamp(1.2rem, 2vw, 1.8rem);
@@ -899,13 +905,13 @@ hr.rule {
 
 /* Slide 3: coral accent on step chip + subtle screen tint */
 #sv3 .sv-step {
-  background: rgba(255,107,53,0.07);
-  border-color: rgba(255,107,53,0.22);
+  background: rgba(23,61,237,0.07);
+  border-color: rgba(23,61,237,0.22);
   color: var(--accent);
 }
 #sv3 .sv-ph {
-  border-color: rgba(255,107,53,0.14);
-  background: rgba(255,107,53,0.018);
+  border-color: rgba(23,61,237,0.14);
+  background: rgba(23,61,237,0.018);
 }
 
 /* ============================================
@@ -934,14 +940,14 @@ hr.rule {
   font-size: clamp(5rem, 15vw, 13rem);
   font-weight: 700;
   line-height: 0.85;
-  color: rgba(13,12,11,0.05);
+  color: rgba(11,11,11,0.05);
   letter-spacing: -0.04em;
   margin-bottom: clamp(-1rem, -2vh, -0.5rem);
-  -webkit-text-stroke: 1px rgba(13,12,11,0.1);
+  -webkit-text-stroke: 1px rgba(11,11,11,0.1);
 }
-.milestone-slide.m1 .ms-num { color: rgba(13,12,11,0.05); -webkit-text-stroke: 1px rgba(13,12,11,0.1); }
-.milestone-slide.m2 .ms-num { color: rgba(13,12,11,0.05); -webkit-text-stroke: 1px rgba(255,107,53,0.2); }
-.milestone-slide.m3 .ms-num { color: rgba(13,12,11,0.05); -webkit-text-stroke: 1px rgba(255,107,53,0.2); }
+.milestone-slide.m1 .ms-num { color: rgba(11,11,11,0.05); -webkit-text-stroke: 1px rgba(11,11,11,0.1); }
+.milestone-slide.m2 .ms-num { color: rgba(11,11,11,0.05); -webkit-text-stroke: 1px rgba(23,61,237,0.2); }
+.milestone-slide.m3 .ms-num { color: rgba(11,11,11,0.05); -webkit-text-stroke: 1px rgba(23,61,237,0.2); }
 .milestone-slide .ms-title {
   font-family: var(--font-d);
   font-size: clamp(1.6rem, 3.5vw, 3rem);
@@ -1061,8 +1067,8 @@ hr.rule {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--accent-2);
-  background: rgba(255,107,53,0.08);
-  border: 1px solid rgba(255,107,53,0.2);
+  background: rgba(23,61,237,0.08);
+  border: 1px solid rgba(23,61,237,0.2);
   border-radius: 3px;
   padding: 0.15em 0.5em;
   margin-top: 0.5em;
@@ -1089,7 +1095,7 @@ hr.rule {
   padding: clamp(1.2rem, 2.2vw, 2rem);
   display: flex; flex-direction: column;
 }
-#s11 .eco-card.primary { border-color: rgba(255,107,53,0.3); background: rgba(255,107,53,0.04); }
+#s11 .eco-card.primary { border-color: rgba(23,61,237,0.3); background: rgba(23,61,237,0.04); }
 #s11 .eco-card .ec-tag {
   font-size: var(--t-label);
   letter-spacing: 0.12em;
@@ -1112,7 +1118,7 @@ hr.rule {
   margin-bottom: clamp(0.5rem, 1vw, 0.9rem);
 }
 #s11 .ec-status.live { color: var(--accent-2); }
-#s11 .ec-status.poc  { color: #F5A623; }
+#s11 .ec-status.poc  { color: #4969F5; }
 #s11 .ec-status.plan { color: var(--text-dim); }
 #s11 .eco-card .ec-body {
   font-size: var(--t-small);
@@ -1236,7 +1242,7 @@ hr.rule {
   min-height: 0;
   transition: border-color 0.2s;
 }
-.ft-slide .ft-ph:hover { border-color: rgba(255,107,53,0.3); }
+.ft-slide .ft-ph:hover { border-color: rgba(23,61,237,0.3); }
 .ft-slide .ft-ph .ph-icon {
   width: clamp(1.1rem, 1.8vw, 1.6rem);
   height: clamp(1.1rem, 1.8vw, 1.6rem);
@@ -1371,8 +1377,8 @@ hr.rule {
   display: flex; flex-direction: column;
   gap: clamp(0.5rem, 0.9vw, 0.75rem);
 }
-#s14 .rm-col.current { border-color: rgba(255,107,53,0.3); background: rgba(255,107,53,0.04); }
-#s14 .rm-col.next    { border-color: rgba(255,107,53,0.25); background: rgba(255,107,53,0.03); }
+#s14 .rm-col.current { border-color: rgba(23,61,237,0.3); background: rgba(23,61,237,0.04); }
+#s14 .rm-col.next    { border-color: rgba(23,61,237,0.25); background: rgba(23,61,237,0.03); }
 #s14 .rm-header {
   display: flex; align-items: center; gap: 0.5em;
   margin-bottom: 0.2em;
@@ -1385,8 +1391,8 @@ hr.rule {
   padding: 0.2em 0.6em;
   border-radius: 3px;
 }
-#s14 .rm-badge.current { color: var(--accent); background: rgba(255,107,53,0.12); }
-#s14 .rm-badge.next    { color: var(--accent-2); background: rgba(255,107,53,0.1); }
+#s14 .rm-badge.current { color: var(--accent); background: rgba(23,61,237,0.12); }
+#s14 .rm-badge.next    { color: var(--accent-2); background: rgba(23,61,237,0.1); }
 #s14 .rm-badge.future  { color: var(--text-dim); background: var(--bg-3); }
 #s14 .rm-title {
   font-family: var(--font-d);
@@ -1438,8 +1444,8 @@ hr.rule {
 #s15 { background: var(--bg); overflow: hidden; }
 #s15 .cta-bg {
   position: absolute; inset: 0;
-  background: radial-gradient(ellipse at 30% 50%, rgba(255,107,53,0.08) 0%, transparent 60%),
-              radial-gradient(ellipse at 70% 60%, rgba(255,107,53,0.04) 0%, transparent 55%);
+  background: radial-gradient(ellipse at 30% 50%, rgba(23,61,237,0.08) 0%, transparent 60%),
+              radial-gradient(ellipse at 70% 60%, rgba(23,61,237,0.04) 0%, transparent 55%);
   pointer-events: none;
 }
 #s15 .cta-content {
@@ -1586,7 +1592,7 @@ hr.rule {
   height: clamp(30px, 3vw, 38px);
   border-radius: 7px;
   display: flex; align-items: center; justify-content: center;
-  background: var(--tc-bg, rgba(255,107,53,0.08));
+  background: var(--tc-bg, rgba(23,61,237,0.07));
   flex-shrink: 0;
 }
 #s_tech .ts-icon svg {
@@ -1628,7 +1634,7 @@ hr.rule {
 }
 
 /* Per-tech brand colors */
-#s_tech .tc-next   { --tc: #0a0a0a;  --tc-bg: rgba(10,10,10,0.06); }
+#s_tech .tc-next   { --tc: #000051;  --tc-bg: rgba(0,0,81,0.06); }
 #s_tech .tc-pg     { --tc: #336791;  --tc-bg: rgba(51,103,145,0.08); }
 #s_tech .tc-tiptap { --tc: #6366F1;  --tc-bg: rgba(99,102,241,0.08); }
 #s_tech .tc-github { --tc: #4A535C;  --tc-bg: rgba(74,83,92,0.07); }
@@ -1636,32 +1642,53 @@ hr.rule {
 #s_tech .tc-azure  { --tc: #0078D4;  --tc-bg: rgba(0,120,212,0.08); }
 
 /* ============================================
-   VISUAL ENHANCEMENTS — depth, warmth, shadow
+   OWNPATH BRAND GEOMETRIC MOTIF
    ============================================ */
 
-/* Crisper accent bar */
-.slide::before { height: 3px; opacity: 1; width: 28%; }
+/* Squares + 45° diamonds grid mark */
+.op-grid-mark {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+.op-grid-mark svg { display: block; }
+
+/* Cover slide: large brand mark top-right */
+#s1 .op-grid-mark {
+  top: clamp(1.5rem, 3vw, 3rem);
+  right: clamp(1.5rem, 3vw, 3rem);
+  width: clamp(130px, 18vw, 220px);
+  opacity: 0.9;
+}
+
+/* CTA slide: brand mark bottom-left */
+#s15 .op-grid-mark {
+  bottom: clamp(3rem, 6vw, 6rem);
+  right: var(--pad);
+  width: clamp(80px, 10vw, 130px);
+  opacity: 0.55;
+}
+
+/* ============================================
+   VISUAL ENHANCEMENTS — brand depth
+   ============================================ */
 
 /* Thicker progress bar */
-#progress-bar { height: 3px; }
+#progress-bar { height: 2px; }
 
-/* Active nav dot: coral glow */
+/* Active nav dot: blue glow */
 #nav-dots button.active {
   background: var(--accent);
-  box-shadow: 0 0 0 3px rgba(255,107,53,0.2);
+  box-shadow: 0 0 0 3px rgba(23,61,237,0.18);
 }
 
-/* Subtle warm tint bloom on each slide */
+/* Very subtle blue bloom — brand-consistent */
 .slide {
-  background-image: radial-gradient(ellipse at 85% 8%, rgba(255,107,53,0.05) 0%, transparent 50%);
+  background-image: radial-gradient(ellipse at 88% 5%, rgba(23,61,237,0.03) 0%, transparent 45%);
 }
 
-/* Title slide: stronger coral glow on cream */
-#s1 .hero-word {
-  text-shadow: 0 0 80px rgba(255,107,53,0.12);
-}
-
-/* Cards: drop shadow for tactility on cream bg */
+/* Cards: clean neutral shadow on white bg */
 #s2 .challenge-card,
 #s3 .pillar,
 #s10 .feat-card,
@@ -1669,49 +1696,45 @@ hr.rule {
 #s12 .kpi-card,
 #s14 .rm-col {
   border: none;
-  box-shadow: 0 1px 4px rgba(12,10,9,0.06), 0 4px 16px rgba(12,10,9,0.06);
+  box-shadow: 0 1px 3px rgba(11,11,11,0.07), 0 3px 12px rgba(11,11,11,0.06);
 }
 
-/* Eco primary: coral shadow */
+/* Eco primary: blue shadow */
 #s11 .eco-card.primary {
   border: none;
-  box-shadow: 0 2px 12px rgba(255,107,53,0.15), 0 0 0 1.5px rgba(255,107,53,0.25);
+  box-shadow: 0 2px 12px rgba(23,61,237,0.12), 0 0 0 1.5px rgba(23,61,237,0.22);
 }
 
-/* Roadmap current: warm coral shadow */
+/* Roadmap current: blue shadow */
 #s14 .rm-col.current {
-  box-shadow: 0 2px 12px rgba(255,107,53,0.12), 0 0 0 1.5px rgba(255,107,53,0.2);
+  box-shadow: 0 2px 12px rgba(23,61,237,0.1), 0 0 0 1.5px rgba(23,61,237,0.18);
   border: none;
 }
 
-/* CTA slide: soft coral wash */
+/* CTA slide: soft blue wash */
 #s15 .cta-bg {
   background:
-    radial-gradient(ellipse at 18% 55%, rgba(255,107,53,0.1) 0%, transparent 58%),
-    radial-gradient(ellipse at 78% 28%, rgba(255,107,53,0.06) 0%, transparent 52%);
-}
-
-/* Soft KPIs slide: warm right corner */
-#s13 {
-  background-image: radial-gradient(ellipse at 90% 90%, rgba(255,107,53,0.06) 0%, transparent 50%);
+    radial-gradient(ellipse at 18% 55%, rgba(23,61,237,0.08) 0%, transparent 58%),
+    radial-gradient(ellipse at 75% 30%, rgba(0,0,81,0.05) 0%, transparent 52%);
 }
 
 /* Diff cards: bottom padding for balance */
 #s4 .diff-card { padding-bottom: clamp(0.9rem, 1.5vw, 1.5rem); }
 
-/* Timeline active node */
-#s5 .tl-node.active .tl-dot {
-  box-shadow: 0 0 0 4px rgba(255,107,53,0.2), 0 0 10px rgba(255,107,53,0.15);
-}
-
 /* Pillar icon hover */
-#s3 .pillar:hover { box-shadow: 0 4px 20px rgba(12,10,9,0.1); }
+#s3 .pillar:hover { box-shadow: 0 4px 20px rgba(11,11,11,0.08); }
 
 /* Feature card hover */
 #s10 .feat-card:hover {
-  box-shadow: 0 4px 20px rgba(12,10,9,0.1);
+  box-shadow: 0 4px 20px rgba(11,11,11,0.09);
   transform: translateY(-1px);
   transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+/* Accent border on key cards */
+#s11 .eco-card.primary,
+#s14 .rm-col.current {
+  border-top: 2px solid var(--accent) !important;
 }
 
 </style>
@@ -1725,7 +1748,75 @@ hr.rule {
      SLIDE 01 — TITLE
 ══════════════════════════════════════ -->
 <section class="slide no-accent" id="s1" aria-label="Title slide">
-  <div class="glow" aria-hidden="true"></div>
+
+  <!-- Ownpath brand geometric mark — squares + diamonds grid -->
+  <div class="op-grid-mark reveal d4" aria-hidden="true">
+    <svg viewBox="0 0 220 165" xmlns="http://www.w3.org/2000/svg">
+      <!-- Ghost grid (background squares) -->
+      <g fill="#0B0B0B" opacity="0.06">
+        <rect x="0"  y="0"  width="22" height="22" rx="1"/>
+        <rect x="30" y="0"  width="22" height="22" rx="1"/>
+        <rect x="60" y="0"  width="22" height="22" rx="1"/>
+        <rect x="90" y="0"  width="22" height="22" rx="1"/>
+        <rect x="120" y="0" width="22" height="22" rx="1"/>
+        <rect x="150" y="0" width="22" height="22" rx="1"/>
+        <rect x="180" y="0" width="22" height="22" rx="1"/>
+
+        <rect x="0"  y="30" width="22" height="22" rx="1"/>
+        <rect x="30" y="30" width="22" height="22" rx="1"/>
+        <rect x="60" y="30" width="22" height="22" rx="1"/>
+        <rect x="90" y="30" width="22" height="22" rx="1"/>
+        <rect x="120" y="30" width="22" height="22" rx="1"/>
+        <rect x="150" y="30" width="22" height="22" rx="1"/>
+        <rect x="180" y="30" width="22" height="22" rx="1"/>
+
+        <rect x="0"  y="60" width="22" height="22" rx="1"/>
+        <rect x="30" y="60" width="22" height="22" rx="1"/>
+        <rect x="60" y="60" width="22" height="22" rx="1"/>
+        <rect x="90" y="60" width="22" height="22" rx="1"/>
+        <rect x="120" y="60" width="22" height="22" rx="1"/>
+        <rect x="150" y="60" width="22" height="22" rx="1"/>
+        <rect x="180" y="60" width="22" height="22" rx="1"/>
+
+        <rect x="0"  y="90" width="22" height="22" rx="1"/>
+        <rect x="30" y="90" width="22" height="22" rx="1"/>
+        <rect x="60" y="90" width="22" height="22" rx="1"/>
+        <rect x="90" y="90" width="22" height="22" rx="1"/>
+        <rect x="120" y="90" width="22" height="22" rx="1"/>
+        <rect x="150" y="90" width="22" height="22" rx="1"/>
+        <rect x="180" y="90" width="22" height="22" rx="1"/>
+
+        <rect x="0"  y="120" width="22" height="22" rx="1"/>
+        <rect x="30" y="120" width="22" height="22" rx="1"/>
+        <rect x="60" y="120" width="22" height="22" rx="1"/>
+        <rect x="90" y="120" width="22" height="22" rx="1"/>
+        <rect x="120" y="120" width="22" height="22" rx="1"/>
+        <rect x="150" y="120" width="22" height="22" rx="1"/>
+        <rect x="180" y="120" width="22" height="22" rx="1"/>
+      </g>
+      <!-- Active black squares (foundation/stable) -->
+      <g fill="#0B0B0B" opacity="0.55">
+        <rect x="0"  y="0"  width="22" height="22" rx="1"/>
+        <rect x="60" y="30" width="22" height="22" rx="1"/>
+        <rect x="0"  y="60" width="22" height="22" rx="1"/>
+        <rect x="120" y="60" width="22" height="22" rx="1"/>
+        <rect x="60" y="90" width="22" height="22" rx="1"/>
+        <rect x="180" y="90" width="22" height="22" rx="1"/>
+        <rect x="30" y="120" width="22" height="22" rx="1"/>
+        <rect x="120" y="120" width="22" height="22" rx="1"/>
+      </g>
+      <!-- Blue diamonds (action/innovation) -->
+      <g fill="#173DED">
+        <polygon points="121,11 132,22 121,33 110,22"/>
+        <polygon points="91,41  102,52 91,63 80,52"/>
+        <polygon points="151,41 162,52 151,63 140,52"/>
+        <polygon points="31,71  42,82  31,93  20,82"/>
+        <polygon points="181,71 192,82 181,93 170,82"/>
+        <polygon points="91,101 102,112 91,123 80,112"/>
+        <polygon points="151,131 162,142 151,153 140,142"/>
+      </g>
+    </svg>
+  </div>
 
   <div class="hero-word reveal d1" aria-hidden="true">
     <span class="echo-e">E</span>CHO
@@ -1759,21 +1850,21 @@ hr.rule {
         <div class="cc-visual">
           <svg viewBox="0 0 110 58" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <!-- Outer scattered nodes -->
-            <circle cx="8"  cy="29" r="5" fill="none" stroke="#A09890" stroke-width="1.5"/>
-            <circle cx="30" cy="7"  r="5" fill="none" stroke="#A09890" stroke-width="1.5"/>
-            <circle cx="80" cy="7"  r="5" fill="none" stroke="#A09890" stroke-width="1.5"/>
-            <circle cx="102" cy="29" r="5" fill="none" stroke="#A09890" stroke-width="1.5"/>
-            <circle cx="55" cy="51" r="5" fill="none" stroke="#A09890" stroke-width="1.5"/>
+            <circle cx="8"  cy="29" r="5" fill="none" stroke="#C2C3CC" stroke-width="1.5"/>
+            <circle cx="30" cy="7"  r="5" fill="none" stroke="#C2C3CC" stroke-width="1.5"/>
+            <circle cx="80" cy="7"  r="5" fill="none" stroke="#C2C3CC" stroke-width="1.5"/>
+            <circle cx="102" cy="29" r="5" fill="none" stroke="#C2C3CC" stroke-width="1.5"/>
+            <circle cx="55" cy="51" r="5" fill="none" stroke="#C2C3CC" stroke-width="1.5"/>
             <!-- Broken lines approaching but not reaching centre -->
-            <line x1="13" y1="29" x2="38" y2="29" stroke="#6B6662" stroke-width="1" stroke-dasharray="3,4"/>
-            <line x1="34" y1="12" x2="44" y2="21" stroke="#6B6662" stroke-width="1" stroke-dasharray="3,4"/>
-            <line x1="76" y1="12" x2="66" y2="21" stroke="#6B6662" stroke-width="1" stroke-dasharray="3,4"/>
-            <line x1="97" y1="29" x2="72" y2="29" stroke="#6B6662" stroke-width="1" stroke-dasharray="3,4"/>
-            <line x1="55" y1="46" x2="55" y2="38" stroke="#6B6662" stroke-width="1" stroke-dasharray="3,4"/>
+            <line x1="13" y1="29" x2="38" y2="29" stroke="#9A9BAA" stroke-width="1" stroke-dasharray="3,4"/>
+            <line x1="34" y1="12" x2="44" y2="21" stroke="#9A9BAA" stroke-width="1" stroke-dasharray="3,4"/>
+            <line x1="76" y1="12" x2="66" y2="21" stroke="#9A9BAA" stroke-width="1" stroke-dasharray="3,4"/>
+            <line x1="97" y1="29" x2="72" y2="29" stroke="#9A9BAA" stroke-width="1" stroke-dasharray="3,4"/>
+            <line x1="55" y1="46" x2="55" y2="38" stroke="#9A9BAA" stroke-width="1" stroke-dasharray="3,4"/>
             <!-- Empty centre — the missing hub -->
-            <circle cx="55" cy="29" r="12" fill="rgba(255,107,53,0.05)" stroke="#FF3B1E" stroke-width="1" stroke-dasharray="3,3"/>
-            <line x1="50" y1="29" x2="60" y2="29" stroke="#FF3B1E" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
-            <line x1="55" y1="24" x2="55" y2="34" stroke="#FF3B1E" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+            <circle cx="55" cy="29" r="12" fill="rgba(23,61,237,0.05)" stroke="#173DED" stroke-width="1" stroke-dasharray="3,3"/>
+            <line x1="50" y1="29" x2="60" y2="29" stroke="#173DED" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+            <line x1="55" y1="24" x2="55" y2="34" stroke="#173DED" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
           </svg>
         </div>
         <div class="cc-title">No single source of truth</div>
@@ -1785,22 +1876,22 @@ hr.rule {
         <div class="cc-visual">
           <svg viewBox="0 0 110 58" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <!-- Stage 1 (active) -->
-            <rect x="2" y="19" width="20" height="20" rx="3" fill="none" stroke="#A09890" stroke-width="1.5"/>
-            <line x1="7" y1="29" x2="17" y2="29" stroke="#A09890" stroke-width="1" stroke-linecap="round"/>
+            <rect x="2" y="19" width="20" height="20" rx="3" fill="none" stroke="#C2C3CC" stroke-width="1.5"/>
+            <line x1="7" y1="29" x2="17" y2="29" stroke="#C2C3CC" stroke-width="1" stroke-linecap="round"/>
             <!-- Stage 2 (active) -->
-            <rect x="30" y="19" width="20" height="20" rx="3" fill="none" stroke="#A09890" stroke-width="1.5"/>
-            <line x1="35" y1="29" x2="45" y2="29" stroke="#A09890" stroke-width="1" stroke-linecap="round"/>
+            <rect x="30" y="19" width="20" height="20" rx="3" fill="none" stroke="#C2C3CC" stroke-width="1.5"/>
+            <line x1="35" y1="29" x2="45" y2="29" stroke="#C2C3CC" stroke-width="1" stroke-linecap="round"/>
             <!-- Stage 3 (BLOCKED) -->
-            <rect x="58" y="16" width="24" height="26" rx="3" fill="rgba(255,107,53,0.07)" stroke="#FF3B1E" stroke-width="1.5"/>
-            <line x1="64" y1="23" x2="76" y2="35" stroke="#FF3B1E" stroke-width="1.8" stroke-linecap="round"/>
-            <line x1="76" y1="23" x2="64" y2="35" stroke="#FF3B1E" stroke-width="1.8" stroke-linecap="round"/>
+            <rect x="58" y="16" width="24" height="26" rx="3" fill="rgba(23,61,237,0.07)" stroke="#173DED" stroke-width="1.5"/>
+            <line x1="64" y1="23" x2="76" y2="35" stroke="#173DED" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="76" y1="23" x2="64" y2="35" stroke="#173DED" stroke-width="1.8" stroke-linecap="round"/>
             <!-- Stage 4 (waiting / faded) -->
-            <rect x="90" y="19" width="18" height="20" rx="3" fill="none" stroke="#6B6662" stroke-width="1" opacity="0.35"/>
+            <rect x="90" y="19" width="18" height="20" rx="3" fill="none" stroke="#9A9BAA" stroke-width="1" opacity="0.35"/>
             <!-- Arrows -->
-            <path d="M22 29 L30 29" stroke="#A09890" stroke-width="1.2" marker-end="none"/>
-            <polyline points="27,26.5 30,29 27,31.5" fill="none" stroke="#A09890" stroke-width="1.2" stroke-linecap="round"/>
-            <path d="M50 29 L58 29" stroke="#FF3B1E" stroke-width="1.2" stroke-dasharray="2,2"/>
-            <path d="M82 29 L90 29" stroke="#6B6662" stroke-width="1" opacity="0.3" stroke-dasharray="2,3"/>
+            <path d="M22 29 L30 29" stroke="#C2C3CC" stroke-width="1.2" marker-end="none"/>
+            <polyline points="27,26.5 30,29 27,31.5" fill="none" stroke="#C2C3CC" stroke-width="1.2" stroke-linecap="round"/>
+            <path d="M50 29 L58 29" stroke="#173DED" stroke-width="1.2" stroke-dasharray="2,2"/>
+            <path d="M82 29 L90 29" stroke="#9A9BAA" stroke-width="1" opacity="0.3" stroke-dasharray="2,3"/>
           </svg>
         </div>
         <div class="cc-title">Every release is a bottleneck</div>
@@ -1812,20 +1903,20 @@ hr.rule {
         <div class="cc-visual">
           <svg viewBox="0 0 110 58" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <!-- Generic off-the-shelf platform (rigid rectangle with grid) -->
-            <rect x="4" y="9" width="40" height="40" rx="3" fill="none" stroke="#A09890" stroke-width="1.5" stroke-dasharray="5,3"/>
-            <line x1="4"  y1="23" x2="44" y2="23" stroke="#A09890" stroke-width="0.7" opacity="0.45"/>
-            <line x1="4"  y1="35" x2="44" y2="35" stroke="#A09890" stroke-width="0.7" opacity="0.45"/>
-            <line x1="18" y1="9"  x2="18" y2="49" stroke="#A09890" stroke-width="0.7" opacity="0.45"/>
-            <line x1="31" y1="9"  x2="31" y2="49" stroke="#A09890" stroke-width="0.7" opacity="0.45"/>
+            <rect x="4" y="9" width="40" height="40" rx="3" fill="none" stroke="#C2C3CC" stroke-width="1.5" stroke-dasharray="5,3"/>
+            <line x1="4"  y1="23" x2="44" y2="23" stroke="#C2C3CC" stroke-width="0.7" opacity="0.45"/>
+            <line x1="4"  y1="35" x2="44" y2="35" stroke="#C2C3CC" stroke-width="0.7" opacity="0.45"/>
+            <line x1="18" y1="9"  x2="18" y2="49" stroke="#C2C3CC" stroke-width="0.7" opacity="0.45"/>
+            <line x1="31" y1="9"  x2="31" y2="49" stroke="#C2C3CC" stroke-width="0.7" opacity="0.45"/>
             <!-- Gap / mismatch indicator -->
-            <line x1="49" y1="29" x2="60" y2="29" stroke="#FF3B1E" stroke-width="2" stroke-linecap="round"/>
-            <line x1="54.5" y1="23.5" x2="54.5" y2="34.5" stroke="#FF3B1E" stroke-width="2" stroke-linecap="round"/>
+            <line x1="49" y1="29" x2="60" y2="29" stroke="#173DED" stroke-width="2" stroke-linecap="round"/>
+            <line x1="54.5" y1="23.5" x2="54.5" y2="34.5" stroke="#173DED" stroke-width="2" stroke-linecap="round"/>
             <!-- Hero's actual need (irregular, custom shape) -->
-            <path d="M67 10 L98 10 L107 29 L98 48 L67 48 L58 29 Z" fill="none" stroke="#A09890" stroke-width="1.5"/>
+            <path d="M67 10 L98 10 L107 29 L98 48 L67 48 L58 29 Z" fill="none" stroke="#C2C3CC" stroke-width="1.5"/>
             <!-- Inner mark showing it's active/real -->
-            <circle cx="82" cy="29" r="4" fill="none" stroke="#A09890" stroke-width="1.2"/>
-            <line x1="79" y1="29" x2="85" y2="29" stroke="#A09890" stroke-width="1" opacity="0.6"/>
-            <line x1="82" y1="26" x2="82" y2="32" stroke="#A09890" stroke-width="1" opacity="0.6"/>
+            <circle cx="82" cy="29" r="4" fill="none" stroke="#C2C3CC" stroke-width="1.2"/>
+            <line x1="79" y1="29" x2="85" y2="29" stroke="#C2C3CC" stroke-width="1" opacity="0.6"/>
+            <line x1="82" y1="26" x2="82" y2="32" stroke="#C2C3CC" stroke-width="1" opacity="0.6"/>
           </svg>
         </div>
         <div class="cc-title">Generic platforms don't fit</div>
@@ -2920,6 +3011,39 @@ hr.rule {
 ══════════════════════════════════════ -->
 <section class="slide no-accent" id="s15" aria-label="Next steps">
   <div class="cta-bg" aria-hidden="true"></div>
+  <!-- Brand mark -->
+  <div class="op-grid-mark" aria-hidden="true">
+    <svg viewBox="0 0 130 100" xmlns="http://www.w3.org/2000/svg">
+      <g fill="#0B0B0B" opacity="0.06">
+        <rect x="0"  y="0"  width="18" height="18" rx="1"/><rect x="24" y="0"  width="18" height="18" rx="1"/>
+        <rect x="48" y="0"  width="18" height="18" rx="1"/><rect x="72" y="0"  width="18" height="18" rx="1"/>
+        <rect x="96" y="0"  width="18" height="18" rx="1"/><rect x="120" y="0" width="18" height="18" rx="1"/>
+        <rect x="0"  y="24" width="18" height="18" rx="1"/><rect x="24" y="24" width="18" height="18" rx="1"/>
+        <rect x="48" y="24" width="18" height="18" rx="1"/><rect x="72" y="24" width="18" height="18" rx="1"/>
+        <rect x="96" y="24" width="18" height="18" rx="1"/><rect x="120" y="24" width="18" height="18" rx="1"/>
+        <rect x="0"  y="48" width="18" height="18" rx="1"/><rect x="24" y="48" width="18" height="18" rx="1"/>
+        <rect x="48" y="48" width="18" height="18" rx="1"/><rect x="72" y="48" width="18" height="18" rx="1"/>
+        <rect x="96" y="48" width="18" height="18" rx="1"/><rect x="120" y="48" width="18" height="18" rx="1"/>
+        <rect x="0"  y="72" width="18" height="18" rx="1"/><rect x="24" y="72" width="18" height="18" rx="1"/>
+        <rect x="48" y="72" width="18" height="18" rx="1"/><rect x="72" y="72" width="18" height="18" rx="1"/>
+        <rect x="96" y="72" width="18" height="18" rx="1"/><rect x="120" y="72" width="18" height="18" rx="1"/>
+      </g>
+      <g fill="#0B0B0B" opacity="0.45">
+        <rect x="0"  y="0"  width="18" height="18" rx="1"/>
+        <rect x="48" y="24" width="18" height="18" rx="1"/>
+        <rect x="0"  y="48" width="18" height="18" rx="1"/>
+        <rect x="96" y="48" width="18" height="18" rx="1"/>
+        <rect x="48" y="72" width="18" height="18" rx="1"/>
+      </g>
+      <g fill="#173DED">
+        <polygon points="85,9 94,18 85,27 76,18"/>
+        <polygon points="37,33 46,42 37,51 28,42"/>
+        <polygon points="109,33 118,42 109,51 100,42"/>
+        <polygon points="61,57 70,66 61,75 52,66"/>
+        <polygon points="13,81 22,90 13,99 4,90"/>
+      </g>
+    </svg>
+  </div>
   <div class="cta-content">
     <h2 class="cta-headline reveal d1">
       What we've built<br>
