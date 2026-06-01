@@ -516,17 +516,59 @@ hr.rule {
 /* ============================================
    SLIDE 04 — THE OWNPATH DIFFERENCE
    ============================================ */
-#s4 { background: var(--bg); }
-#s4 .centre-stmt {
+#s4 { background: var(--bg); position: relative; overflow: hidden; }
+
+/* Giant ghost × — depth / brand texture */
+#s4 .s4-ghost {
+  position: absolute;
+  right: clamp(-4rem, -6vw, -6rem);
+  top: 50%;
+  transform: translateY(-50%);
   font-family: var(--font-d);
-  font-size: clamp(1.9rem, 4.5vw, 4.2rem);
+  font-size: clamp(30rem, 68vw, 72rem);
   font-weight: 700;
-  line-height: 1.1;
-  color: var(--text);
-  max-width: 18em;
-  margin-bottom: clamp(1.5rem, 3vw, 3rem);
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(23,61,237,0.055);
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
 }
-#s4 .centre-stmt .x-mark { color: var(--accent); }
+
+#s4 .slide-content { position: relative; z-index: 1; }
+
+/* Header block */
+#s4 .s4-top {
+  margin-bottom: clamp(1.4rem, 2.5vw, 2.5rem);
+}
+#s4 .s4-sub {
+  font-family: var(--font-d);
+  font-size: clamp(1.5rem, 3vw, 2.6rem);
+  font-weight: 700;
+  color: var(--text-mid);
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  margin-top: 0.5em;
+  margin-bottom: 0.15em;
+}
+#s4 .s4-sub .x-mark { color: var(--accent); }
+
+/* "1 team, 10x outcome." — primary display statement */
+#s4 .s4-hero {
+  font-family: var(--font-d);
+  font-size: clamp(2.6rem, 6vw, 5.4rem);
+  font-weight: 700;
+  line-height: 1.0;
+  color: var(--text);
+  letter-spacing: -0.03em;
+}
+
+/* "10x" — accent colour only, no badge */
+#s4 .s4-hl {
+  color: var(--accent);
+}
+
+/* Cards */
 #s4 .diff-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1267,6 +1309,249 @@ hr.rule {
 }
 
 /* ============================================
+   SLIDE 17 — WORKFLOW COMPARISON
+   ============================================ */
+#s_compare { background: var(--bg); }
+#s_compare .slide-content {
+  gap: clamp(0.6rem, 1.2vw, 1.2rem);
+  justify-content: flex-start;
+}
+
+#s_compare .cmp-head { flex-shrink: 0; }
+#s_compare .cmp-title {
+  font-family: var(--font-d);
+  font-size: clamp(1.4rem, 2.8vw, 2.4rem);
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.025em;
+  margin-top: 0.3em;
+}
+
+/* Main arena */
+#s_compare .cmp-arena {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: clamp(1rem, 2.5vw, 2.5rem);
+  flex: 1;
+  min-height: 0;
+}
+
+/* Column panels */
+#s_compare .cmp-side {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.4rem, 0.8vw, 0.8rem);
+  padding: clamp(1rem, 1.6vw, 1.6rem);
+  border-radius: 12px;
+  min-height: 0;
+}
+#s_compare .cmp-trad { background: var(--bg-2); }
+#s_compare .cmp-echo-side {
+  background: var(--bg);
+  border: 1px solid rgba(23,61,237,0.15);
+}
+
+/* Column label */
+#s_compare .cmp-side-label {
+  font-family: var(--font-b);
+  font-size: var(--t-label);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+#s_compare .cmp-side-label--echo { color: var(--accent); }
+
+/* Flow */
+#s_compare .cmp-flow {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Nodes */
+#s_compare .cmp-node {
+  border: 1.5px solid var(--line-strong);
+  border-radius: 8px;
+  padding: clamp(0.5rem, 0.85vw, 0.85rem) clamp(0.7rem, 1.1vw, 1.1rem);
+  background: #fff;
+  flex-shrink: 0;
+}
+#s_compare .cmp-node--actor {
+  border-color: var(--text);
+  background: var(--text);
+  color: #fff;
+}
+#s_compare .cmp-node--output {
+  border-color: var(--accent);
+  background: rgba(23,61,237,0.07);
+}
+#s_compare .cmp-node--skip {
+  opacity: 0.22;
+  border-style: dashed;
+  position: relative;
+}
+#s_compare .cmp-node--skip::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  height: 1.5px;
+  width: 80%;
+  background: var(--text-dim);
+}
+
+/* Node internals */
+#s_compare .cmp-node-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75em;
+}
+#s_compare .cmp-node-title {
+  font-family: var(--font-d);
+  font-size: var(--t-body);
+  font-weight: 600;
+  color: inherit;
+  line-height: 1.2;
+}
+#s_compare .cmp-node--actor .cmp-node-title { color: #fff; }
+#s_compare .cmp-node--output .cmp-node-title { color: var(--accent); }
+#s_compare .cmp-node-sub {
+  font-size: var(--t-small);
+  color: var(--text-dim);
+  margin-top: 0.2em;
+}
+
+/* Resource bubbles */
+#s_compare .cmp-bubbles {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+#s_compare .cmp-bub {
+  width: clamp(20px, 2.2vw, 26px);
+  height: clamp(20px, 2.2vw, 26px);
+  border-radius: 50%;
+  border: 2px solid #fff;
+  margin-left: -6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(7px, 0.7vw, 10px);
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0;
+  flex-shrink: 0;
+}
+#s_compare .cmp-bubbles .cmp-bub:first-child { margin-left: 0; }
+#s_compare .bub-d { background: var(--accent); }
+#s_compare .bub-v { background: var(--navy); }
+#s_compare .bub-d-single { background: rgba(23,61,237,0.6); }
+
+/* Vertical connector lines */
+#s_compare .cmp-connector {
+  width: 1.5px;
+  height: clamp(18px, 2.5vh, 30px);
+  background: var(--line-strong);
+  margin: 0 auto;
+  position: relative;
+  flex-shrink: 0;
+}
+#s_compare .cmp-connector--echo {
+  background: var(--accent);
+  height: clamp(28px, 4vh, 44px);
+}
+#s_compare .cmp-connector--ghost { background: var(--line); }
+
+/* Echo badge on connector */
+#s_compare .echo-chip {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--accent);
+  color: #fff;
+  font-size: clamp(0.52rem, 0.68vw, 0.64rem);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-radius: 100px;
+  padding: 0.22em 0.7em;
+  white-space: nowrap;
+}
+
+/* Divider */
+#s_compare .cmp-sep {
+  width: 1px;
+  background: var(--line-strong);
+  align-self: stretch;
+  margin: 0;
+}
+
+/* Timeline badge */
+#s_compare .cmp-timeline { margin-top: auto; padding-top: clamp(0.5rem, 0.8vw, 0.8rem); flex-shrink: 0; }
+#s_compare .tl-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-family: var(--font-b);
+  font-size: var(--t-label);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: 100px;
+  padding: 0.3em 0.9em;
+}
+#s_compare .tl-slow { background: rgba(11,11,11,0.08); color: var(--text-mid); }
+#s_compare .tl-fast { background: rgba(23,61,237,0.1); color: var(--accent); }
+
+/* Campaign examples bar */
+#s_compare .cmp-cases {
+  display: flex;
+  gap: clamp(1rem, 2vw, 2rem);
+  padding-top: clamp(0.6rem, 1vw, 1rem);
+  border-top: 1px solid var(--line);
+  flex-shrink: 0;
+  align-items: center;
+}
+#s_compare .cmp-case {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6em;
+  flex: 1;
+}
+#s_compare .cmp-case-brand {
+  font-family: var(--font-d);
+  font-size: var(--t-body);
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+#s_compare .cmp-case-brand--echo { color: var(--accent); }
+#s_compare .cmp-case-detail {
+  font-size: var(--t-small);
+  color: var(--text-dim);
+  line-height: 1.4;
+}
+#s_compare .cmp-case-note {
+  font-size: var(--t-small);
+  color: var(--text-dim);
+  font-style: italic;
+  flex-shrink: 0;
+}
+#s_compare .cmp-case-sep {
+  width: 1px;
+  height: clamp(1.5rem, 2.5vh, 2.5rem);
+  background: var(--line-strong);
+  flex-shrink: 0;
+}
+
+/* ============================================
    SLIDE 12 — HARD KPIs
    ============================================ */
 #s12 { background: var(--bg); }
@@ -1394,6 +1679,18 @@ hr.rule {
 #s14 .rm-badge.current { color: var(--accent); background: rgba(23,61,237,0.12); }
 #s14 .rm-badge.next    { color: var(--accent-2); background: rgba(23,61,237,0.1); }
 #s14 .rm-badge.future  { color: var(--text-dim); background: var(--bg-3); }
+#s14 .rm-product {
+  font-family: var(--font-d);
+  font-size: clamp(0.88rem, 1.3vw, 1.1rem);
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  padding-bottom: clamp(0.4rem, 0.6vw, 0.6rem);
+  border-bottom: 1px solid var(--line-strong);
+  margin-bottom: clamp(0.3rem, 0.5vw, 0.5rem);
+}
+#s14 .rm-col.current .rm-product { color: var(--accent); }
+#s14 .rm-col.next .rm-product { color: var(--accent); }
 #s14 .rm-title {
   font-family: var(--font-d);
   font-size: var(--t-h3);
@@ -1557,47 +1854,44 @@ hr.rule {
   max-width: 30ch;
 }
 
-/* RIGHT — numbered tech list */
+/* RIGHT — 2×3 card grid */
 #s_tech .ts-right {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 #s_tech .ts-list {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(0.5rem, 0.9vw, 0.85rem);
   flex: 1;
-  padding-top: clamp(0.25rem, 0.5vw, 0.4rem);
+  min-height: 0;
+  align-content: stretch;
 }
 #s_tech .ts-item {
   display: flex;
-  align-items: center;
-  gap: clamp(0.75rem, 1.4vw, 1.2rem);
-  padding: clamp(0.7rem, 1.3vw, 1.1rem) 0;
-  border-top: 1px solid var(--line);
+  flex-direction: column;
+  padding: clamp(0.85rem, 1.3vw, 1.2rem);
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  border-top: 2.5px solid var(--tc, var(--accent));
+  position: relative;
+  min-height: 0;
 }
-#s_tech .ts-item:last-child { border-bottom: 1px solid var(--line); }
-#s_tech .ts-num {
-  font-family: var(--font-b);
-  font-size: var(--t-label);
-  letter-spacing: 0.12em;
-  color: var(--text-dim);
-  width: 1.6em;
-  flex-shrink: 0;
-  opacity: 0.55;
-}
+#s_tech .ts-num { display: none; }
 #s_tech .ts-icon {
-  width: clamp(30px, 3vw, 38px);
-  height: clamp(30px, 3vw, 38px);
+  width: clamp(28px, 2.8vw, 36px);
+  height: clamp(28px, 2.8vw, 36px);
   border-radius: 7px;
   display: flex; align-items: center; justify-content: center;
   background: var(--tc-bg, rgba(23,61,237,0.07));
   flex-shrink: 0;
+  margin-bottom: clamp(0.55rem, 0.85vw, 0.85rem);
 }
 #s_tech .ts-icon svg {
-  width: clamp(13px, 1.4vw, 18px);
-  height: clamp(13px, 1.4vw, 18px);
+  width: clamp(13px, 1.3vw, 17px);
+  height: clamp(13px, 1.3vw, 17px);
   stroke: var(--tc, var(--accent));
   fill: none;
   stroke-width: 1.6;
@@ -1607,16 +1901,17 @@ hr.rule {
 #s_tech .ts-info {
   display: flex;
   flex-direction: column;
-  gap: 0.18em;
+  gap: 0.2em;
   flex: 1;
   min-width: 0;
 }
 #s_tech .ts-name {
   font-family: var(--font-d);
-  font-size: clamp(0.88rem, 1.4vw, 1.15rem);
+  font-size: clamp(0.82rem, 1.25vw, 1.05rem);
   font-weight: 600;
   color: var(--text);
-  line-height: 1.2;
+  line-height: 1.25;
+  padding-right: 3.5em;
 }
 #s_tech .ts-desc {
   font-size: var(--t-small);
@@ -1624,13 +1919,15 @@ hr.rule {
   line-height: 1.45;
 }
 #s_tech .ts-cat {
+  position: absolute;
+  top: clamp(0.85rem, 1.3vw, 1.2rem);
+  right: clamp(0.85rem, 1.3vw, 1.2rem);
   font-family: var(--font-b);
   font-size: var(--t-label);
-  letter-spacing: 0.13em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--tc, var(--text-dim));
-  flex-shrink: 0;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 /* Per-tech brand colors */
@@ -2751,25 +3048,135 @@ body.edit-mode .edit-export-group { display: flex; }
 </section>
 
 <!-- ══════════════════════════════════════
-     SLIDE 05 — THE OWNPATH DIFFERENCE
+     SLIDE 17 — WORKFLOW COMPARISON
 ══════════════════════════════════════ -->
-<section class="slide" id="s4" aria-label="The Ownpath difference">
+<section class="slide" id="s_compare" aria-label="Traditional vs Echo workflow">
   <div class="slide-content">
-    <h2 class="centre-stmt reveal d1">Design <span class="x-mark">×</span> Engineering.<br>One team. One outcome.</h2>
-    <div class="diff-grid">
-      <div class="diff-card reveal d2">
-        <div class="dc-title">Speed of Delivery</div>
-        <div class="dc-body">Rapid iteration cycles compress quarters into weeks. AI-assisted development at every layer — architecture, scaffolding, testing, documentation.</div>
-      </div>
-      <div class="diff-card reveal d3">
-        <div class="dc-title">Production-Grade Quality</div>
-        <div class="dc-body">Echo is not a demo. Architecture reviews, security hardening, VAPT readiness, and enterprise compliance — built in from day one.</div>
-      </div>
-      <div class="diff-card reveal d4">
-        <div class="dc-title">Enterprise Scalability</div>
-        <div class="dc-body">Multiple brand systems, cross-team workflows, role-based access, and an expanding ecosystem — all within a single coherent architecture.</div>
-      </div>
+
+    <div class="cmp-head">
+      <span class="tag reveal d1">Workflow Comparison</span>
+      <h2 class="cmp-title reveal d2">Where Echo eliminates friction.</h2>
     </div>
+
+    <div class="cmp-arena reveal d3">
+
+      <!-- LEFT: Traditional -->
+      <div class="cmp-side cmp-trad">
+        <div class="cmp-side-label">Traditional</div>
+        <div class="cmp-flow">
+
+          <div class="cmp-node cmp-node--actor">
+            <div class="cmp-node-title">Brand Stakeholder</div>
+          </div>
+          <div class="cmp-connector"></div>
+
+          <div class="cmp-node">
+            <div class="cmp-node-row">
+              <div>
+                <div class="cmp-node-title">Designers</div>
+                <div class="cmp-node-sub">Creative direction &amp; execution</div>
+              </div>
+              <div class="cmp-bubbles">
+                <span class="cmp-bub bub-d">D</span>
+                <span class="cmp-bub bub-d">D</span>
+                <span class="cmp-bub bub-d">D</span>
+              </div>
+            </div>
+          </div>
+          <div class="cmp-connector"></div>
+
+          <div class="cmp-node">
+            <div class="cmp-node-row">
+              <div>
+                <div class="cmp-node-title">Developers</div>
+                <div class="cmp-node-sub">Build &amp; integration</div>
+              </div>
+              <div class="cmp-bubbles">
+                <span class="cmp-bub bub-v">V</span>
+                <span class="cmp-bub bub-v">V</span>
+              </div>
+            </div>
+          </div>
+          <div class="cmp-connector"></div>
+
+          <div class="cmp-node cmp-node--output">
+            <div class="cmp-node-title">Polished Campaign</div>
+          </div>
+
+        </div>
+        <div class="cmp-timeline">
+          <span class="tl-badge tl-slow">~30 days</span>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div class="cmp-sep" aria-hidden="true"></div>
+
+      <!-- RIGHT: Echo-assisted -->
+      <div class="cmp-side cmp-echo-side">
+        <div class="cmp-side-label cmp-side-label--echo">Echo-assisted</div>
+        <div class="cmp-flow">
+
+          <div class="cmp-node cmp-node--actor">
+            <div class="cmp-node-title">Brand Stakeholder</div>
+          </div>
+          <div class="cmp-connector cmp-connector--echo">
+            <span class="echo-chip">Echo</span>
+          </div>
+
+          <div class="cmp-node">
+            <div class="cmp-node-row">
+              <div>
+                <div class="cmp-node-title">Designer</div>
+                <div class="cmp-node-sub">Guided by Echo outputs</div>
+              </div>
+              <div class="cmp-bubbles">
+                <span class="cmp-bub bub-d-single">D</span>
+              </div>
+            </div>
+          </div>
+          <div class="cmp-connector cmp-connector--ghost"></div>
+
+          <div class="cmp-node cmp-node--skip">
+            <div class="cmp-node-row">
+              <div>
+                <div class="cmp-node-title">Developers</div>
+                <div class="cmp-node-sub">Eliminated by Echo</div>
+              </div>
+              <div class="cmp-bubbles">
+                <span class="cmp-bub bub-v">V</span>
+                <span class="cmp-bub bub-v">V</span>
+              </div>
+            </div>
+          </div>
+          <div class="cmp-connector"></div>
+
+          <div class="cmp-node cmp-node--output">
+            <div class="cmp-node-title">Polished Campaign</div>
+          </div>
+
+        </div>
+        <div class="cmp-timeline">
+          <span class="tl-badge tl-fast">Days, not weeks</span>
+        </div>
+      </div>
+
+    </div><!-- /cmp-arena -->
+
+    <!-- Campaign examples footnote -->
+    <div class="cmp-cases reveal d4">
+      <div class="cmp-case">
+        <span class="cmp-case-brand">KKR</span>
+        <span class="cmp-case-detail">Brand/engagement activation · 3 designers + 2 developers · ~30 days</span>
+      </div>
+      <div class="cmp-case-sep"></div>
+      <div class="cmp-case">
+        <span class="cmp-case-brand cmp-case-brand--echo">Vira</span>
+        <span class="cmp-case-detail">Brand activation · Echo-assisted · 1 designer · Significantly faster</span>
+      </div>
+      <span class="cmp-case-note">Illustrative examples, not commitments.</span>
+    </div>
+
   </div>
   <div class="slide-bar"><span>17 / 22</span></div>
 </section>
@@ -3006,30 +3413,60 @@ body.edit-mode .edit-export-group { display: flex; }
 </section>
 
 <!-- ══════════════════════════════════════
-     SLIDE 14 — ECHO ECOSYSTEM
+     SLIDE 15 — PHASE 2 ROADMAP
 ══════════════════════════════════════ -->
-<section class="slide" id="s11" aria-label="Echo ecosystem">
+<section class="slide" id="s14" aria-label="Ecosystem and Roadmap">
   <div class="slide-content">
-    <span class="tag reveal d1">The Ecosystem</span>
-    <h2 class="h2 reveal d2" style="font-size: var(--t-h2); margin-bottom: 0;">Echo has grown beyond a single portal.</h2>
-    <div class="eco-grid">
-      <div class="eco-card primary reveal-scale d2">
-        <div class="ec-tag">Core</div>
-        <div class="ec-name">Echo Portal</div>
-        <div class="ec-status live">● Live — Milestone 3 Active</div>
-        <div class="ec-body">The single source of truth for brand, product, and design. Internal-only for Hero employees. Full contribution and approval governance.</div>
+    <span class="tag reveal d1">Ecosystem &amp; Roadmap</span>
+    <h2 class="h2 reveal d2" style="font-size: var(--t-h2);">Echo Portal is live. Here's what comes next.</h2>
+    <div class="roadmap-wrap">
+      <!-- Column 1: Live — Echo Portal -->
+      <div class="rm-col current reveal-scale d2">
+        <div class="rm-header">
+          <span class="rm-badge current">Phase 1 — Live</span>
+        </div>
+        <div class="rm-product">Echo Portal</div>
+        <div class="rm-title">Milestone 3 Launch</div>
+        <div class="rm-date">Jan 2026 – Jun 2026</div>
+        <ul class="rm-items">
+          <li>Design system portal — production-grade React</li>
+          <li>Multi-brand: Vida, Dirt-E, Leaf</li>
+          <li>7-stage approval workflow</li>
+          <li>Admin controls &amp; branch governance</li>
+          <li>Hero ID authentication</li>
+        </ul>
       </div>
-      <div class="eco-card reveal-scale d3">
-        <div class="ec-tag">AI Layer</div>
-        <div class="ec-name">Echo Studio</div>
-        <div class="ec-status poc">● POC — Demonstrated to Cheryl</div>
-        <div class="ec-body">AI-powered creative generation using Echo's brand guidelines as context. Poster variations, campaign content, and asset creation — for external stakeholders, dealers, and vendors.</div>
+      <!-- Column 2: Pitching — Echo Studio + DAM -->
+      <div class="rm-col next reveal-scale d3">
+        <div class="rm-header">
+          <span class="rm-badge next">Phase 2 — Pitching</span>
+        </div>
+        <div class="rm-product">Echo Studio &amp; DAM</div>
+        <div class="rm-title">Security + AI + Assets</div>
+        <div class="rm-date">H2 2026</div>
+        <ul class="rm-items">
+          <li>VAPT security certification</li>
+          <li>AI brand compliance — RAG over Echo guidelines</li>
+          <li>Full DAM expansion &amp; lifecycle management</li>
+          <li>Echo Studio integration with core portal</li>
+          <li>External stakeholder access (dealers, vendors)</li>
+        </ul>
       </div>
-      <div class="eco-card reveal-scale d4">
-        <div class="ec-tag">Assets</div>
-        <div class="ec-name">DAM System</div>
-        <div class="ec-status plan">◌ Planning — POC in Milestone 3</div>
-        <div class="ec-body">Enterprise-grade digital asset management. Templates for merchandise, social, brand materials. Integrated with approval workflow and Echo Studio.</div>
+      <!-- Column 3: Future — Full Platform -->
+      <div class="rm-col reveal-scale d4">
+        <div class="rm-header">
+          <span class="rm-badge future">Future</span>
+        </div>
+        <div class="rm-product">Full Platform</div>
+        <div class="rm-title">And more to come…</div>
+        <div class="rm-date">2027 +</div>
+        <ul class="rm-items">
+          <li>Echo Studio at scale — dealers &amp; vendors</li>
+          <li>Multi-company brand standardisation</li>
+          <li>AI content &amp; campaign generation</li>
+          <li>Advanced cross-brand intelligence</li>
+        </ul>
+        <p class="rm-more">The platform grows with Hero — not against it.</p>
       </div>
     </div>
   </div>
@@ -3037,66 +3474,28 @@ body.edit-mode .edit-export-group { display: flex; }
 </section>
 
 <!-- ══════════════════════════════════════
-     SLIDE 15 — PHASE 2 ROADMAP
+     SLIDE 05 — THE OWNPATH DIFFERENCE
 ══════════════════════════════════════ -->
-<section class="slide" id="s14" aria-label="Phase 2 Roadmap">
+<section class="slide" id="s4" aria-label="The Ownpath difference">
+  <div class="s4-ghost" aria-hidden="true">×</div>
   <div class="slide-content">
-    <span class="tag reveal d1">Roadmap</span>
-    <h2 class="h2 reveal d2" style="font-size: var(--t-h2);">First launch — and what comes next</h2>
-    <div class="roadmap-wrap">
-      <!-- Column 1: Current (M3 launch) -->
-      <div class="rm-col current reveal-scale d2">
-        <div class="rm-header">
-          <span class="rm-badge current">Phase 1 — Live</span>
-        </div>
-        <div class="rm-title">Milestone 3 Launch</div>
-        <div class="rm-date">Jan 2026 – Jun 2026</div>
-        <ul class="rm-items">
-          <li>Design system portal (React, production-grade)</li>
-          <li>Multi-brand: Vida, Dirt-E, Leaf</li>
-          <li>7-stage approval workflow</li>
-          <li>Dashboard, notifications, user profiles</li>
-          <li>Admin controls &amp; governance</li>
-          <li>Branch scoping &amp; authorisation</li>
-          <li>Asset viewer / uploader POC</li>
-          <li>Hero ID authentication</li>
-          <li>Reporting component</li>
-        </ul>
+    <div class="s4-top">
+      <span class="tag reveal d1">Why Us</span>
+      <p class="s4-sub reveal d2">Design <span class="x-mark">×</span> Engineering.</p>
+      <h2 class="s4-hero reveal d3">1&nbsp;team,&nbsp;<span class="s4-hl">10x</span>&nbsp;outcome.</h2>
+    </div>
+    <div class="diff-grid">
+      <div class="diff-card reveal d4">
+        <div class="dc-title">Speed of Delivery</div>
+        <div class="dc-body">Rapid iteration cycles compress quarters into weeks. AI-assisted development at every layer — architecture, scaffolding, testing, documentation.</div>
       </div>
-      <!-- Column 2: Phase 2 (pitching) -->
-      <div class="rm-col next reveal-scale d3">
-        <div class="rm-header">
-          <span class="rm-badge next">Phase 2 — Pitching</span>
-        </div>
-        <div class="rm-title">Security + AI + DAM</div>
-        <div class="rm-date">H2 2026</div>
-        <ul class="rm-items">
-          <li>Security hardening &amp; VAPT certification</li>
-          <li>Hero ID-only production authentication</li>
-          <li>AI brand compliance (RAG, Echo guidelines as context)</li>
-          <li>AI issue routing &amp; design anomaly detection</li>
-          <li>Full DAM expansion — lifecycle management</li>
-          <li>Echo Studio integration with core portal</li>
-          <li>External stakeholder access (dealers, vendors)</li>
-          <li>Advanced analytics &amp; reporting</li>
-          <li>Monthly milestone delivery model</li>
-        </ul>
+      <div class="diff-card reveal d5">
+        <div class="dc-title">Production-Grade Quality</div>
+        <div class="dc-body">Echo is not a demo. Architecture reviews, security hardening, VAPT readiness, and enterprise compliance — built in from day one.</div>
       </div>
-      <!-- Column 3: Future -->
-      <div class="rm-col reveal-scale d4">
-        <div class="rm-header">
-          <span class="rm-badge future">Future</span>
-        </div>
-        <div class="rm-title">And more to come…</div>
-        <div class="rm-date">2027 +</div>
-        <ul class="rm-items">
-          <li>Echo Studio at full scale — dealers &amp; vendors</li>
-          <li>Multi-company brand standardisation (Leaf industry model)</li>
-          <li>AI content &amp; campaign generation</li>
-          <li>Advanced cross-brand intelligence</li>
-          <li>Expanded ecosystem integrations</li>
-        </ul>
-        <p class="rm-more">The platform grows with Hero — not against it.</p>
+      <div class="diff-card reveal d6">
+        <div class="dc-title">Enterprise Scalability</div>
+        <div class="dc-body">Multiple brand systems, cross-team workflows, role-based access, and an expanding ecosystem — all within a single coherent architecture.</div>
       </div>
     </div>
   </div>
