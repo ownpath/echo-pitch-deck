@@ -1951,12 +1951,12 @@ hr.rule {
 }
 .op-grid-mark svg { display: block; }
 
-/* Cover slide: large brand mark top-right */
+/* Cover slide: brand mark top-right, slight corner bleed */
 #s1 .op-grid-mark {
-  top: clamp(1.5rem, 3vw, 3rem);
-  right: clamp(1.5rem, 3vw, 3rem);
-  width: clamp(130px, 18vw, 220px);
-  opacity: 0.9;
+  top: clamp(-0.5rem, -1vw, -1rem);
+  right: clamp(-0.5rem, -1vw, -1rem);
+  width: clamp(160px, 20vw, 240px);
+  opacity: 1;
 }
 
 /* CTA slide: brand mark bottom-left */
@@ -2143,71 +2143,51 @@ body.edit-mode .edit-export-group { display: flex; }
 ══════════════════════════════════════ -->
 <section class="slide no-accent" id="s1" aria-label="Title slide">
 
-  <!-- Ownpath brand geometric mark — squares + diamonds grid -->
+  <!-- Ownpath brand geometric mark — 5×4 grid, checker active squares + diamonds at joints -->
   <div class="op-grid-mark reveal d4" aria-hidden="true">
-    <svg viewBox="0 0 220 165" xmlns="http://www.w3.org/2000/svg">
-      <!-- Ghost grid (background squares) -->
+    <svg viewBox="0 0 150 118" xmlns="http://www.w3.org/2000/svg">
+      <!-- Ghost grid — all 20 positions -->
       <g fill="#0B0B0B" opacity="0.06">
-        <rect x="0"  y="0"  width="22" height="22" rx="1"/>
-        <rect x="30" y="0"  width="22" height="22" rx="1"/>
-        <rect x="60" y="0"  width="22" height="22" rx="1"/>
-        <rect x="90" y="0"  width="22" height="22" rx="1"/>
-        <rect x="120" y="0" width="22" height="22" rx="1"/>
-        <rect x="150" y="0" width="22" height="22" rx="1"/>
-        <rect x="180" y="0" width="22" height="22" rx="1"/>
-
-        <rect x="0"  y="30" width="22" height="22" rx="1"/>
-        <rect x="30" y="30" width="22" height="22" rx="1"/>
-        <rect x="60" y="30" width="22" height="22" rx="1"/>
-        <rect x="90" y="30" width="22" height="22" rx="1"/>
-        <rect x="120" y="30" width="22" height="22" rx="1"/>
-        <rect x="150" y="30" width="22" height="22" rx="1"/>
-        <rect x="180" y="30" width="22" height="22" rx="1"/>
-
-        <rect x="0"  y="60" width="22" height="22" rx="1"/>
-        <rect x="30" y="60" width="22" height="22" rx="1"/>
-        <rect x="60" y="60" width="22" height="22" rx="1"/>
-        <rect x="90" y="60" width="22" height="22" rx="1"/>
-        <rect x="120" y="60" width="22" height="22" rx="1"/>
-        <rect x="150" y="60" width="22" height="22" rx="1"/>
-        <rect x="180" y="60" width="22" height="22" rx="1"/>
-
-        <rect x="0"  y="90" width="22" height="22" rx="1"/>
-        <rect x="30" y="90" width="22" height="22" rx="1"/>
-        <rect x="60" y="90" width="22" height="22" rx="1"/>
-        <rect x="90" y="90" width="22" height="22" rx="1"/>
-        <rect x="120" y="90" width="22" height="22" rx="1"/>
-        <rect x="150" y="90" width="22" height="22" rx="1"/>
-        <rect x="180" y="90" width="22" height="22" rx="1"/>
-
-        <rect x="0"  y="120" width="22" height="22" rx="1"/>
-        <rect x="30" y="120" width="22" height="22" rx="1"/>
-        <rect x="60" y="120" width="22" height="22" rx="1"/>
-        <rect x="90" y="120" width="22" height="22" rx="1"/>
-        <rect x="120" y="120" width="22" height="22" rx="1"/>
-        <rect x="150" y="120" width="22" height="22" rx="1"/>
-        <rect x="180" y="120" width="22" height="22" rx="1"/>
+        <rect x="0"   y="0"  width="22" height="22" rx="1"/>
+        <rect x="32"  y="0"  width="22" height="22" rx="1"/>
+        <rect x="64"  y="0"  width="22" height="22" rx="1"/>
+        <rect x="96"  y="0"  width="22" height="22" rx="1"/>
+        <rect x="128" y="0"  width="22" height="22" rx="1"/>
+        <rect x="0"   y="32" width="22" height="22" rx="1"/>
+        <rect x="32"  y="32" width="22" height="22" rx="1"/>
+        <rect x="64"  y="32" width="22" height="22" rx="1"/>
+        <rect x="96"  y="32" width="22" height="22" rx="1"/>
+        <rect x="128" y="32" width="22" height="22" rx="1"/>
+        <rect x="0"   y="64" width="22" height="22" rx="1"/>
+        <rect x="32"  y="64" width="22" height="22" rx="1"/>
+        <rect x="64"  y="64" width="22" height="22" rx="1"/>
+        <rect x="96"  y="64" width="22" height="22" rx="1"/>
+        <rect x="128" y="64" width="22" height="22" rx="1"/>
+        <rect x="0"   y="96" width="22" height="22" rx="1"/>
+        <rect x="32"  y="96" width="22" height="22" rx="1"/>
+        <rect x="64"  y="96" width="22" height="22" rx="1"/>
+        <rect x="96"  y="96" width="22" height="22" rx="1"/>
+        <rect x="128" y="96" width="22" height="22" rx="1"/>
       </g>
-      <!-- Active black squares (foundation/stable) -->
-      <g fill="#0B0B0B" opacity="0.55">
-        <rect x="0"  y="0"  width="22" height="22" rx="1"/>
-        <rect x="60" y="30" width="22" height="22" rx="1"/>
-        <rect x="0"  y="60" width="22" height="22" rx="1"/>
-        <rect x="120" y="60" width="22" height="22" rx="1"/>
-        <rect x="60" y="90" width="22" height="22" rx="1"/>
-        <rect x="180" y="90" width="22" height="22" rx="1"/>
-        <rect x="30" y="120" width="22" height="22" rx="1"/>
-        <rect x="120" y="120" width="22" height="22" rx="1"/>
+      <!-- Active black squares — checker pattern radiating from top-right -->
+      <g fill="#0B0B0B" opacity="0.62">
+        <rect x="0"   y="0"  width="22" height="22" rx="1"/>
+        <rect x="64"  y="0"  width="22" height="22" rx="1"/>
+        <rect x="128" y="0"  width="22" height="22" rx="1"/>
+        <rect x="32"  y="32" width="22" height="22" rx="1"/>
+        <rect x="96"  y="32" width="22" height="22" rx="1"/>
+        <rect x="0"   y="64" width="22" height="22" rx="1"/>
+        <rect x="64"  y="64" width="22" height="22" rx="1"/>
+        <rect x="128" y="64" width="22" height="22" rx="1"/>
+        <rect x="32"  y="96" width="22" height="22" rx="1"/>
       </g>
-      <!-- Blue diamonds (action/innovation) -->
+      <!-- Blue diamonds — precisely at each diagonal joint between active squares -->
       <g fill="#173DED">
-        <polygon points="121,11 132,22 121,33 110,22"/>
-        <polygon points="91,41  102,52 91,63 80,52"/>
-        <polygon points="151,41 162,52 151,63 140,52"/>
-        <polygon points="31,71  42,82  31,93  20,82"/>
-        <polygon points="181,71 192,82 181,93 170,82"/>
-        <polygon points="91,101 102,112 91,123 80,112"/>
-        <polygon points="151,131 162,142 151,153 140,142"/>
+        <polygon points="27,16  38,27  27,38  16,27"/>
+        <polygon points="91,16  102,27 91,38  80,27"/>
+        <polygon points="59,48  70,59  59,70  48,59"/>
+        <polygon points="123,48 134,59 123,70 112,59"/>
+        <polygon points="27,80  38,91  27,102 16,91"/>
       </g>
     </svg>
   </div>
