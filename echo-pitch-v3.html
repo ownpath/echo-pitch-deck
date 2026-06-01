@@ -1,0 +1,1679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Echo — Ownpath × Hero MotoCorp VIDA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+
+/* ============================================================
+   BRAND SYSTEM — Ownpath × Echo
+   ============================================================ */
+:root {
+  --bg:        #FAFAFA;
+  --bg-2:      #F2F3F4;
+  --bg-3:      #E4E5E8;
+  --ink:       #0B0B0B;
+  --ink-mid:   #3A3B45;
+  --ink-dim:   #8A8B96;
+  --blue:      #173DED;
+  --navy:      #000051;
+  --line:      rgba(11,11,11,0.08);
+  --line-s:    rgba(11,11,11,0.14);
+  --font:      'Aeonik','DM Sans','Helvetica Neue',sans-serif;
+  --ease:      cubic-bezier(0.16,1,0.3,1);
+  --pad:       clamp(2.5rem,5vw,5rem);
+
+  --t-hero:    clamp(5rem,13vw,12rem);
+  --t-display: clamp(2rem,4.5vw,4.2rem);
+  --t-h2:      clamp(1.4rem,2.8vw,2.4rem);
+  --t-h3:      clamp(1rem,1.8vw,1.5rem);
+  --t-body:    clamp(0.78rem,1.2vw,1rem);
+  --t-small:   clamp(0.64rem,0.85vw,0.77rem);
+  --t-label:   clamp(0.58rem,0.78vw,0.7rem);
+}
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+
+/* ============================================================
+   VIEWPORT BASE (mandatory)
+   ============================================================ */
+html,body { height:100%; overflow-x:hidden; }
+html { scroll-snap-type:y mandatory; scroll-behavior:smooth; }
+body { background:var(--ink); color:var(--ink); font-family:var(--font); }
+
+.slide {
+  width:100vw; height:100vh; height:100dvh;
+  overflow:hidden;
+  scroll-snap-align:start;
+  display:flex; flex-direction:column;
+  position:relative;
+}
+.slide-content {
+  flex:1; display:flex; flex-direction:column;
+  justify-content:center; max-height:100%;
+  overflow:hidden; padding:var(--pad);
+}
+
+@media (max-height:700px) {
+  :root { --pad:clamp(1.2rem,3vw,2.5rem); --t-h2:clamp(1.1rem,2.5vw,1.9rem); --t-display:clamp(1.5rem,4vw,2.8rem); }
+}
+@media (max-height:600px) {
+  :root { --pad:clamp(0.75rem,2.5vw,1.75rem); --t-body:clamp(0.68rem,1vw,0.85rem); }
+}
+@media (prefers-reduced-motion:reduce) {
+  *,*::before,*::after { animation-duration:0.01ms !important; transition-duration:0.2s !important; }
+}
+
+/* ============================================================
+   CHROME UI — progress bar, counter, keyboard hint
+   ============================================================ */
+#progress-bar {
+  position:fixed; top:0; left:0; height:2px;
+  background:var(--blue); width:0%;
+  transition:width 0.45s var(--ease); z-index:1000;
+}
+#slide-counter {
+  position:fixed; bottom:clamp(1.25rem,2vw,2rem);
+  right:clamp(1.5rem,3vw,3rem);
+  font-size:var(--t-label); letter-spacing:0.12em;
+  color:rgba(255,255,255,0.35); z-index:1000;
+  user-select:none; font-weight:500;
+  transition:color 0.3s;
+}
+#slide-counter.light { color:var(--ink-dim); }
+#kb-hint {
+  position:fixed; bottom:clamp(1.25rem,2vw,2rem);
+  left:50%; transform:translateX(-50%);
+  font-size:var(--t-label); letter-spacing:0.1em;
+  color:rgba(255,255,255,0.25); z-index:1000;
+  user-select:none; opacity:1;
+  transition:opacity 0.6s;
+}
+#kb-hint.hidden { opacity:0; pointer-events:none; }
+
+/* ============================================================
+   TAG COMPONENT (eyebrow label)
+   ============================================================ */
+.tag {
+  display:inline-flex; align-items:center; gap:0.5em;
+  font-size:var(--t-label); font-weight:600;
+  letter-spacing:0.18em; text-transform:uppercase;
+  color:var(--blue); margin-bottom:clamp(0.6rem,1.2vw,1rem);
+}
+.tag::before {
+  content:''; width:6px; height:6px;
+  background:var(--blue); transform:rotate(45deg);
+  flex-shrink:0;
+}
+.tag-dim { color:rgba(255,255,255,0.45); }
+.tag-dim::before { background:rgba(255,255,255,0.45); }
+
+/* ============================================================
+   AUTO-REVEAL — fires when slide gets .active
+   ============================================================ */
+.ar {
+  opacity:0; transform:translateY(16px);
+  transition:opacity 0.55s var(--ease), transform 0.55s var(--ease);
+}
+.slide.active .ar { opacity:1; transform:none; }
+.slide.active .ar:nth-child(1) { transition-delay:0.05s; }
+.slide.active .ar:nth-child(2) { transition-delay:0.15s; }
+.slide.active .ar:nth-child(3) { transition-delay:0.25s; }
+.slide.active .ar:nth-child(4) { transition-delay:0.35s; }
+.ar.ar-scale { transform:scale(0.95); }
+.slide.active .ar.ar-scale { transform:scale(1); }
+
+/* ============================================================
+   STEP REVEAL — one element per keypress
+   ============================================================ */
+[data-step] {
+  opacity:0; transform:translateY(18px);
+  transition:opacity 0.5s var(--ease), transform 0.5s var(--ease);
+}
+[data-step].revealed { opacity:1; transform:none; }
+[data-step].rs { transform:scale(0.95) translateY(8px); }
+[data-step].rs.revealed { transform:none; }
+[data-step].rl { transform:translateX(-20px); }
+[data-step].rl.revealed { transform:none; }
+
+/* ============================================================
+   DARK SLIDE
+   ============================================================ */
+.dk { background:var(--ink); color:#fff; }
+.dk .tag { color:rgba(255,255,255,0.5); }
+.dk .tag::before { background:rgba(255,255,255,0.5); }
+
+/* ============================================================
+   SLIDE 01 — COVER
+   ============================================================ */
+#s1 { background:var(--ink); }
+
+.cover-echo {
+  position:absolute; left:var(--pad); top:50%;
+  transform:translateY(-52%);
+  font-size:var(--t-hero); font-weight:700;
+  line-height:0.88; letter-spacing:-0.03em; color:#fff;
+}
+.cover-echo .e { color:var(--blue); }
+
+.cover-sub {
+  position:absolute; left:var(--pad);
+  bottom:clamp(3.5rem,7vh,6.5rem); max-width:min(600px,70vw);
+}
+.cover-tagline {
+  font-size:var(--t-h3); color:rgba(255,255,255,0.5);
+  font-weight:400; margin-bottom:clamp(0.9rem,1.8vh,1.5rem);
+  letter-spacing:0.01em;
+}
+.cover-meta {
+  display:flex; align-items:center; gap:clamp(0.6rem,1.2vw,1rem);
+  font-size:var(--t-small); letter-spacing:0.12em;
+  text-transform:uppercase; color:rgba(255,255,255,0.28);
+}
+.cover-meta .sep { width:1px; height:0.9em; background:rgba(255,255,255,0.28); }
+
+/* Brand mark — top right, slight bleed */
+.cover-mark {
+  position:absolute;
+  top:clamp(-1rem,-1.5vw,-1rem);
+  right:clamp(-1rem,-1.5vw,-1rem);
+  width:clamp(160px,20vw,240px);
+  pointer-events:none; user-select:none;
+}
+
+/* ============================================================
+   SLIDE 02 — THE PROBLEM
+   ============================================================ */
+#s2 { background:var(--bg); }
+.s2-layout {
+  display:grid; grid-template-columns:1fr 1.15fr;
+  gap:clamp(3rem,6vw,6rem); align-items:center; width:100%;
+}
+.s2-headline {
+  font-size:var(--t-display); font-weight:700;
+  line-height:1.0; letter-spacing:-0.03em; color:var(--ink);
+  margin-top:0.5em;
+}
+.problem-row {
+  display:flex; align-items:flex-start; gap:clamp(0.9rem,1.4vw,1.3rem);
+  padding:clamp(0.85rem,1.3vw,1.2rem) clamp(1rem,1.6vw,1.5rem);
+  background:var(--bg-2); border-radius:10px;
+  border-left:2.5px solid var(--blue);
+}
+.pr-icon {
+  width:clamp(30px,2.8vw,38px); height:clamp(30px,2.8vw,38px);
+  border-radius:7px; background:rgba(23,61,237,0.1);
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.pr-icon svg { width:14px; height:14px; stroke:var(--blue); fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.pr-title { font-size:var(--t-body); font-weight:700; color:var(--ink); margin-bottom:0.15em; }
+.pr-body  { font-size:var(--t-small); color:var(--ink-dim); line-height:1.5; }
+.problem-stack { display:flex; flex-direction:column; gap:clamp(0.6rem,1.1vw,0.9rem); }
+
+/* ============================================================
+   SLIDE 03 — WHAT ECHO IS
+   ============================================================ */
+#s3 { background:var(--bg); }
+.s3-layout {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:clamp(3rem,6vw,5.5rem); align-items:center; width:100%;
+}
+.s3-hl {
+  font-size:var(--t-h2); font-weight:700;
+  letter-spacing:-0.025em; line-height:1.1; color:var(--ink);
+  margin-top:0.4em; margin-bottom:clamp(1.2rem,2.2vw,2rem);
+}
+.s3-hl em { font-style:normal; color:var(--blue); }
+.s3-pills { display:flex; flex-direction:column; gap:clamp(0.5rem,0.85vw,0.8rem); }
+.s3-pill {
+  display:flex; align-items:center; gap:0.8em;
+  font-size:var(--t-body); font-weight:500; color:var(--ink);
+  padding:clamp(0.55rem,0.9vw,0.85rem) clamp(0.8rem,1.2vw,1.1rem);
+  background:var(--bg-2); border-radius:8px;
+}
+.s3-pill::before {
+  content:''; width:7px; height:7px; border-radius:50%;
+  background:var(--blue); flex-shrink:0;
+}
+
+/* Hub diagram */
+.hub-wrap {
+  display:flex; align-items:center; justify-content:center;
+  width:100%; max-height:min(52vh,400px);
+}
+.hub-wrap svg { width:100%; height:auto; overflow:visible; }
+
+/* ============================================================
+   SLIDE 04 — THE JOURNEY
+   ============================================================ */
+#s4 { background:var(--bg); }
+#s4 .slide-content { justify-content:flex-start; }
+.journey-header { margin-bottom:clamp(1.5rem,2.5vw,2.5rem); }
+.journey-headline {
+  font-size:var(--t-h2); font-weight:700;
+  letter-spacing:-0.025em; color:var(--ink); line-height:1.1;
+  margin-top:0.35em;
+}
+.journey-headline em { font-style:normal; color:var(--blue); }
+
+.journey-track {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:clamp(1rem,2vw,1.75rem);
+  flex:1; min-height:0;
+  position:relative;
+}
+
+/* Connecting line */
+.journey-track::before {
+  content:''; position:absolute;
+  top:clamp(18px,2.2vw,26px); left:calc(33.33% / 2);
+  width:calc(100% - 33.33%);
+  height:1.5px; background:var(--line-s);
+  pointer-events:none; z-index:0;
+}
+
+.journey-phase {
+  position:relative; z-index:1;
+  display:flex; flex-direction:column;
+  gap:clamp(0.5rem,0.9vw,0.85rem);
+}
+.jp-num {
+  font-size:clamp(2.5rem,5vw,5rem); font-weight:700;
+  line-height:1; letter-spacing:-0.04em;
+  color:transparent; -webkit-text-stroke:1px var(--line-s);
+  position:absolute; top:clamp(-0.5rem,-1vw,-1rem); right:0;
+  pointer-events:none; user-select:none;
+}
+.jp-dot {
+  width:clamp(16px,2vw,22px); height:clamp(16px,2vw,22px);
+  border-radius:50%; border:2px solid var(--line-s);
+  background:var(--bg); flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  margin-bottom:clamp(0.6rem,1vw,0.9rem);
+}
+.jp-dot::after {
+  content:''; width:7px; height:7px; border-radius:50%;
+  background:var(--ink-dim);
+}
+.journey-phase.active .jp-dot { border-color:var(--blue); }
+.journey-phase.active .jp-dot::after { background:var(--blue); }
+.jp-date { font-size:var(--t-label); letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-dim); }
+.jp-name { font-size:var(--t-h3); font-weight:700; color:var(--ink); line-height:1.15; }
+.jp-sub  { font-size:var(--t-small); color:var(--ink-dim); line-height:1.5; }
+.jp-team {
+  display:flex; align-items:center; gap:0.4em;
+  margin-top:auto; padding-top:clamp(0.5rem,0.9vw,0.85rem);
+  border-top:1px solid var(--line);
+}
+.jp-avatar {
+  width:clamp(20px,2.2vw,26px); height:clamp(20px,2.2vw,26px);
+  border-radius:50%; background:var(--blue);
+  border:2px solid var(--bg); margin-left:-6px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:8px; font-weight:800; color:#fff;
+}
+.jp-avatar:first-child { margin-left:0; }
+.jp-avatar.dim { background:var(--bg-3); }
+.jp-team-label { font-size:var(--t-small); color:var(--ink-dim); margin-left:0.3em; }
+
+/* ============================================================
+   SLIDE 05 — WHAT WE BUILT (features + mockups)
+   ============================================================ */
+#s5 { background:var(--bg); }
+#s5 .slide-content { justify-content:flex-start; }
+.built-header { flex-shrink:0; margin-bottom:clamp(0.9rem,1.6vw,1.5rem); }
+.built-headline {
+  font-size:var(--t-h2); font-weight:700;
+  letter-spacing:-0.025em; color:var(--ink);
+  margin-top:0.3em;
+}
+.built-headline em { font-style:normal; color:var(--blue); }
+
+.feature-grid {
+  display:grid; grid-template-columns:1fr 1fr;
+  grid-template-rows:repeat(3,1fr);
+  gap:clamp(0.5rem,0.85vw,0.8rem);
+  flex:1; min-height:0;
+}
+
+.feature-card {
+  border-radius:10px; border:1.5px solid var(--line-s);
+  overflow:hidden; background:#fff;
+  display:flex; flex-direction:column;
+  box-shadow:0 2px 12px rgba(0,0,0,0.05);
+}
+
+/* Browser chrome */
+.fc-chrome {
+  display:flex; align-items:center; gap:5px;
+  padding:6px 10px; background:var(--bg-2);
+  border-bottom:1px solid var(--line); flex-shrink:0;
+}
+.fc-dot { width:7px; height:7px; border-radius:50%; }
+.fc-dot:nth-child(1) { background:#FF5F57; }
+.fc-dot:nth-child(2) { background:#FEBC2E; }
+.fc-dot:nth-child(3) { background:#28C840; }
+.fc-url {
+  margin:0 auto; background:#fff; border-radius:3px;
+  padding:1.5px 8px; font-size:9px; color:var(--ink-dim);
+  width:45%; text-align:center; letter-spacing:0.02em;
+}
+
+/* Mockup body layout */
+.fc-body {
+  display:flex; flex:1; min-height:0; overflow:hidden;
+}
+.fc-sidebar {
+  width:22%; background:var(--ink);
+  display:flex; flex-direction:column;
+  padding:8px 5px; gap:5px; flex-shrink:0;
+}
+.fc-nav { height:5px; border-radius:2px; background:rgba(255,255,255,0.12); width:75%; margin:0 auto; }
+.fc-nav.on { background:var(--blue); width:90%; }
+.fc-nav.dim { background:rgba(255,255,255,0.06); width:60%; }
+.fc-main { flex:1; overflow:hidden; position:relative; padding:8px; background:var(--bg); }
+
+/* Feature card label */
+.fc-label {
+  padding:5px 10px 7px;
+  font-size:var(--t-label); font-weight:700; color:var(--ink);
+  letter-spacing:0.05em; background:#fff;
+  border-top:1px solid var(--line); flex-shrink:0;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.fc-tag {
+  font-size:var(--t-label); letter-spacing:0.1em;
+  text-transform:uppercase; color:var(--blue); font-weight:500;
+}
+
+/* Feature-specific mockup fills */
+/* Dashboard */
+.mk-dashboard .fc-main { display:flex; flex-direction:column; gap:5px; }
+.mk-bar-row { display:flex; align-items:flex-end; gap:3px; height:clamp(30px,4vh,45px); }
+.mk-bar { border-radius:2px 2px 0 0; background:rgba(23,61,237,0.15); flex:1; }
+.mk-bar.a { height:80%; background:var(--blue); }
+.mk-bar.b { height:55%; }
+.mk-bar.c { height:90%; background:var(--blue); opacity:0.7; }
+.mk-bar.d { height:45%; }
+.mk-bar.e { height:70%; background:var(--blue); opacity:0.5; }
+.mk-metrics { display:flex; gap:4px; }
+.mk-metric { flex:1; background:var(--bg-2); border-radius:4px; padding:4px 5px; }
+.mk-metric-v { height:5px; border-radius:2px; background:var(--blue); margin-bottom:3px; }
+.mk-metric-l { height:4px; border-radius:2px; background:var(--line-s); width:70%; }
+
+/* Approval workflow */
+.mk-approval .fc-main { display:flex; flex-direction:column; justify-content:center; gap:4px; padding:6px; }
+.mk-step-row { display:flex; align-items:center; gap:4px; }
+.mk-step-dot { width:10px; height:10px; border-radius:50%; background:var(--blue); flex-shrink:0; }
+.mk-step-dot.done { background:rgba(23,61,237,0.3); }
+.mk-step-dot.pending { background:var(--bg-3); border:1.5px solid var(--line-s); }
+.mk-step-line { flex:1; height:1.5px; background:var(--line-s); }
+.mk-step-label { height:5px; border-radius:2px; background:var(--ink-dim); width:clamp(25px,3vw,35px); opacity:0.3; }
+.mk-step-label.active { background:var(--blue); opacity:0.7; }
+
+/* Multi-brand */
+.mk-brands .fc-main { display:flex; flex-direction:column; gap:5px; padding:6px; }
+.mk-brand-row { display:flex; align-items:center; gap:5px; padding:4px 6px; border-radius:4px; background:#fff; border:1px solid var(--line); }
+.mk-brand-swatch { width:10px; height:10px; border-radius:2px; flex-shrink:0; }
+.mk-brand-name { height:4px; border-radius:2px; background:var(--ink); opacity:0.35; width:55%; }
+.mk-brand-badge { height:4px; border-radius:2px; background:var(--bg-3); width:20%; margin-left:auto; }
+
+/* Asset viewer */
+.mk-assets .fc-main { display:grid; grid-template-columns:repeat(3,1fr); gap:4px; padding:6px; align-content:start; }
+.mk-asset { aspect-ratio:4/3; border-radius:4px; background:var(--bg-2); border:1px solid var(--line); display:flex; align-items:center; justify-content:center; overflow:hidden; }
+.mk-asset svg { width:14px; height:14px; stroke:var(--ink-dim); fill:none; stroke-width:1.5; }
+.mk-asset.img { background:linear-gradient(135deg,rgba(23,61,237,0.12),rgba(23,61,237,0.04)); }
+
+/* AI Integration */
+.mk-ai .fc-main { display:flex; flex-direction:column; gap:5px; justify-content:flex-end; padding:8px; }
+.mk-prompt { background:rgba(23,61,237,0.08); border-radius:6px 6px 2px 6px; padding:5px 8px; }
+.mk-prompt-line { height:4px; border-radius:2px; background:var(--blue); opacity:0.5; margin-bottom:3px; }
+.mk-prompt-line:last-child { width:60%; margin-bottom:0; }
+.mk-response { background:var(--bg-2); border-radius:2px 6px 6px 6px; padding:5px 8px; }
+.mk-response-line { height:3px; border-radius:2px; background:var(--ink-dim); opacity:0.3; margin-bottom:3px; }
+.mk-response-line:last-child { width:40%; margin-bottom:0; }
+
+/* Brand scoping / editor */
+.mk-scoping .fc-main { display:flex; flex-direction:column; gap:4px; padding:6px; }
+.mk-scope-row { display:flex; align-items:center; gap:5px; }
+.mk-scope-indent { width:10px; flex-shrink:0; }
+.mk-scope-icon { width:8px; height:8px; border-radius:2px; background:var(--blue); opacity:0.6; flex-shrink:0; }
+.mk-scope-bar { flex:1; height:4px; border-radius:2px; background:var(--ink); opacity:0.2; }
+.mk-scope-lock { width:8px; height:8px; flex-shrink:0; opacity:0.4; }
+.mk-scope-lock svg { width:8px; height:8px; stroke:var(--blue); fill:none; stroke-width:2; }
+
+/* ============================================================
+   SLIDE 06 — TECH STACK
+   ============================================================ */
+#s6 { background:var(--bg); }
+.tech-layout {
+  display:grid; grid-template-columns:0.8fr 1.2fr;
+  gap:clamp(3rem,6vw,5.5rem); align-items:start; width:100%;
+  flex:1; min-height:0;
+}
+.tech-headline {
+  font-size:var(--t-display); font-weight:700;
+  line-height:0.95; letter-spacing:-0.03em; color:var(--ink);
+  margin:clamp(0.4rem,0.8vw,0.7rem) 0 clamp(1.5rem,3vw,2.75rem);
+}
+.tech-headline em { font-style:normal; color:var(--blue); }
+.tech-attrs { display:flex; flex-direction:column; gap:clamp(0.85rem,1.6vw,1.4rem); }
+.tech-attr { padding-left:clamp(0.85rem,1.5vw,1.3rem); border-left:2px solid var(--blue); }
+.tech-attr-label { font-size:var(--t-h3); font-weight:600; color:var(--ink); margin-bottom:0.2em; }
+.tech-attr-desc  { font-size:var(--t-small); color:var(--ink-dim); line-height:1.55; max-width:28ch; }
+
+.tech-grid {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:clamp(0.5rem,0.85vw,0.8rem);
+  flex:1; min-height:0; align-content:stretch;
+}
+.tech-card {
+  display:flex; flex-direction:column;
+  padding:clamp(0.85rem,1.3vw,1.15rem);
+  background:#fff; border-radius:10px;
+  border:1px solid var(--line);
+  border-top:2.5px solid var(--tc,var(--blue));
+  position:relative; min-height:0;
+}
+.tech-icon {
+  width:clamp(26px,2.6vw,34px); height:clamp(26px,2.6vw,34px);
+  border-radius:7px; background:var(--tc-bg,rgba(23,61,237,0.08));
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; margin-bottom:clamp(0.5rem,0.8vw,0.75rem);
+}
+.tech-icon svg { width:13px; height:13px; stroke:var(--tc,var(--blue)); fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+.tech-name { font-size:clamp(0.78rem,1.2vw,1rem); font-weight:600; color:var(--ink); line-height:1.2; padding-right:3em; margin-bottom:0.2em; }
+.tech-desc { font-size:var(--t-small); color:var(--ink-dim); line-height:1.45; }
+.tech-cat {
+  position:absolute; top:clamp(0.85rem,1.3vw,1.15rem); right:clamp(0.85rem,1.3vw,1.15rem);
+  font-size:var(--t-label); letter-spacing:0.1em; text-transform:uppercase;
+  color:var(--tc,var(--ink-dim)); font-weight:600;
+}
+.tc-next   { --tc:#000051; --tc-bg:rgba(0,0,81,0.06); }
+.tc-pg     { --tc:#336791; --tc-bg:rgba(51,103,145,0.08); }
+.tc-tiptap { --tc:#6366F1; --tc-bg:rgba(99,102,241,0.08); }
+.tc-github { --tc:#4A535C; --tc-bg:rgba(74,83,92,0.07); }
+.tc-openai { --tc:#10A37F; --tc-bg:rgba(16,163,127,0.08); }
+.tc-azure  { --tc:#0078D4; --tc-bg:rgba(0,120,212,0.08); }
+
+/* ============================================================
+   SLIDE 07 — WORKFLOW IMPACT
+   ============================================================ */
+#s7 { background:var(--bg); }
+#s7 .slide-content { justify-content:flex-start; }
+.wf-header { flex-shrink:0; margin-bottom:clamp(1rem,1.8vw,1.7rem); }
+.wf-headline { font-size:var(--t-h2); font-weight:700; letter-spacing:-0.025em; color:var(--ink); margin-top:0.3em; }
+
+.wf-arena {
+  display:grid; grid-template-columns:1fr auto 1fr;
+  gap:clamp(1.5rem,3vw,3rem);
+  flex:1; min-height:0;
+}
+.wf-col {
+  display:flex; flex-direction:column;
+  padding:clamp(1rem,1.6vw,1.5rem);
+  border-radius:12px; gap:clamp(0.45rem,0.8vw,0.75rem);
+}
+.wf-trad { background:var(--bg-2); }
+.wf-echo { background:#fff; border:1px solid rgba(23,61,237,0.15); }
+.wf-col-label {
+  font-size:var(--t-label); font-weight:600; letter-spacing:0.14em;
+  text-transform:uppercase; color:var(--ink-dim); flex-shrink:0;
+}
+.wf-col-label.echo-lbl { color:var(--blue); }
+
+.wf-flow { display:flex; flex-direction:column; align-items:stretch; flex:1; min-height:0; }
+.wf-node {
+  border:1.5px solid var(--line-s); border-radius:8px;
+  padding:clamp(0.5rem,0.85vw,0.8rem) clamp(0.7rem,1.1vw,1rem);
+  background:#fff; flex-shrink:0;
+}
+.wf-node.actor { border-color:var(--ink); background:var(--ink); }
+.wf-node.output { border-color:var(--blue); background:rgba(23,61,237,0.07); }
+.wf-node.skip { opacity:0.2; border-style:dashed; position:relative; }
+.wf-node.skip::after { content:''; position:absolute; inset:0; margin:auto; height:1.5px; width:80%; background:var(--ink-dim); }
+.wf-node-title { font-size:var(--t-body); font-weight:600; color:var(--ink); }
+.wf-node.actor .wf-node-title { color:#fff; }
+.wf-node.output .wf-node-title { color:var(--blue); }
+.wf-node-row { display:flex; align-items:center; justify-content:space-between; gap:0.6em; }
+.wf-node-sub { font-size:var(--t-small); color:var(--ink-dim); margin-top:0.15em; }
+.wf-bubbles { display:flex; }
+.wf-bub {
+  width:clamp(18px,2vw,24px); height:clamp(18px,2vw,24px);
+  border-radius:50%; border:2px solid #fff; margin-left:-5px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:7px; font-weight:800; color:#fff; flex-shrink:0;
+}
+.wf-bub:first-child { margin-left:0; }
+.bub-d { background:var(--blue); }
+.bub-v { background:var(--navy); }
+.bub-d1 { background:rgba(23,61,237,0.55); }
+
+.wf-connector { width:1.5px; height:clamp(16px,2.2vh,28px); background:var(--line-s); margin:0 auto; position:relative; flex-shrink:0; }
+.wf-connector.echo-line { background:var(--blue); height:clamp(24px,3.5vh,40px); }
+.wf-connector.ghost-line { background:var(--line); }
+.echo-chip {
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  background:var(--blue); color:#fff;
+  font-size:clamp(0.5rem,0.65vw,0.6rem); font-weight:700;
+  letter-spacing:0.12em; text-transform:uppercase;
+  border-radius:100px; padding:0.2em 0.65em; white-space:nowrap;
+}
+.wf-sep { width:1px; background:var(--line-s); align-self:stretch; }
+.wf-tl { margin-top:auto; padding-top:clamp(0.5rem,0.8vw,0.75rem); flex-shrink:0; }
+.tl-badge {
+  display:inline-flex; align-items:center; gap:0.4em;
+  font-size:var(--t-label); font-weight:600; letter-spacing:0.1em;
+  text-transform:uppercase; border-radius:100px; padding:0.28em 0.85em;
+}
+.tl-slow { background:rgba(11,11,11,0.08); color:var(--ink-mid); }
+.tl-fast { background:rgba(23,61,237,0.1); color:var(--blue); }
+
+.wf-cases {
+  display:flex; gap:clamp(1rem,2vw,2rem); align-items:center;
+  padding-top:clamp(0.6rem,1vw,0.9rem); border-top:1px solid var(--line);
+  flex-shrink:0;
+}
+.wf-case { display:flex; align-items:baseline; gap:0.55em; flex:1; }
+.wf-case-brand { font-size:var(--t-body); font-weight:700; color:var(--ink); flex-shrink:0; }
+.wf-case-brand.echo { color:var(--blue); }
+.wf-case-detail { font-size:var(--t-small); color:var(--ink-dim); }
+.wf-case-sep { width:1px; height:clamp(1.2rem,2vh,2rem); background:var(--line-s); flex-shrink:0; }
+.wf-note { font-size:var(--t-small); color:var(--ink-dim); font-style:italic; flex-shrink:0; }
+
+/* ============================================================
+   SLIDE 08 — RESULTS (dark)
+   ============================================================ */
+#s8 { background:var(--ink); }
+.results-headline {
+  font-size:var(--t-h2); font-weight:700;
+  letter-spacing:-0.025em; color:#fff; line-height:1.1;
+  margin-top:0.4em;
+  margin-bottom:clamp(1.5rem,3vw,3rem);
+}
+.kpi-grid {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:clamp(0.75rem,1.4vw,1.2rem);
+}
+.kpi-card {
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:12px;
+  padding:clamp(1.1rem,2vw,1.8rem);
+  border-top:2px solid var(--blue);
+}
+.kpi-num {
+  font-size:clamp(2.2rem,5.5vw,5rem); font-weight:700;
+  line-height:1; letter-spacing:-0.03em;
+  color:var(--blue); margin-bottom:0.2em;
+  font-feature-settings:'tnum';
+}
+.kpi-label { font-size:var(--t-h3); font-weight:600; color:#fff; margin-bottom:0.35em; }
+.kpi-desc  { font-size:var(--t-small); color:rgba(255,255,255,0.45); line-height:1.5; }
+.results-note {
+  font-size:var(--t-small); color:rgba(255,255,255,0.25);
+  margin-top:clamp(0.75rem,1.4vw,1.25rem); font-style:italic;
+}
+
+/* ============================================================
+   SLIDE 09 — ECOSYSTEM & ROADMAP
+   ============================================================ */
+#s9 { background:var(--bg); }
+#s9 .slide-content { justify-content:flex-start; }
+.rm-headline { font-size:var(--t-h2); font-weight:700; letter-spacing:-0.025em; color:var(--ink); margin-top:0.35em; margin-bottom:clamp(1rem,1.8vw,1.6rem); }
+
+.roadmap-grid {
+  display:grid; grid-template-columns:1.1fr 1.1fr 0.8fr;
+  gap:clamp(0.5rem,1vw,0.85rem);
+  flex:1; min-height:0;
+}
+.rm-col {
+  background:var(--bg-2); border:1px solid var(--line-s);
+  border-radius:8px; padding:clamp(0.9rem,1.5vw,1.4rem);
+  display:flex; flex-direction:column; gap:clamp(0.4rem,0.7vw,0.65rem);
+}
+.rm-col.live { border-color:rgba(23,61,237,0.3); background:rgba(23,61,237,0.04); }
+.rm-col.pitch { border-color:rgba(23,61,237,0.2); background:rgba(23,61,237,0.025); }
+
+.rm-badge {
+  display:inline-block; font-size:var(--t-label); letter-spacing:0.1em;
+  text-transform:uppercase; font-weight:500;
+  padding:0.2em 0.6em; border-radius:3px; width:fit-content;
+}
+.rm-badge.live  { color:var(--blue); background:rgba(23,61,237,0.12); }
+.rm-badge.pitch { color:var(--blue); background:rgba(23,61,237,0.1); }
+.rm-badge.future{ color:var(--ink-dim); background:var(--bg-3); }
+
+.rm-product {
+  font-size:clamp(0.88rem,1.3vw,1.1rem); font-weight:700; color:var(--ink);
+  letter-spacing:-0.01em; padding-bottom:clamp(0.4rem,0.6vw,0.55rem);
+  border-bottom:1px solid var(--line-s);
+}
+.rm-col.live  .rm-product { color:var(--blue); }
+.rm-col.pitch .rm-product { color:var(--blue); }
+.rm-phase { font-size:var(--t-h3); font-weight:700; color:var(--ink); line-height:1.2; }
+.rm-date  { font-size:var(--t-label); color:var(--ink-dim); letter-spacing:0.08em; text-transform:uppercase; }
+.rm-items { list-style:none; display:flex; flex-direction:column; gap:clamp(0.3rem,0.5vw,0.45rem); }
+.rm-items li {
+  font-size:var(--t-small); color:var(--ink-dim);
+  padding-left:1em; position:relative; line-height:1.4;
+}
+.rm-items li::before { content:'▸'; position:absolute; left:0; color:var(--ink-dim); font-size:0.7em; top:0.15em; }
+.rm-col.live  .rm-items li::before { color:var(--blue); }
+.rm-col.pitch .rm-items li::before { color:var(--blue); }
+.rm-more { font-size:var(--t-small); color:var(--ink-dim); font-style:italic; margin-top:0.2em; }
+
+/* ============================================================
+   SLIDE 10 — WHY OWNPATH (dark)
+   ============================================================ */
+#s10 { background:var(--ink); }
+#s10 .slide-content { justify-content:flex-start; }
+.why-header { margin-bottom:clamp(1.5rem,3vw,3rem); }
+.why-sub {
+  font-size:var(--t-h3); color:rgba(255,255,255,0.45);
+  font-weight:500; margin-top:0.4em; margin-bottom:0.1em;
+  letter-spacing:-0.01em;
+}
+.why-hero {
+  font-size:var(--t-display); font-weight:700;
+  letter-spacing:-0.03em; line-height:1.0; color:#fff;
+}
+.why-hero em { font-style:normal; color:var(--blue); }
+
+/* Ghost × background */
+.why-ghost {
+  position:absolute; right:clamp(-4rem,-6vw,-6rem);
+  top:50%; transform:translateY(-50%);
+  font-size:clamp(28rem,60vw,65rem); font-weight:700;
+  line-height:1; color:transparent;
+  -webkit-text-stroke:1px rgba(23,61,237,0.06);
+  pointer-events:none; user-select:none; z-index:0;
+}
+#s10 .slide-content { position:relative; z-index:1; }
+
+.why-cards {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:clamp(0.7rem,1.3vw,1.2rem);
+}
+.why-card {
+  border-top:2px solid rgba(255,255,255,0.12);
+  padding:clamp(0.9rem,1.5vw,1.4rem) 0;
+  padding-right:clamp(0.5rem,0.9vw,0.85rem);
+}
+.why-card-title { font-size:var(--t-h3); font-weight:700; color:#fff; margin-bottom:0.4em; }
+.why-card-body  { font-size:var(--t-small); color:rgba(255,255,255,0.45); line-height:1.6; }
+.why-card-stat  {
+  font-size:clamp(1.4rem,2.8vw,2.5rem); font-weight:700;
+  color:var(--blue); letter-spacing:-0.02em; margin-bottom:0.15em;
+}
+
+/* ============================================================
+   SLIDE 11 — CTA / NEXT STEPS
+   ============================================================ */
+#s11 { background:var(--bg); }
+.cta-wrap {
+  display:flex; flex-direction:column;
+  align-items:flex-start; max-width:min(700px,80vw);
+}
+.cta-headline {
+  font-size:var(--t-display); font-weight:700;
+  letter-spacing:-0.03em; line-height:1.05; color:var(--ink);
+  margin-top:0.4em; margin-bottom:clamp(1.5rem,3vw,3rem);
+}
+.cta-headline em { font-style:normal; color:var(--blue); }
+.cta-steps { display:flex; flex-direction:column; gap:clamp(0.6rem,1.1vw,1rem); margin-bottom:clamp(2rem,4vw,4rem); }
+.cta-step { display:flex; align-items:center; gap:0.8em; font-size:var(--t-body); color:var(--ink-mid); }
+.cta-step-num {
+  width:clamp(22px,2.2vw,28px); height:clamp(22px,2.2vw,28px); border-radius:50%;
+  background:var(--blue); color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  font-size:var(--t-label); font-weight:700; flex-shrink:0;
+}
+.cta-meta {
+  display:flex; align-items:center; gap:clamp(0.75rem,1.5vw,1.25rem);
+  font-size:var(--t-small); letter-spacing:0.12em;
+  text-transform:uppercase; color:var(--ink-dim);
+}
+.cta-meta .sep { width:1px; height:0.9em; background:var(--ink-dim); opacity:0.4; }
+
+/* CTA brand mark */
+.cta-mark {
+  position:absolute; bottom:var(--pad); right:var(--pad);
+  width:clamp(80px,10vw,130px); opacity:0.5;
+  pointer-events:none;
+}
+
+</style>
+</head>
+<body>
+
+<!-- Progress bar (top) -->
+<div id="progress-bar"></div>
+
+<!-- Slide counter (bottom-right) -->
+<div id="slide-counter">01 / 11</div>
+
+<!-- Keyboard hint -->
+<div id="kb-hint">SPACE to advance &nbsp;→</div>
+
+<!-- ===========================================================
+     SLIDE 01 — COVER
+     =========================================================== -->
+<section class="slide dk" id="s1" data-steps="3">
+
+  <!-- Top-right brand mark -->
+  <div class="cover-mark" aria-hidden="true">
+    <svg viewBox="0 0 150 118" xmlns="http://www.w3.org/2000/svg">
+      <g fill="#fff" opacity="0.05">
+        <rect x="0"   y="0"  width="22" height="22" rx="1"/>
+        <rect x="32"  y="0"  width="22" height="22" rx="1"/>
+        <rect x="64"  y="0"  width="22" height="22" rx="1"/>
+        <rect x="96"  y="0"  width="22" height="22" rx="1"/>
+        <rect x="128" y="0"  width="22" height="22" rx="1"/>
+        <rect x="0"   y="32" width="22" height="22" rx="1"/>
+        <rect x="32"  y="32" width="22" height="22" rx="1"/>
+        <rect x="64"  y="32" width="22" height="22" rx="1"/>
+        <rect x="96"  y="32" width="22" height="22" rx="1"/>
+        <rect x="128" y="32" width="22" height="22" rx="1"/>
+        <rect x="0"   y="64" width="22" height="22" rx="1"/>
+        <rect x="32"  y="64" width="22" height="22" rx="1"/>
+        <rect x="64"  y="64" width="22" height="22" rx="1"/>
+        <rect x="96"  y="64" width="22" height="22" rx="1"/>
+        <rect x="128" y="64" width="22" height="22" rx="1"/>
+        <rect x="0"   y="96" width="22" height="22" rx="1"/>
+        <rect x="32"  y="96" width="22" height="22" rx="1"/>
+        <rect x="64"  y="96" width="22" height="22" rx="1"/>
+        <rect x="96"  y="96" width="22" height="22" rx="1"/>
+        <rect x="128" y="96" width="22" height="22" rx="1"/>
+      </g>
+      <g fill="#fff" opacity="0.55">
+        <rect x="0"   y="0"  width="22" height="22" rx="1"/>
+        <rect x="64"  y="0"  width="22" height="22" rx="1"/>
+        <rect x="128" y="0"  width="22" height="22" rx="1"/>
+        <rect x="32"  y="32" width="22" height="22" rx="1"/>
+        <rect x="96"  y="32" width="22" height="22" rx="1"/>
+        <rect x="0"   y="64" width="22" height="22" rx="1"/>
+        <rect x="64"  y="64" width="22" height="22" rx="1"/>
+        <rect x="128" y="64" width="22" height="22" rx="1"/>
+        <rect x="32"  y="96" width="22" height="22" rx="1"/>
+      </g>
+      <g fill="#173DED">
+        <polygon points="27,16  38,27  27,38  16,27"/>
+        <polygon points="91,16  102,27 91,38  80,27"/>
+        <polygon points="59,48  70,59  59,70  48,59"/>
+        <polygon points="123,48 134,59 123,70 112,59"/>
+        <polygon points="27,80  38,91  27,102 16,91"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- Hero word mark -->
+  <div class="cover-echo ar" aria-label="ECHO">
+    <span class="e">E</span>CHO
+  </div>
+
+  <!-- Bottom info block -->
+  <div class="cover-sub">
+    <p class="cover-tagline ar">Design System Intelligence Platform</p>
+    <div class="cover-meta ar">
+      <span>Ownpath</span>
+      <span class="sep"></span>
+      <span>Hero MotoCorp VIDA</span>
+      <span class="sep"></span>
+      <span>June 2026</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===========================================================
+     SLIDE 02 — THE PROBLEM
+     =========================================================== -->
+<section class="slide" id="s2" style="background:var(--bg);" data-steps="3">
+  <div class="slide-content">
+
+    <div class="s2-layout">
+      <div class="s2-left">
+        <span class="tag ar">The Challenge</span>
+        <h2 class="s2-headline ar">Brand at scale<br>has no centre.</h2>
+      </div>
+      <div class="problem-stack s2-right">
+        <div class="problem-row" data-step="1">
+          <div class="pr-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><line x1="2" y1="12" x2="9" y2="12"/><line x1="15" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="9"/><line x1="12" y1="15" x2="12" y2="22"/></svg>
+          </div>
+          <div>
+            <div class="pr-title">No single source of truth</div>
+            <div class="pr-body">Brand assets, guidelines, and decisions scatter across teams — no governing centre, no shared reference point.</div>
+          </div>
+        </div>
+        <div class="problem-row" data-step="2">
+          <div class="pr-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="4" stroke-dasharray="3,2"/></svg>
+          </div>
+          <div>
+            <div class="pr-title">Slow, broken workflows</div>
+            <div class="pr-body">Every change requires manual approval chains. Design bottlenecks block engineering. Campaigns take weeks when they should take days.</div>
+          </div>
+        </div>
+        <div class="problem-row" data-step="3">
+          <div class="pr-icon">
+            <svg viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
+          </div>
+          <div>
+            <div class="pr-title">Teams operating without visibility</div>
+            <div class="pr-body">No audit trail, no compliance checks, no analytics. Brand decisions happen in the dark — at Hero's scale, that's a systemic risk.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===========================================================
+     SLIDE 03 — WHAT ECHO IS
+     =========================================================== -->
+<section class="slide" id="s3" style="background:var(--bg);" data-steps="4">
+  <div class="slide-content">
+
+    <div class="s3-layout">
+      <div>
+        <span class="tag ar">The Solution</span>
+        <h2 class="s3-hl ar">Echo is your brand's<br><em>single source of truth.</em></h2>
+        <div class="s3-pills">
+          <div class="s3-pill" data-step="2">Govern brand decisions with an approval layer</div>
+          <div class="s3-pill" data-step="3">Manage multi-brand systems in one platform</div>
+          <div class="s3-pill" data-step="4">Generate brand-compliant content with AI</div>
+        </div>
+      </div>
+
+      <!-- Hub-and-spoke diagram -->
+      <div class="hub-wrap ar">
+        <svg viewBox="0 0 300 230" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <!-- Connection lines -->
+          <line x1="150" y1="78"  x2="150" y2="28"  stroke="#E4E5E8" stroke-width="1.5"/>
+          <line x1="150" y1="152" x2="150" y2="202" stroke="#E4E5E8" stroke-width="1.5"/>
+          <line x1="112" y1="100" x2="55"  y2="75"  stroke="#E4E5E8" stroke-width="1.5"/>
+          <line x1="188" y1="100" x2="245" y2="75"  stroke="#E4E5E8" stroke-width="1.5"/>
+          <line x1="188" y1="130" x2="245" y2="155" stroke="#E4E5E8" stroke-width="1.5"/>
+          <!-- Center node -->
+          <circle cx="150" cy="115" r="42" fill="#173DED"/>
+          <text x="150" y="110" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="13" font-weight="700" fill="#fff">ECHO</text>
+          <text x="150" y="126" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="8" fill="rgba(255,255,255,0.6)">Brand Intelligence</text>
+          <!-- Outer nodes -->
+          <circle cx="150" cy="18"  r="18" fill="#F2F3F4" stroke="#E4E5E8" stroke-width="1.5"/>
+          <text x="150" y="22"  text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="7.5" fill="#3A3B45" font-weight="600">Brand Teams</text>
+          <circle cx="150" cy="212" r="18" fill="#F2F3F4" stroke="#E4E5E8" stroke-width="1.5"/>
+          <text x="150" y="216" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="7.5" fill="#3A3B45" font-weight="600">Developers</text>
+          <circle cx="35"  cy="70"  r="22" fill="#F2F3F4" stroke="#E4E5E8" stroke-width="1.5"/>
+          <text x="35"  y="68"  text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="7.5" fill="#3A3B45" font-weight="600">Designers</text>
+          <text x="35"  y="78"  text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="7.5" fill="#3A3B45" font-weight="600">&amp; Editors</text>
+          <circle cx="265" cy="70"  r="22" fill="#F2F3F4" stroke="#E4E5E8" stroke-width="1.5"/>
+          <text x="265" y="68"  text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="7.5" fill="#3A3B45" font-weight="600">AI Studio</text>
+          <text x="265" y="78"  text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="7.5" fill="#3A3B45" font-weight="600">(Echo)</text>
+          <circle cx="265" cy="160" r="22" fill="#F2F3F4" stroke="#E4E5E8" stroke-width="1.5"/>
+          <text x="265" y="158" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="7.5" fill="#3A3B45" font-weight="600">Dealers &amp;</text>
+          <text x="265" y="168" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="7.5" fill="#3A3B45" font-weight="600">Vendors</text>
+          <!-- Accent diamonds on lines -->
+          <polygon points="150,40 154,44 150,48 146,44" fill="#173DED"/>
+          <polygon points="84,86 88,90 84,94 80,90"     fill="#173DED"/>
+          <polygon points="216,86 220,90 216,94 212,90" fill="#173DED"/>
+        </svg>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===========================================================
+     SLIDE 04 — THE JOURNEY
+     =========================================================== -->
+<section class="slide" id="s4" style="background:var(--bg);" data-steps="3">
+  <div class="slide-content">
+
+    <div class="journey-header">
+      <span class="tag ar">The Journey</span>
+      <h2 class="journey-headline ar">Prototype to production.<br><em>2–3 people. 12 months.</em></h2>
+    </div>
+
+    <div class="journey-track">
+
+      <div class="journey-phase" data-step="1" style="transition-delay:0s">
+        <div class="jp-dot"></div>
+        <div class="jp-date">Nov – Dec 2024</div>
+        <div class="jp-name">The Prototype</div>
+        <div class="jp-sub">Started with a knowledge portal concept. AI-assisted development from day one. Working demo in 4 weeks — enough to get stakeholder buy-in.</div>
+        <div class="jp-team">
+          <span class="jp-avatar">A</span>
+          <span class="jp-avatar">B</span>
+          <span class="jp-team-label">2 people</span>
+        </div>
+      </div>
+
+      <div class="journey-phase" data-step="2" style="transition-delay:0s">
+        <div class="jp-dot"></div>
+        <div class="jp-date">Jan – Apr 2025</div>
+        <div class="jp-name">The Pivot</div>
+        <div class="jp-sub">Knowledge portal evolved into a full brand management platform. Complete React rewrite, multi-brand architecture, and AI integration — while still shipping.</div>
+        <div class="jp-team">
+          <span class="jp-avatar">A</span>
+          <span class="jp-avatar">B</span>
+          <span class="jp-avatar">C</span>
+          <span class="jp-team-label">3 people</span>
+        </div>
+      </div>
+
+      <div class="journey-phase" data-step="3" style="transition-delay:0s">
+        <div class="jp-dot"></div>
+        <div class="jp-date">May 2025 – Now</div>
+        <div class="jp-name">Production</div>
+        <div class="jp-sub">Enterprise-grade. 7 production features, multi-brand system, governed approval workflows, full auth, and an expanding AI ecosystem. Live with Hero VIDA.</div>
+        <div class="jp-team">
+          <span class="jp-avatar">A</span>
+          <span class="jp-avatar">B</span>
+          <span class="jp-avatar">C</span>
+          <span class="jp-team-label">3 people · still moving</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- ===========================================================
+     SLIDE 05 — WHAT WE BUILT
+     =========================================================== -->
+<section class="slide" id="s5" style="background:var(--bg);" data-steps="3">
+  <div class="slide-content">
+
+    <div class="built-header">
+      <span class="tag ar">The Product</span>
+      <h2 class="built-headline ar"><em>7</em> production-grade features.</h2>
+    </div>
+
+    <div class="feature-grid">
+
+      <!-- Row 1 -->
+      <div class="feature-card rs" data-step="1">
+        <div class="fc-chrome">
+          <span class="fc-dot"></span><span class="fc-dot"></span><span class="fc-dot"></span>
+          <div class="fc-url">echo.herovidalive.in</div>
+        </div>
+        <div class="fc-body mk-dashboard">
+          <div class="fc-sidebar">
+            <div class="fc-nav on"></div>
+            <div class="fc-nav"></div><div class="fc-nav"></div><div class="fc-nav dim"></div>
+          </div>
+          <div class="fc-main">
+            <div class="mk-metrics" style="margin-bottom:5px">
+              <div class="mk-metric"><div class="mk-metric-v" style="width:70%"></div><div class="mk-metric-l"></div></div>
+              <div class="mk-metric"><div class="mk-metric-v" style="background:rgba(23,61,237,0.4);width:90%"></div><div class="mk-metric-l"></div></div>
+              <div class="mk-metric"><div class="mk-metric-v" style="width:55%"></div><div class="mk-metric-l"></div></div>
+            </div>
+            <div class="mk-bar-row">
+              <div class="mk-bar a"></div><div class="mk-bar b"></div>
+              <div class="mk-bar c"></div><div class="mk-bar d"></div>
+              <div class="mk-bar e"></div><div class="mk-bar b"></div><div class="mk-bar a" style="opacity:0.6"></div>
+            </div>
+          </div>
+        </div>
+        <div class="fc-label">Dashboard <span class="fc-tag">Analytics</span></div>
+      </div>
+
+      <div class="feature-card rs" data-step="1">
+        <div class="fc-chrome">
+          <span class="fc-dot"></span><span class="fc-dot"></span><span class="fc-dot"></span>
+          <div class="fc-url">echo.herovidalive.in/approvals</div>
+        </div>
+        <div class="fc-body mk-approval">
+          <div class="fc-sidebar">
+            <div class="fc-nav"></div><div class="fc-nav on"></div>
+            <div class="fc-nav"></div><div class="fc-nav dim"></div>
+          </div>
+          <div class="fc-main" style="display:flex;flex-direction:column;justify-content:center;gap:6px;padding:10px">
+            <div class="mk-step-row"><div class="mk-step-dot done"></div><div class="mk-step-line"></div><div class="mk-step-dot"></div><div class="mk-step-line"></div><div class="mk-step-dot pending"></div><div class="mk-step-line"></div><div class="mk-step-dot pending"></div></div>
+            <div style="display:flex;gap:4px;justify-content:space-between;margin-top:2px">
+              <div class="mk-step-label active"></div><div class="mk-step-label active"></div>
+              <div class="mk-step-label"></div><div class="mk-step-label"></div>
+            </div>
+            <div style="background:rgba(23,61,237,0.08);border-radius:5px;padding:6px 8px;margin-top:4px">
+              <div style="height:4px;border-radius:2px;background:var(--blue);opacity:0.6;margin-bottom:3px;width:80%"></div>
+              <div style="height:3px;border-radius:2px;background:var(--line-s);width:55%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="fc-label">Approval Workflow <span class="fc-tag">Governance</span></div>
+      </div>
+
+      <!-- Row 2 -->
+      <div class="feature-card rs" data-step="2">
+        <div class="fc-chrome">
+          <span class="fc-dot"></span><span class="fc-dot"></span><span class="fc-dot"></span>
+          <div class="fc-url">echo.herovidalive.in/brands</div>
+        </div>
+        <div class="fc-body mk-brands">
+          <div class="fc-sidebar">
+            <div class="fc-nav"></div><div class="fc-nav"></div><div class="fc-nav on"></div><div class="fc-nav dim"></div>
+          </div>
+          <div class="fc-main" style="display:flex;flex-direction:column;gap:5px;padding:8px">
+            <div class="mk-brand-row"><div class="mk-brand-swatch" style="background:#173DED"></div><div class="mk-brand-name"></div><div class="mk-brand-badge" style="background:rgba(23,61,237,0.15)"></div></div>
+            <div class="mk-brand-row"><div class="mk-brand-swatch" style="background:#E30613"></div><div class="mk-brand-name" style="width:45%"></div><div class="mk-brand-badge"></div></div>
+            <div class="mk-brand-row"><div class="mk-brand-swatch" style="background:#00843D"></div><div class="mk-brand-name" style="width:50%"></div><div class="mk-brand-badge"></div></div>
+          </div>
+        </div>
+        <div class="fc-label">Multi-brand System <span class="fc-tag">Identity</span></div>
+      </div>
+
+      <div class="feature-card rs" data-step="2">
+        <div class="fc-chrome">
+          <span class="fc-dot"></span><span class="fc-dot"></span><span class="fc-dot"></span>
+          <div class="fc-url">echo.herovidalive.in/assets</div>
+        </div>
+        <div class="fc-body mk-assets">
+          <div class="fc-sidebar">
+            <div class="fc-nav"></div><div class="fc-nav"></div><div class="fc-nav"></div><div class="fc-nav on"></div>
+          </div>
+          <div class="fc-main" style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:6px;align-content:start">
+            <div class="mk-asset img">
+              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </div>
+            <div class="mk-asset">
+              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div class="mk-asset img"></div>
+            <div class="mk-asset"></div>
+            <div class="mk-asset img"></div>
+            <div class="mk-asset">
+              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="fc-label">Asset Viewer <span class="fc-tag">DAM</span></div>
+      </div>
+
+      <!-- Row 3 -->
+      <div class="feature-card rs" data-step="3">
+        <div class="fc-chrome">
+          <span class="fc-dot"></span><span class="fc-dot"></span><span class="fc-dot"></span>
+          <div class="fc-url">echo.herovidalive.in/studio</div>
+        </div>
+        <div class="fc-body mk-ai">
+          <div class="fc-sidebar">
+            <div class="fc-nav dim"></div><div class="fc-nav dim"></div><div class="fc-nav dim"></div><div class="fc-nav on"></div>
+          </div>
+          <div class="fc-main" style="display:flex;flex-direction:column;gap:5px;justify-content:flex-end;padding:8px">
+            <div class="mk-prompt">
+              <div class="mk-prompt-line"></div><div class="mk-prompt-line" style="width:75%"></div>
+              <div class="mk-prompt-line" style="width:60%"></div>
+            </div>
+            <div class="mk-response">
+              <div class="mk-response-line"></div><div class="mk-response-line" style="width:90%"></div>
+              <div class="mk-response-line" style="width:70%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="fc-label">AI Integration <span class="fc-tag">Echo Studio</span></div>
+      </div>
+
+      <div class="feature-card rs" data-step="3">
+        <div class="fc-chrome">
+          <span class="fc-dot"></span><span class="fc-dot"></span><span class="fc-dot"></span>
+          <div class="fc-url">echo.herovidalive.in/settings</div>
+        </div>
+        <div class="fc-body mk-scoping">
+          <div class="fc-sidebar">
+            <div class="fc-nav dim"></div><div class="fc-nav dim"></div><div class="fc-nav dim"></div><div class="fc-nav on"></div>
+          </div>
+          <div class="fc-main" style="display:flex;flex-direction:column;gap:5px;padding:8px">
+            <div class="mk-scope-row"><div class="mk-scope-icon"></div><div class="mk-scope-bar" style="width:60%"></div><div class="mk-scope-lock"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div></div>
+            <div class="mk-scope-row"><div class="mk-scope-indent"></div><div class="mk-scope-icon" style="opacity:0.3"></div><div class="mk-scope-bar" style="width:50%;opacity:0.3"></div></div>
+            <div class="mk-scope-row"><div class="mk-scope-indent"></div><div class="mk-scope-icon"></div><div class="mk-scope-bar" style="width:70%"></div></div>
+            <div class="mk-scope-row"><div class="mk-scope-icon" style="background:var(--navy)"></div><div class="mk-scope-bar" style="width:45%"></div><div class="mk-scope-lock"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div></div>
+          </div>
+        </div>
+        <div class="fc-label">Brand Scoping &amp; Editor <span class="fc-tag">RBAC</span></div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- ===========================================================
+     SLIDE 06 — TECH STACK
+     =========================================================== -->
+<section class="slide" id="s6" style="background:var(--bg);" data-steps="3">
+  <div class="slide-content" style="justify-content:flex-start">
+
+    <div class="tech-layout">
+
+      <div>
+        <span class="tag ar">Technology</span>
+        <h2 class="tech-headline ar">Built for<br>enterprise<br><em>scale.</em></h2>
+        <div class="tech-attrs">
+          <div class="tech-attr ar">
+            <div class="tech-attr-label">Scalable</div>
+            <div class="tech-attr-desc">Cloud-native, built to grow from one team to enterprise without re-architecting.</div>
+          </div>
+          <div class="tech-attr ar">
+            <div class="tech-attr-label">Robust</div>
+            <div class="tech-attr-desc">Type-safe data, governed workflows, production-grade auth. Nothing breaks quietly.</div>
+          </div>
+          <div class="tech-attr ar">
+            <div class="tech-attr-label">Accelerated</div>
+            <div class="tech-attr-desc">AI-native from day one — faster delivery, smarter workflows, immediate value.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tech-grid">
+        <div class="tech-card tc-next rs" data-step="1">
+          <div class="tech-icon"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+          <div class="tech-name">Next.js + React</div>
+          <div class="tech-desc">Modern web application and interactive frontend.</div>
+          <span class="tech-cat">Frontend</span>
+        </div>
+        <div class="tech-card tc-pg rs" data-step="1">
+          <div class="tech-icon"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div>
+          <div class="tech-name">PostgreSQL + Prisma</div>
+          <div class="tech-desc">Type-safe data layer and structured persistence.</div>
+          <span class="tech-cat">Data</span>
+        </div>
+        <div class="tech-card tc-tiptap rs" data-step="2">
+          <div class="tech-icon"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+          <div class="tech-name">Tiptap / ProseMirror</div>
+          <div class="tech-desc">Rich content editing and document workflows.</div>
+          <span class="tech-cat">Content</span>
+        </div>
+        <div class="tech-card tc-github rs" data-step="2">
+          <div class="tech-icon"><svg viewBox="0 0 24 24"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg></div>
+          <div class="tech-name">GitHub API / Octokit</div>
+          <div class="tech-desc">Versioning, branching, and review workflows.</div>
+          <span class="tech-cat">Versioning</span>
+        </div>
+        <div class="tech-card tc-openai rs" data-step="3">
+          <div class="tech-icon"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+          <div class="tech-name">OpenAI + LangChain</div>
+          <div class="tech-desc">AI-powered analysis and intelligent automation.</div>
+          <span class="tech-cat">AI</span>
+        </div>
+        <div class="tech-card tc-azure rs" data-step="3">
+          <div class="tech-icon"><svg viewBox="0 0 24 24"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></div>
+          <div class="tech-name">Azure Cloud</div>
+          <div class="tech-desc">Enterprise-grade hosting, security, and scale.</div>
+          <span class="tech-cat">Infra</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- ===========================================================
+     SLIDE 07 — WORKFLOW IMPACT
+     =========================================================== -->
+<section class="slide" id="s7" style="background:var(--bg);" data-steps="2">
+  <div class="slide-content">
+
+    <div class="wf-header">
+      <span class="tag ar">Workflow Comparison</span>
+      <h2 class="wf-headline ar">Where Echo eliminates friction.</h2>
+    </div>
+
+    <div class="wf-arena">
+
+      <div class="wf-col wf-trad rl" data-step="1">
+        <div class="wf-col-label">Traditional</div>
+        <div class="wf-flow">
+          <div class="wf-node actor"><div class="wf-node-title">Brand Stakeholder</div></div>
+          <div class="wf-connector"></div>
+          <div class="wf-node">
+            <div class="wf-node-row">
+              <div><div class="wf-node-title">Designers</div><div class="wf-node-sub">Creative direction</div></div>
+              <div class="wf-bubbles"><span class="wf-bub bub-d">D</span><span class="wf-bub bub-d">D</span><span class="wf-bub bub-d">D</span></div>
+            </div>
+          </div>
+          <div class="wf-connector"></div>
+          <div class="wf-node">
+            <div class="wf-node-row">
+              <div><div class="wf-node-title">Developers</div><div class="wf-node-sub">Build &amp; integration</div></div>
+              <div class="wf-bubbles"><span class="wf-bub bub-v">V</span><span class="wf-bub bub-v">V</span></div>
+            </div>
+          </div>
+          <div class="wf-connector"></div>
+          <div class="wf-node output"><div class="wf-node-title">Polished Campaign</div></div>
+        </div>
+        <div class="wf-tl"><span class="tl-badge tl-slow">~30 days</span></div>
+      </div>
+
+      <div class="wf-sep"></div>
+
+      <div class="wf-col wf-echo" data-step="2">
+        <div class="wf-col-label echo-lbl">Echo-assisted</div>
+        <div class="wf-flow">
+          <div class="wf-node actor"><div class="wf-node-title">Brand Stakeholder</div></div>
+          <div class="wf-connector echo-line"><span class="echo-chip">Echo</span></div>
+          <div class="wf-node">
+            <div class="wf-node-row">
+              <div><div class="wf-node-title">Designer</div><div class="wf-node-sub">Guided by Echo outputs</div></div>
+              <div class="wf-bubbles"><span class="wf-bub bub-d1">D</span></div>
+            </div>
+          </div>
+          <div class="wf-connector ghost-line"></div>
+          <div class="wf-node skip">
+            <div class="wf-node-row">
+              <div><div class="wf-node-title">Developers</div><div class="wf-node-sub">Eliminated by Echo</div></div>
+              <div class="wf-bubbles"><span class="wf-bub bub-v">V</span><span class="wf-bub bub-v">V</span></div>
+            </div>
+          </div>
+          <div class="wf-connector"></div>
+          <div class="wf-node output"><div class="wf-node-title">Polished Campaign</div></div>
+        </div>
+        <div class="wf-tl"><span class="tl-badge tl-fast">Days, not weeks</span></div>
+      </div>
+
+    </div>
+
+    <div class="wf-cases ar">
+      <div class="wf-case"><span class="wf-case-brand">KKR</span><span class="wf-case-detail">Brand activation · 3 designers + 2 developers · ~30 days</span></div>
+      <div class="wf-case-sep"></div>
+      <div class="wf-case"><span class="wf-case-brand echo">Vira</span><span class="wf-case-detail">Echo-assisted · 1 designer · Significantly faster</span></div>
+      <span class="wf-note">Illustrative, not commitments.</span>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===========================================================
+     SLIDE 08 — RESULTS (dark)
+     =========================================================== -->
+<section class="slide dk" id="s8" data-steps="4">
+  <div class="slide-content">
+
+    <span class="tag tag-dim ar">Measurable ROI</span>
+    <h2 class="results-headline ar">What Echo delivers.</h2>
+
+    <div class="kpi-grid">
+      <div class="kpi-card rs" data-step="1">
+        <div class="kpi-num" data-count-to="65" data-suffix="%">65%</div>
+        <div class="kpi-label">Faster Time-to-Market</div>
+        <div class="kpi-desc">Feature deployment drops from 6+ months to 8–10 weeks. Echo's governed workflow eliminates sequential bottlenecks.</div>
+      </div>
+      <div class="kpi-card rs" data-step="2">
+        <div class="kpi-num" data-count-to="10" data-suffix="×">10×</div>
+        <div class="kpi-label">Split Testing Velocity</div>
+        <div class="kpi-desc">A/B design experiments that took 4–6 weeks now run in 3–5 days via Echo's versioning and approval layer.</div>
+      </div>
+      <div class="kpi-card rs" data-step="3">
+        <div class="kpi-num" data-count-to="75" data-suffix="%">75%</div>
+        <div class="kpi-label">Lower Platform Cost</div>
+        <div class="kpi-desc">Custom build vs. enterprise design system licensing ($150K–$500K/year). No licence ceiling, no vendor dependency.</div>
+      </div>
+      <div class="kpi-card rs" data-step="4">
+        <div class="kpi-num" data-count-to="60" data-suffix="%">60%</div>
+        <div class="kpi-label">Fewer Dev-Handoff Cycles</div>
+        <div class="kpi-desc">Design-to-dev rework reduced 60–70%. Echo as living source of truth eliminates repeated alignment loops.</div>
+      </div>
+    </div>
+
+    <p class="results-note ar">Based on industry benchmarks (Forrester, McKinsey Digital) and Echo's current deployment trajectory. ±5–10%.</p>
+
+  </div>
+</section>
+
+<!-- ===========================================================
+     SLIDE 09 — ECOSYSTEM & ROADMAP
+     =========================================================== -->
+<section class="slide" id="s9" style="background:var(--bg);" data-steps="3">
+  <div class="slide-content">
+
+    <span class="tag ar">Ecosystem &amp; Roadmap</span>
+    <h2 class="rm-headline ar">Echo Portal is live. Here's what comes next.</h2>
+
+    <div class="roadmap-grid">
+
+      <div class="rm-col live rs" data-step="1">
+        <span class="rm-badge live">Phase 1 — Live</span>
+        <div class="rm-product">Echo Portal</div>
+        <div class="rm-phase">Milestone 3 Launch</div>
+        <div class="rm-date">Jan 2026 – Jun 2026</div>
+        <ul class="rm-items">
+          <li>Design system portal — production-grade React</li>
+          <li>Multi-brand: Vida, Dirt-E, Leaf</li>
+          <li>7-stage approval workflow</li>
+          <li>Admin controls &amp; branch governance</li>
+          <li>Hero ID authentication</li>
+        </ul>
+      </div>
+
+      <div class="rm-col pitch rs" data-step="2">
+        <span class="rm-badge pitch">Phase 2 — Pitching</span>
+        <div class="rm-product">Echo Studio &amp; DAM</div>
+        <div class="rm-phase">Security + AI + Assets</div>
+        <div class="rm-date">H2 2026</div>
+        <ul class="rm-items">
+          <li>VAPT security certification</li>
+          <li>AI brand compliance — RAG over Echo guidelines</li>
+          <li>Full DAM expansion &amp; lifecycle management</li>
+          <li>Echo Studio integration with portal</li>
+          <li>External stakeholder access (dealers, vendors)</li>
+        </ul>
+      </div>
+
+      <div class="rm-col rs" data-step="3">
+        <span class="rm-badge future">Future</span>
+        <div class="rm-product">Full Platform</div>
+        <div class="rm-phase">And more to come…</div>
+        <div class="rm-date">2027 +</div>
+        <ul class="rm-items">
+          <li>Echo Studio at scale — dealers &amp; vendors</li>
+          <li>Multi-company brand standardisation</li>
+          <li>AI content &amp; campaign generation</li>
+          <li>Advanced cross-brand intelligence</li>
+        </ul>
+        <p class="rm-more">The platform grows with Hero — not against it.</p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- ===========================================================
+     SLIDE 10 — WHY OWNPATH (dark)
+     =========================================================== -->
+<section class="slide dk" id="s10" data-steps="3">
+  <div class="why-ghost" aria-hidden="true">×</div>
+  <div class="slide-content">
+
+    <div class="why-header">
+      <span class="tag tag-dim ar">Why Ownpath</span>
+      <p class="why-sub ar">Design × Engineering.</p>
+      <h2 class="why-hero ar">1 team,&nbsp;<em>10x</em>&nbsp;outcome.</h2>
+    </div>
+
+    <div class="why-cards">
+      <div class="why-card" data-step="1">
+        <div class="why-card-stat">12 mo.</div>
+        <div class="why-card-title">Speed</div>
+        <div class="why-card-body">Prototype to production in 12 months with 2–3 people. AI-assisted development compressed what takes agencies 2–3 years.</div>
+      </div>
+      <div class="why-card" data-step="2">
+        <div class="why-card-stat">100%</div>
+        <div class="why-card-title">Quality</div>
+        <div class="why-card-body">Enterprise-grade from day one. Architecture reviews, security hardening, VAPT readiness, and full compliance — built in, not bolted on.</div>
+      </div>
+      <div class="why-card" data-step="3">
+        <div class="why-card-stat">∞</div>
+        <div class="why-card-title">Scale</div>
+        <div class="why-card-body">Multi-brand, multi-team, fully governed. The platform is designed to grow with Hero — not against it. Phase 2 is already architectured.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===========================================================
+     SLIDE 11 — CTA / NEXT STEPS
+     =========================================================== -->
+<section class="slide" id="s11" style="background:var(--bg);" data-steps="0">
+  <div class="slide-content">
+
+    <div class="cta-wrap">
+      <span class="tag ar">Next Steps</span>
+      <h2 class="cta-headline ar">Let's build<br>what's <em>next.</em></h2>
+      <div class="cta-steps">
+        <div class="cta-step ar">
+          <span class="cta-step-num">1</span>
+          Live demo of Echo — see the platform in action
+        </div>
+        <div class="cta-step ar">
+          <span class="cta-step-num">2</span>
+          Align on Phase 2 scope and delivery model
+        </div>
+        <div class="cta-step ar">
+          <span class="cta-step-num">3</span>
+          Proposal and timeline — within the week
+        </div>
+      </div>
+      <div class="cta-meta ar">
+        <span>Ownpath Studios</span>
+        <span class="sep"></span>
+        <span>tech@ownpath.com</span>
+        <span class="sep"></span>
+        <span>ownpath.com</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Brand mark bottom-right -->
+  <div class="cta-mark" aria-hidden="true">
+    <svg viewBox="0 0 150 118" xmlns="http://www.w3.org/2000/svg">
+      <g fill="#0B0B0B" opacity="0.05">
+        <rect x="0"   y="0"  width="22" height="22" rx="1"/>
+        <rect x="32"  y="0"  width="22" height="22" rx="1"/>
+        <rect x="64"  y="0"  width="22" height="22" rx="1"/>
+        <rect x="96"  y="0"  width="22" height="22" rx="1"/>
+        <rect x="128" y="0"  width="22" height="22" rx="1"/>
+        <rect x="0"   y="32" width="22" height="22" rx="1"/>
+        <rect x="32"  y="32" width="22" height="22" rx="1"/>
+        <rect x="64"  y="32" width="22" height="22" rx="1"/>
+        <rect x="96"  y="32" width="22" height="22" rx="1"/>
+        <rect x="128" y="32" width="22" height="22" rx="1"/>
+        <rect x="0"   y="64" width="22" height="22" rx="1"/>
+        <rect x="32"  y="64" width="22" height="22" rx="1"/>
+        <rect x="64"  y="64" width="22" height="22" rx="1"/>
+        <rect x="96"  y="64" width="22" height="22" rx="1"/>
+        <rect x="128" y="64" width="22" height="22" rx="1"/>
+        <rect x="0"   y="96" width="22" height="22" rx="1"/>
+        <rect x="32"  y="96" width="22" height="22" rx="1"/>
+        <rect x="64"  y="96" width="22" height="22" rx="1"/>
+        <rect x="96"  y="96" width="22" height="22" rx="1"/>
+        <rect x="128" y="96" width="22" height="22" rx="1"/>
+      </g>
+      <g fill="#0B0B0B" opacity="0.45">
+        <rect x="0"   y="0"  width="22" height="22" rx="1"/>
+        <rect x="64"  y="0"  width="22" height="22" rx="1"/>
+        <rect x="128" y="0"  width="22" height="22" rx="1"/>
+        <rect x="32"  y="32" width="22" height="22" rx="1"/>
+        <rect x="96"  y="32" width="22" height="22" rx="1"/>
+        <rect x="0"   y="64" width="22" height="22" rx="1"/>
+        <rect x="64"  y="64" width="22" height="22" rx="1"/>
+        <rect x="128" y="64" width="22" height="22" rx="1"/>
+        <rect x="32"  y="96" width="22" height="22" rx="1"/>
+      </g>
+      <g fill="#173DED">
+        <polygon points="27,16  38,27  27,38  16,27"/>
+        <polygon points="91,16  102,27 91,38  80,27"/>
+        <polygon points="59,48  70,59  59,70  48,59"/>
+        <polygon points="123,48 134,59 123,70 112,59"/>
+        <polygon points="27,80  38,91  27,102 16,91"/>
+      </g>
+    </svg>
+  </div>
+
+</section>
+
+<script>
+/* =============================================================
+   STEP-BASED PRESENTATION CONTROLLER
+   — Space / ArrowRight: reveal next element, then next slide
+   — ArrowLeft: unrevel last element, then previous slide
+   ============================================================= */
+class PitchDeck {
+  constructor() {
+    this.slides    = [...document.querySelectorAll('.slide')];
+    this.total     = this.slides.length;
+    this.current   = 0;
+    this.hintHidden = false;
+
+    // Build step map: per slide, sorted [data-step] elements
+    this.steps = this.slides.map(slide => ({
+      els:      [...slide.querySelectorAll('[data-step]')]
+                  .sort((a, b) => +a.dataset.step - +b.dataset.step),
+      revealed: 0
+    }));
+
+    this.setupObserver();
+    this.setupKeyboard();
+    this.setupTouch();
+    this.activateSlide(0, false);
+  }
+
+  /* ---- Activate a slide ---- */
+  activateSlide(idx, scroll = true) {
+    this.slides.forEach((s, i) => {
+      s.classList.remove('active');
+      // Reset steps for slides we're leaving (but keep revealed for back-nav)
+    });
+    this.slides[idx].classList.add('active');
+    this.current = idx;
+    if (scroll) this.slides[idx].scrollIntoView({ behavior: 'smooth' });
+    this.updateChrome();
+  }
+
+  /* ---- Reveal next step on current slide ---- */
+  revealNext() {
+    const s = this.steps[this.current];
+    if (s.revealed < s.els.length) {
+      const el = s.els[s.revealed];
+      el.classList.add('revealed');
+      // Trigger counter animation for KPI numbers
+      if (el.querySelector('[data-count-to]')) {
+        el.querySelectorAll('[data-count-to]').forEach(n => this.animateCounter(n));
+      }
+      if (el.hasAttribute('data-count-to')) {
+        this.animateCounter(el);
+      }
+      s.revealed++;
+      return true;
+    }
+    return false;
+  }
+
+  /* ---- Hide last revealed step ---- */
+  revealPrev() {
+    const s = this.steps[this.current];
+    if (s.revealed > 0) {
+      s.revealed--;
+      s.els[s.revealed].classList.remove('revealed');
+      return true;
+    }
+    return false;
+  }
+
+  /* ---- Navigation ---- */
+  goNext() {
+    if (!this.revealNext()) {
+      if (this.current < this.total - 1) {
+        this.activateSlide(this.current + 1);
+      }
+    }
+    this.hideHint();
+  }
+
+  goPrev() {
+    if (!this.revealPrev()) {
+      if (this.current > 0) {
+        const prevIdx = this.current - 1;
+        // Reset current slide steps
+        const cur = this.steps[this.current];
+        cur.els.forEach(el => el.classList.remove('revealed'));
+        cur.revealed = 0;
+        this.activateSlide(prevIdx);
+        // Show all steps of previous slide
+        const prev = this.steps[prevIdx];
+        prev.els.forEach(el => el.classList.add('revealed'));
+        prev.revealed = prev.els.length;
+      }
+    }
+  }
+
+  /* ---- Chrome updates ---- */
+  updateChrome() {
+    const pct = this.total > 1 ? (this.current / (this.total - 1)) * 100 : 100;
+    document.getElementById('progress-bar').style.width = pct + '%';
+
+    const counter = document.getElementById('slide-counter');
+    counter.textContent = String(this.current + 1).padStart(2,'0') + ' / ' + String(this.total).padStart(2,'0');
+
+    const isDark = this.slides[this.current].classList.contains('dk');
+    counter.className = isDark ? '' : 'light';
+    document.getElementById('progress-bar').style.background = '#173DED';
+  }
+
+  hideHint() {
+    if (!this.hintHidden) {
+      document.getElementById('kb-hint').classList.add('hidden');
+      this.hintHidden = true;
+    }
+  }
+
+  /* ---- Counter animation ---- */
+  animateCounter(el) {
+    const target   = +el.dataset.countTo;
+    const suffix   = el.dataset.suffix || '';
+    const duration = 1100;
+    const start    = performance.now();
+    const tick = now => {
+      const p = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(eased * target) + suffix;
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
+  /* ---- Keyboard ---- */
+  setupKeyboard() {
+    document.addEventListener('keydown', e => {
+      if (['ArrowRight','ArrowDown',' '].includes(e.key)) {
+        e.preventDefault(); this.goNext();
+      } else if (['ArrowLeft','ArrowUp'].includes(e.key)) {
+        e.preventDefault(); this.goPrev();
+      }
+    });
+  }
+
+  /* ---- Touch / swipe ---- */
+  setupTouch() {
+    let sx, sy;
+    document.addEventListener('touchstart', e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive:true });
+    document.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].clientX - sx;
+      const dy = e.changedTouches[0].clientY - sy;
+      if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 50) {
+        dy < 0 ? this.goNext() : this.goPrev();
+      }
+    });
+  }
+
+  /* ---- Intersection observer (scroll sync) ---- */
+  setupObserver() {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
+          const idx = this.slides.indexOf(entry.target);
+          if (idx !== this.current) {
+            this.slides[this.current].classList.remove('active');
+            this.slides[idx].classList.add('active');
+            this.current = idx;
+            this.updateChrome();
+          }
+        }
+      });
+    }, { threshold: 0.6 });
+    this.slides.forEach(s => io.observe(s));
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => new PitchDeck());
+</script>
+</body>
+</html>
