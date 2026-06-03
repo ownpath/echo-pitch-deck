@@ -81,16 +81,17 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font)}
 /* ═══════════════════════════════════════════════════
    S01 — COVER
 ═══════════════════════════════════════════════════ */
-#s1{background:#fff;justify-content:center;align-items:center}
-.cover-inner{display:flex;flex-direction:column;align-items:center;gap:clamp(1.2rem,2.5vw,2.5rem);text-align:center}
+#s1{background:#fff;justify-content:center;align-items:flex-start;padding:var(--pad);padding-bottom:calc(var(--pad) + 2.4rem)}
+#s1::before{content:'';position:absolute;left:0;top:0;bottom:2.4rem;width:3px;background:var(--blue);z-index:2}
+.cover-inner{display:flex;flex-direction:column;align-items:flex-start;gap:clamp(1.6rem,3.2vw,3rem);text-align:left;max-width:54vw;z-index:1;position:relative}
 .cover-logo{display:flex;align-items:center;line-height:1}
-.cover-divider{width:clamp(32px,5vw,60px);height:1px;background:var(--lines)}
-.cover-sub{text-align:center}
-.cover-echo{font-size:clamp(3.5rem,9vw,8.5rem);font-weight:700;letter-spacing:-.04em;line-height:.95;color:var(--blue);margin-bottom:.2em}
-.cover-tagline{font-size:var(--t-h3);color:var(--mid);letter-spacing:.01em;font-weight:400}
-.cover-meta{font-size:var(--t-lbl);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-top:clamp(.75rem,1.5vw,1.5rem)}
-/* Brand mark top-right */
-#s1 .mark{position:absolute;top:calc(-1 * clamp(.5rem,.8vw,1rem));right:calc(-1 * clamp(.5rem,.8vw,1rem));width:clamp(140px,18vw,220px);opacity:1;pointer-events:none}
+.cover-divider{width:clamp(36px,4.5vw,56px);height:3px;background:var(--blue);border-radius:2px}
+.cover-sub{text-align:left}
+.cover-echo{font-size:clamp(4.5rem,11vw,10.5rem);font-weight:700;letter-spacing:-.05em;line-height:.88;color:var(--blue);margin-bottom:clamp(.4rem,.9vw,.85rem)}
+.cover-tagline{font-size:var(--t-h3);color:var(--mid);font-weight:400;line-height:1.45;max-width:28ch}
+.cover-meta{font-size:var(--t-lbl);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+/* Brand mark — large, right side, vertically centred */
+#s1 .mark{position:absolute;right:clamp(2rem,4vw,5rem);top:50%;transform:translateY(-54%);width:clamp(260px,38vw,520px);opacity:1;pointer-events:none}
 
 /* ═══════════════════════════════════════════════════
    S02 — THE CHALLENGE (headline)
@@ -280,23 +281,23 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font)}
 <div id="hint">SPACE or → to advance</div>
 
 <!-- S01 COVER ─────────────────────────────────── -->
-<section class="slide dk" id="s1" data-steps="0">
-  <!-- brand mark top-right -->
+<section class="slide" id="s1" data-steps="0">
+  <!-- Brand mark — large, right side -->
   <div class="mark" aria-hidden="true">
     <svg viewBox="0 0 150 118" xmlns="http://www.w3.org/2000/svg">
-      <g fill="#0B0B0B" opacity="0.04"><rect x="0" y="0" width="22" height="22" rx="1"/><rect x="32" y="0" width="22" height="22" rx="1"/><rect x="64" y="0" width="22" height="22" rx="1"/><rect x="96" y="0" width="22" height="22" rx="1"/><rect x="128" y="0" width="22" height="22" rx="1"/><rect x="0" y="32" width="22" height="22" rx="1"/><rect x="32" y="32" width="22" height="22" rx="1"/><rect x="64" y="32" width="22" height="22" rx="1"/><rect x="96" y="32" width="22" height="22" rx="1"/><rect x="128" y="32" width="22" height="22" rx="1"/><rect x="0" y="64" width="22" height="22" rx="1"/><rect x="32" y="64" width="22" height="22" rx="1"/><rect x="64" y="64" width="22" height="22" rx="1"/><rect x="96" y="64" width="22" height="22" rx="1"/><rect x="128" y="64" width="22" height="22" rx="1"/><rect x="0" y="96" width="22" height="22" rx="1"/><rect x="32" y="96" width="22" height="22" rx="1"/><rect x="64" y="96" width="22" height="22" rx="1"/><rect x="96" y="96" width="22" height="22" rx="1"/><rect x="128" y="96" width="22" height="22" rx="1"/></g>
-      <g fill="#0B0B0B" opacity="0.11"><rect x="0" y="0" width="22" height="22" rx="1"/><rect x="64" y="0" width="22" height="22" rx="1"/><rect x="128" y="0" width="22" height="22" rx="1"/><rect x="32" y="32" width="22" height="22" rx="1"/><rect x="96" y="32" width="22" height="22" rx="1"/><rect x="0" y="64" width="22" height="22" rx="1"/><rect x="64" y="64" width="22" height="22" rx="1"/><rect x="128" y="64" width="22" height="22" rx="1"/><rect x="32" y="96" width="22" height="22" rx="1"/></g>
+      <g fill="#0B0B0B" opacity="0.055"><rect x="0" y="0" width="22" height="22" rx="1"/><rect x="32" y="0" width="22" height="22" rx="1"/><rect x="64" y="0" width="22" height="22" rx="1"/><rect x="96" y="0" width="22" height="22" rx="1"/><rect x="128" y="0" width="22" height="22" rx="1"/><rect x="0" y="32" width="22" height="22" rx="1"/><rect x="32" y="32" width="22" height="22" rx="1"/><rect x="64" y="32" width="22" height="22" rx="1"/><rect x="96" y="32" width="22" height="22" rx="1"/><rect x="128" y="32" width="22" height="22" rx="1"/><rect x="0" y="64" width="22" height="22" rx="1"/><rect x="32" y="64" width="22" height="22" rx="1"/><rect x="64" y="64" width="22" height="22" rx="1"/><rect x="96" y="64" width="22" height="22" rx="1"/><rect x="128" y="64" width="22" height="22" rx="1"/><rect x="0" y="96" width="22" height="22" rx="1"/><rect x="32" y="96" width="22" height="22" rx="1"/><rect x="64" y="96" width="22" height="22" rx="1"/><rect x="96" y="96" width="22" height="22" rx="1"/><rect x="128" y="96" width="22" height="22" rx="1"/></g>
+      <g fill="#0B0B0B" opacity="0.14"><rect x="0" y="0" width="22" height="22" rx="1"/><rect x="64" y="0" width="22" height="22" rx="1"/><rect x="128" y="0" width="22" height="22" rx="1"/><rect x="32" y="32" width="22" height="22" rx="1"/><rect x="96" y="32" width="22" height="22" rx="1"/><rect x="0" y="64" width="22" height="22" rx="1"/><rect x="64" y="64" width="22" height="22" rx="1"/><rect x="128" y="64" width="22" height="22" rx="1"/><rect x="32" y="96" width="22" height="22" rx="1"/></g>
       <g fill="#173DED"><polygon points="27,16 38,27 27,38 16,27"/><polygon points="91,16 102,27 91,38 80,27"/><polygon points="59,48 70,59 59,70 48,59"/><polygon points="123,48 134,59 123,70 112,59"/><polygon points="27,80 38,91 27,102 16,91"/></g>
     </svg>
   </div>
   <div class="cover-inner">
     <div class="cover-logo ar">
-      <img src="ownpath-logo.png" alt="ownpath Studios" style="height:clamp(1.4rem,3vw,2.8rem);width:auto;display:block">
+      <img src="ownpath-logo.png" alt="ownpath Studios" style="height:clamp(2.4rem,4.5vw,4rem);width:auto;display:block">
     </div>
     <div class="cover-divider ar"></div>
-    <div class="cover-sub">
-      <div class="cover-echo ar">Echo</div>
-      <div class="cover-tagline ar">A custom product, built for VIDA · Hero MotoCorp</div>
+    <div class="cover-sub ar">
+      <div class="cover-echo">Echo</div>
+      <div class="cover-tagline">A custom product, built for<br>VIDA · Hero MotoCorp</div>
     </div>
     <div class="cover-meta ar">June 2026</div>
   </div>
