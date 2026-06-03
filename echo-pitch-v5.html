@@ -97,9 +97,9 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font)}
    S02 — THE CHALLENGE
 ═══════════════════════════════════════════════════ */
 #s2{background:#fff}
-.ch-line1{font-size:var(--t-disp);font-weight:700;letter-spacing:-.035em;line-height:1.05;color:var(--ink);margin-top:.4em}
-.ch-line2{font-size:var(--t-disp);font-weight:700;letter-spacing:-.035em;line-height:1.05;color:var(--blue)}
-.ch-sub{font-size:var(--t-body);color:var(--mid);margin-top:clamp(1.2rem,2.5vw,2.2rem);max-width:36ch;line-height:1.65}
+.ch-line1{font-size:clamp(2.4rem,5.5vw,5rem);font-weight:700;letter-spacing:-.035em;line-height:1.05;color:var(--ink);margin-top:.4em}
+.ch-line2{font-size:clamp(2.4rem,5.5vw,5rem);font-weight:700;letter-spacing:-.035em;line-height:1.05;color:var(--blue)}
+.ch-sub{font-size:var(--t-body);color:var(--mid);margin-top:clamp(1.5rem,3vw,2.8rem);max-width:52ch;line-height:1.7}
 
 /* ═══════════════════════════════════════════════════
    S03 — CHALLENGE 1: CAPTURED IN HEADS
@@ -303,33 +303,12 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font)}
 
 <!-- S02 THE CHALLENGE ─────────────────────────── -->
 <section class="slide" id="s2" data-steps="2">
-  <div style="display:grid;grid-template-columns:1fr 1fr;flex:1;min-height:0">
-
-    <!-- Left: Statement -->
-    <div style="display:flex;flex-direction:column;justify-content:center;padding:var(--pad);padding-bottom:calc(var(--pad) + 2.4rem);border-right:1px solid var(--line)">
-      <span class="tag ar">The Challenge</span>
-      <h2 class="ch-line1 ar">Intelligence<br>is the goal.</h2>
-      <div class="ar" style="width:48px;height:3px;background:var(--blue);border-radius:2px;margin:clamp(1.2rem,2.5vw,2.2rem) 0"></div>
-      <h2 class="ch-line2" data-step="1">Memory is<br>the challenge.</h2>
-      <p class="ch-sub" data-step="2">VIDA's brand is complex, fast-moving, and spread across teams, tools, and time zones. The systems to manage it haven't kept pace.</p>
-    </div>
-
-    <!-- Right: Three clean problem stats -->
-    <div style="background:var(--bg);display:flex;flex-direction:column;justify-content:center;padding:var(--pad);padding-bottom:calc(var(--pad) + 2.4rem)">
-      <div style="border-top:1px solid var(--line);padding:clamp(1.8rem,3.5vw,3.5rem) 0">
-        <div style="font-size:clamp(3.5rem,8vw,7rem);font-weight:700;letter-spacing:-.04em;color:var(--blue);line-height:1;margin-bottom:.3em">5+</div>
-        <div style="font-size:var(--t-h3);font-weight:500;color:var(--mid)">tools managing brand, none talking to each other</div>
-      </div>
-      <div style="border-top:1px solid var(--line);padding:clamp(1.8rem,3.5vw,3.5rem) 0">
-        <div style="font-size:clamp(3.5rem,8vw,7rem);font-weight:700;letter-spacing:-.04em;color:var(--blue);line-height:1;margin-bottom:.3em">30+</div>
-        <div style="font-size:var(--t-h3);font-weight:500;color:var(--mid)">days lost per campaign cycle to manual coordination</div>
-      </div>
-      <div style="border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:clamp(1.8rem,3.5vw,3.5rem) 0">
-        <div style="font-size:clamp(3.5rem,8vw,7rem);font-weight:700;letter-spacing:-.04em;color:var(--ink);line-height:1;margin-bottom:.3em">0</div>
-        <div style="font-size:var(--t-h3);font-weight:500;color:var(--mid)">single source of truth for brand decisions</div>
-      </div>
-    </div>
-
+  <div class="sc">
+    <span class="tag ar">The Challenge</span>
+    <h2 class="ch-line1 ar">Intelligence is the goal.</h2>
+    <div class="ar" style="width:48px;height:3px;background:var(--blue);border-radius:2px;margin:clamp(1.4rem,3vw,2.8rem) 0"></div>
+    <h2 class="ch-line2" data-step="1">Memory is the challenge.</h2>
+    <p class="ch-sub" data-step="2">VIDA's brand is complex, fast-moving, and spread across teams, tools, and time zones. The systems to manage it haven't kept pace.</p>
   </div>
 </section>
 
