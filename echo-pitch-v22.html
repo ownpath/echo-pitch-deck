@@ -1,0 +1,3868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Echo — Design System Intelligence Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+
+/* === THEME VARIABLES === */
+:root {
+  --bg:         #FAFAFA;
+  --bg-2:       #F2F3F4;
+  --bg-3:       #E4E5E8;
+  --text:       #0B0B0B;
+  --text-dim:   #8A8B96;
+  --text-mid:   #3A3B45;
+  --accent:     #173DED;
+  --accent-2:   #173DED;
+  --navy:       #000051;
+  --line:       rgba(11,11,11,0.08);
+  --line-strong: rgba(11,11,11,0.14);
+  --font-d:     'Aeonik', 'DM Sans', 'Helvetica Neue', sans-serif;
+  --font-b:     'Aeonik', 'DM Sans', 'Helvetica Neue', sans-serif;
+
+  /* Fluid type scale */
+  --t-hero:     clamp(4.5rem, 14vw, 14rem);
+  --t-display:  clamp(2rem, 5.5vw, 5rem);
+  --t-h2:       clamp(1.5rem, 3vw, 2.6rem);
+  --t-h3:       clamp(1.05rem, 1.8vw, 1.5rem);
+  --t-body:     clamp(0.78rem, 1.2vw, 1rem);
+  --t-small:    clamp(0.65rem, 0.85vw, 0.78rem);
+  --t-label:    clamp(0.6rem, 0.8vw, 0.72rem);
+
+  --pad:        clamp(2rem, 5vw, 5rem);
+  --gap:        clamp(0.75rem, 1.5vw, 1.5rem);
+  --ease:       cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* === RESET === */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ============================================
+   VIEWPORT BASE CSS (mandatory, full include)
+   ============================================ */
+html, body { height: 100%; overflow-x: hidden; }
+html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--font-b); }
+
+.slide {
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.slide-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-height: 100%;
+  overflow: hidden;
+  padding: var(--pad);
+}
+.card, .container, .content-box {
+  max-width: min(90vw, 1000px);
+  max-height: min(80vh, 700px);
+}
+img, .image-container {
+  max-width: 100%;
+  max-height: min(50vh, 400px);
+  object-fit: contain;
+}
+
+@media (max-height: 700px) {
+  :root {
+    --pad: clamp(1rem, 3vw, 2.5rem);
+    --gap: clamp(0.4rem, 1vw, 1rem);
+    --t-display: clamp(1.5rem, 4.5vw, 3rem);
+    --t-h2: clamp(1.1rem, 2.5vw, 2rem);
+    --t-hero: clamp(3rem, 10vw, 8rem);
+  }
+}
+@media (max-height: 600px) {
+  :root {
+    --pad: clamp(0.75rem, 2.5vw, 2rem);
+    --gap: clamp(0.3rem, 0.8vw, 0.75rem);
+    --t-display: clamp(1.25rem, 4vw, 2.2rem);
+    --t-body: clamp(0.68rem, 1vw, 0.88rem);
+  }
+  .nav-dots, .keyboard-hint, .decorative { display: none; }
+}
+@media (max-height: 500px) {
+  :root {
+    --pad: clamp(0.5rem, 2vw, 1.25rem);
+    --t-display: clamp(1rem, 3.5vw, 1.6rem);
+    --t-h2: clamp(0.9rem, 2.5vw, 1.25rem);
+    --t-body: clamp(0.62rem, 0.9vw, 0.82rem);
+  }
+}
+@media (max-width: 600px) {
+  :root { --t-display: clamp(1.5rem, 8vw, 3rem); }
+  .grid-2, .grid-3 { grid-template-columns: 1fr !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.2s !important;
+  }
+  html { scroll-behavior: auto; }
+}
+
+/* ============================================
+   ANIMATION SYSTEM
+   ============================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+}
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-28px);
+  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+}
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.94);
+  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+}
+.slide.visible .reveal,
+.slide.visible .reveal-left,
+.slide.visible .reveal-scale {
+  opacity: 1;
+  transform: none;
+}
+.d1 { transition-delay: 0.05s !important; }
+.d2 { transition-delay: 0.18s !important; }
+.d3 { transition-delay: 0.31s !important; }
+.d4 { transition-delay: 0.44s !important; }
+.d5 { transition-delay: 0.57s !important; }
+.d6 { transition-delay: 0.70s !important; }
+.d7 { transition-delay: 0.83s !important; }
+.d8 { transition-delay: 0.96s !important; }
+
+/* ============================================
+   CHROME: Progress bar + nav dots
+   ============================================ */
+#progress-bar {
+  position: fixed; top: 0; left: 0;
+  height: 2px; width: 0%;
+  background: var(--accent);
+  z-index: 1000;
+  transition: width 0.35s ease;
+}
+#nav-dots {
+  position: fixed;
+  right: clamp(0.75rem, 2vw, 1.5rem);
+  top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 5px;
+  z-index: 999;
+}
+#nav-dots button {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  border: none;
+  background: var(--text-dim);
+  cursor: pointer;
+  transition: background 0.3s, transform 0.3s;
+  padding: 0;
+}
+#nav-dots button.active {
+  background: var(--accent);
+  transform: scale(1.6);
+}
+
+/* Slide number badge */
+.slide-num {
+  position: absolute;
+  top: clamp(1rem, 2vw, 1.75rem);
+  right: clamp(1rem, 2.5vw, 2.5rem);
+  font-family: var(--font-b);
+  font-size: var(--t-label);
+  color: var(--text-dim);
+  letter-spacing: 0.12em;
+  z-index: 10;
+}
+
+/* Slide bottom bar */
+.slide-bar {
+  position: absolute;
+  bottom: 0; right: 0;
+  padding: clamp(0.75rem, 1.5vw, 1.25rem) var(--pad);
+  font-family: var(--font-b);
+  font-size: var(--t-label);
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+}
+
+
+/* Background grid pattern */
+.grid-bg {
+  background-image: radial-gradient(circle, rgba(11,11,11,0.12) 1px, transparent 1px);
+  background-size: clamp(22px, 3vw, 32px) clamp(22px, 3vw, 32px);
+}
+
+/* ============================================
+   SHARED COMPONENTS
+   ============================================ */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  font-family: var(--font-b);
+  font-size: var(--t-label);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: clamp(0.5rem, 1.2vw, 1rem);
+}
+.tag::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--accent);
+  transform: rotate(45deg);
+  flex-shrink: 0;
+  display: inline-block;
+}
+.tag.lime { color: var(--accent-2); }
+.tag.lime::before { background: var(--accent-2); }
+.tag.dim  { color: var(--text-dim); }
+.tag.dim::before  { background: var(--text-dim); }
+
+h1, h2, h3 { font-family: var(--font-d); line-height: 1.1; font-weight: 700; }
+
+.display { font-size: var(--t-display); color: var(--text); }
+.h2      { font-size: var(--t-h2); }
+.h3      { font-size: var(--t-h3); }
+.body    { font-size: var(--t-body); line-height: 1.65; color: var(--text-mid); }
+.small   { font-size: var(--t-small); color: var(--text-dim); }
+
+.accent-text  { color: var(--accent); }
+.lime-text    { color: var(--accent-2); }
+.dim-text     { color: var(--text-dim); }
+
+hr.rule {
+  border: none;
+  border-top: 1px solid var(--line-strong);
+  margin: var(--gap) 0;
+}
+
+/* ============================================
+   SLIDE 01 — TITLE
+   ============================================ */
+#s1 {
+  background: var(--bg);
+  justify-content: flex-end;
+}
+#s1 .hero-word {
+  position: absolute;
+  left: var(--pad);
+  top: 50%;
+  transform: translateY(-55%);
+  font-family: var(--font-d);
+  font-size: var(--t-hero);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 0.88;
+  letter-spacing: -0.03em;
+}
+#s1 .hero-word .echo-e { color: var(--accent); }
+#s1 .sub-block {
+  position: absolute;
+  left: var(--pad);
+  bottom: clamp(4rem, 8vh, 7rem);
+  max-width: min(600px, 70vw);
+}
+#s1 .sub-block .sub-line {
+  font-family: var(--font-b);
+  font-size: var(--t-h3);
+  color: var(--text-mid);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  margin-bottom: clamp(1rem, 2vh, 1.75rem);
+}
+#s1 .client-line {
+  display: flex; align-items: center; gap: clamp(0.75rem, 1.5vw, 1.25rem);
+  font-family: var(--font-b);
+  font-size: var(--t-small);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+#s1 .client-line span.sep {
+  width: 1px; height: 1em; background: var(--text-dim); opacity: 0.4;
+}
+#s1 .op-grid-mark {
+  z-index: 0;
+}
+
+/* ============================================
+   SLIDE 02 — THE CHALLENGE
+   ============================================ */
+#s2 { background: var(--bg); }
+#s2 .s2-headline {
+  font-family: var(--font-d);
+  font-size: clamp(1.8rem, 4vw, 3.8rem);
+  font-weight: 600;
+  line-height: 1.12;
+  color: var(--text);
+  max-width: 20em;
+  margin-bottom: clamp(1.5rem, 3vw, 3rem);
+}
+#s2 .challenge-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1rem, 2vw, 1.75rem);
+}
+#s2 .challenge-card {
+  background: var(--bg-2);
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  padding: clamp(1.25rem, 2.2vw, 2.25rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.75rem, 1.2vw, 1rem);
+}
+#s2 .challenge-card .cc-visual {
+  width: 100%;
+  height: clamp(55px, 8vh, 80px);
+  display: flex;
+  align-items: center;
+}
+#s2 .challenge-card .cc-visual svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+#s2 .challenge-card .cc-title {
+  font-family: var(--font-d);
+  font-size: var(--t-h3);
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.2;
+}
+#s2 .challenge-card .cc-body {
+  font-size: var(--t-small);
+  color: var(--text-dim);
+  line-height: 1.65;
+}
+
+/* ============================================
+   SLIDE 03 — MEET ECHO (solution intro)
+   ============================================ */
+#s_intro { background: var(--bg); }
+#s_intro .slide-content { justify-content: flex-start; }
+#s_intro .intro-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: baseline;
+  gap: clamp(0.75rem, 2vw, 1.75rem);
+  margin-bottom: clamp(0.75rem, 1.5vw, 1.25rem);
+  flex-wrap: wrap;
+}
+#s_intro .intro-hl {
+  font-family: var(--font-d);
+  font-size: clamp(1.2rem, 2.2vw, 2rem);
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--text);
+  margin: 0;
+}
+#s_intro .intro-hl .echo-accent { color: var(--accent); }
+#s_intro .screen-grid {
+  display: grid;
+  grid-template-columns: 1.7fr 1fr;
+  grid-template-rows: 1fr;
+  gap: clamp(0.75rem, 1.5vw, 1.25rem);
+  flex: 1;
+  min-height: 0;
+}
+#s_intro .screen-side {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.75rem, 1.5vw, 1.25rem);
+  min-height: 0;
+}
+#s_intro .screen-ph {
+  background: var(--bg-2);
+  border: 1.5px dashed var(--bg-3);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.4rem, 0.8vw, 0.65rem);
+  transition: border-color 0.25s;
+  overflow: hidden;
+}
+#s_intro .screen-ph:hover { border-color: rgba(23,61,237,0.3); }
+#s_intro .screen-ph.hero {
+  border-color: rgba(23,61,237,0.22);
+  background: rgba(23,61,237,0.025);
+  height: 100%;
+}
+#s_intro .screen-side .screen-ph { flex: 1; }
+#s_intro .screen-ph .ph-icon {
+  width: clamp(32px, 3.5vw, 50px);
+  height: clamp(32px, 3.5vw, 50px);
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(23,61,237,0.08);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+#s_intro .screen-ph .ph-icon svg {
+  width: clamp(16px, 1.8vw, 26px);
+  height: clamp(16px, 1.8vw, 26px);
+  stroke: var(--accent);
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+#s_intro .screen-ph .ph-label {
+  font-family: var(--font-d);
+  font-size: var(--t-h3);
+  font-weight: 600;
+  color: var(--text-dim);
+  text-align: center;
+  padding: 0 1em;
+}
+#s_intro .screen-ph .ph-tag {
+  font-size: var(--t-label);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(23,61,237,0.5);
+  text-align: center;
+}
+@media (max-width: 700px) {
+  #s_intro .screen-grid { grid-template-columns: 1fr; }
+  #s_intro .screen-ph.hero { min-height: 180px; }
+}
+
+/* ============================================
+   SLIDE 04 — WHAT IS ECHO
+   ============================================ */
+#s3 { background: var(--bg); }
+#s3 .definition {
+  font-family: var(--font-d);
+  font-size: clamp(1.4rem, 3vw, 2.6rem);
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--text);
+  max-width: 22em;
+  margin-bottom: clamp(1.5rem, 3vw, 3rem);
+}
+#s3 .definition em {
+  font-style: normal;
+  color: var(--accent);
+}
+#s3 .pillars {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(0.75rem, 1.5vw, 1.25rem);
+}
+#s3 .pillar {
+  background: var(--bg-2);
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  padding: clamp(0.9rem, 1.8vw, 1.5rem);
+}
+#s3 .pillar .p-icon {
+  width: clamp(32px, 3.5vw, 44px);
+  height: clamp(32px, 3.5vw, 44px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(23,61,237,0.08);
+  border: 1px solid rgba(23,61,237,0.18);
+  border-radius: 8px;
+  margin-bottom: clamp(0.6rem, 1vw, 0.9rem);
+  flex-shrink: 0;
+}
+#s3 .pillar .p-icon svg {
+  width: clamp(15px, 1.6vw, 22px);
+  height: clamp(15px, 1.6vw, 22px);
+  stroke: var(--accent);
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+#s3 .pillar .p-title {
+  font-family: var(--font-d);
+  font-size: var(--t-h3);
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.25em;
+}
+#s3 .pillar .p-body {
+  font-size: var(--t-small);
+  color: var(--text-dim);
+  line-height: 1.55;
+}
+@media (max-width: 700px) {
+  #s3 .pillars { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ============================================
+   SLIDE 04 — THE OWNPATH DIFFERENCE
+   ============================================ */
+#s4 { background: var(--bg); position: relative; overflow: hidden; }
+
+/* Giant ghost × — depth / brand texture */
+#s4 .s4-ghost {
+  position: absolute;
+  right: clamp(-4rem, -6vw, -6rem);
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-d);
+  font-size: clamp(30rem, 68vw, 72rem);
+  font-weight: 700;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(23,61,237,0.055);
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+#s4 .slide-content { position: relative; z-index: 1; }
+
+/* Header block */
+#s4 .s4-top {
+  margin-bottom: clamp(1.4rem, 2.5vw, 2.5rem);
+}
+#s4 .s4-sub {
+  font-family: var(--font-d);
+  font-size: clamp(1.5rem, 3vw, 2.6rem);
+  font-weight: 700;
+  color: var(--text-mid);
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  margin-top: 0.5em;
+  margin-bottom: 0.15em;
+}
+#s4 .s4-sub .x-mark { color: var(--accent); }
+
+/* "1 team, 10x outcome." — primary display statement */
+#s4 .s4-hero {
+  font-family: var(--font-d);
+  font-size: clamp(2.6rem, 6vw, 5.4rem);
+  font-weight: 700;
+  line-height: 1.0;
+  color: var(--text);
+  letter-spacing: -0.03em;
+}
+
+/* "10x" — accent colour only, no badge */
+#s4 .s4-hl {
+  color: var(--accent);
+}
+
+/* Cards */
+#s4 .diff-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(0.6rem, 1.2vw, 1rem);
+}
+#s4 .diff-card {
+  border-top: 2px solid var(--accent);
+  padding: clamp(0.9rem, 1.5vw, 1.5rem) 0;
+  padding-right: clamp(0.5rem, 1vw, 1rem);
+}
+#s4 .diff-card .dc-title {
+  font-family: var(--font-d);
+  font-size: var(--t-h3);
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.4em;
+  line-height: 1.2;
+}
+#s4 .diff-card .dc-body {
+  font-size: var(--t-small);
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+@media (max-width: 700px) {
+  #s4 .diff-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ============================================
+   SLIDE 06 — JOURNEY TIMELINE
+   ============================================ */
+#s5 { background: var(--bg); }
+#s5 .slide-content { justify-content: space-between; }
+
+#s5 .tl-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+/* All three rows share the same grid columns for pixel-perfect alignment */
+#s5 .tl-phase-row,
+#s5 .tl-dots-row,
+#s5 .tl-track {
+  display: grid;
+  grid-template-columns: 0.7fr 1fr 0.9fr 1fr 0.9fr;
+  gap: clamp(0.75rem, 1.5vw, 1.25rem);
+}
+
+/* ── Phase grouping row ── */
+#s5 .tl-phase-row {
+  margin-bottom: clamp(0.5rem, 1vh, 0.75rem);
+  align-items: center;
+}
+#s5 .tl-ph-pre {
+  font-family: var(--font-b);
+  font-size: var(--t-label);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-mid);
+  font-weight: 500;
+  background: rgba(11,11,11,0.04);
+  border: 1px solid var(--line-strong);
+  border-radius: 100px;
+  text-align: center;
+  padding: 0.28em 0.75em;
+}
+#s5 .tl-ph-p1 {
+  grid-column: 2 / span 3;
+  background: rgba(11,11,11,0.04);
+  border: 1px solid var(--line-strong);
+  border-radius: 100px;
+  text-align: center;
+  padding: 0.28em 1em;
+  font-family: var(--font-b);
+  font-size: var(--t-label);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-mid);
+  font-weight: 500;
+}
+#s5 .tl-ph-p2 {
+  background: var(--bg-2);
+  border: 1px solid var(--line-strong);
+  border-radius: 100px;
+  text-align: center;
+  padding: 0.28em 0.4em;
+  font-family: var(--font-b);
+  font-size: var(--t-label);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  font-weight: 500;
+}
+
+/* ── Dots row with horizontal progress line ── */
+#s5 .tl-dots-row {
+  position: relative;
+  height: clamp(24px, 3vh, 34px);
+  align-items: center;
+  margin-bottom: clamp(0.65rem, 1.3vh, 1rem);
+  flex-shrink: 0;
+}
+/* Gray base track */
+#s5 .tl-dots-row::before {
+  content: '';
+  position: absolute;
+  top: 50%; transform: translateY(-50%);
+  left: 0; right: 0;
+  height: 1.5px;
+  background: var(--bg-3);
+  z-index: 0;
+}
+/* Coral progress fill */
+#s5 .tl-done-fill {
+  position: absolute;
+  top: 50%; transform: translateY(-50%);
+  left: 0;
+  width: 69%;
+  height: 2px;
+  background: linear-gradient(to right, var(--accent), rgba(23,61,237,0.55));
+  z-index: 1;
+  border-radius: 2px;
+}
+#s5 .tl-dot-cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  z-index: 2;
+}
+#s5 .tl-nd {
+  width: clamp(10px, 1.3vw, 14px);
+  height: clamp(10px, 1.3vw, 14px);
+  border-radius: 50%;
+  background: var(--bg-3);
+  flex-shrink: 0;
+}
+#s5 .tl-nd.done { background: var(--accent); }
+#s5 .tl-nd.active {
+  width: clamp(14px, 1.8vw, 18px);
+  height: clamp(14px, 1.8vw, 18px);
+  background: var(--accent);
+  box-shadow: 0 0 0 4px rgba(23,61,237,0.2), 0 0 14px rgba(23,61,237,0.22);
+}
+#s5 .tl-nd.future {
+  background: var(--bg);
+  border: 1.5px solid var(--bg-3);
+}
+
+/* ── Node content below the dots ── */
+#s5 .tl-track {
+  flex-shrink: 0;
+  align-content: start;
+}
+#s5 .tl-node { display: flex; flex-direction: column; }
+#s5 .tl-date {
+  font-family: var(--font-b);
+  font-size: var(--t-label);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 0.3em;
+}
+#s5 .tl-title {
+  font-family: var(--font-d);
+  font-size: clamp(0.85rem, 1.55vw, 1.3rem);
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.15;
+  margin-bottom: 0.35em;
+}
+#s5 .tl-node.active .tl-title { color: var(--accent); }
+#s5 .tl-node.future .tl-title { color: var(--text-mid); }
+#s5 .tl-desc {
+  font-size: var(--t-small);
+  color: var(--text-dim);
+  line-height: 1.55;
+}
+
+/* Live now badge */
+#s5 .tl-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-family: var(--font-b);
+  font-size: var(--t-label);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--accent);
+  margin-top: 0.55em;
+}
+#s5 .tl-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+  animation: tl-pulse 2s ease-in-out infinite;
+}
+@keyframes tl-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.45; transform: scale(0.65); }
+}
+
+/* Summary statement */
+#s5 .tl-summary {
+  flex-shrink: 0;
+  margin-top: clamp(1.1rem, 2.2vh, 2rem);
+  font-family: var(--font-d);
+  font-size: clamp(1.05rem, 2.1vw, 1.8rem);
+  color: var(--text-mid);
+  font-weight: 500;
+  line-height: 1.25;
+}
+#s5 .tl-summary strong { color: var(--text); }
+
+/* ============================================
+   ECHO STORY — 3-PART NARRATIVE (sv1–sv3)
+   ============================================ */
+.sv-slide { background: var(--bg); }
+.sv-slide .slide-content { justify-content: flex-start; position: relative; z-index: 1; }
+
+/* Large ghost chapter number — decorative watermark */
+.sv-slide .sv-ghost-num {
+  position: absolute;
+  top: clamp(-1.5rem, -2vh, -0.5rem);
+  right: var(--pad);
+  font-family: var(--font-d);
+  font-size: clamp(9rem, 20vw, 20rem);
+  font-weight: 700;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(11,11,11,0.06);
+  line-height: 1;
+  letter-spacing: -0.05em;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+/* Header: tag + title + desc + pills */
+.sv-slide .sv-header {
+  flex-shrink: 0;
+  margin-bottom: clamp(0.6rem, 1.2vw, 1rem);
+}
+.sv-slide .sv-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.5rem, 1vw, 0.75rem);
+  margin-bottom: clamp(0.35rem, 0.7vw, 0.6rem);
+  flex-wrap: wrap;
+}
+.sv-slide .sv-step {
+  font-family: var(--font-b);
+  font-size: var(--t-label);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  background: var(--bg-2);
+  border: 1px solid var(--line-strong);
+  border-radius: 100px;
+  padding: 0.28em 0.85em;
+  color: var(--text-mid);
+}
+.sv-slide .sv-title {
+  font-family: var(--font-d);
+  font-size: clamp(1.45rem, 2.8vw, 2.5rem);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: clamp(0.3rem, 0.6vw, 0.5rem);
+}
+.sv-slide .sv-desc {
+  font-size: var(--t-body);
+  color: var(--text-mid);
+  line-height: 1.6;
+  max-width: 66ch;
+  margin-bottom: clamp(0.4rem, 0.8vw, 0.65rem);
+}
+.sv-slide .sv-points {
+  display: flex;
+  gap: clamp(0.4rem, 0.8vw, 0.65rem);
+  flex-wrap: wrap;
+}
+.sv-slide .sv-point {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-size: var(--t-small);
+  font-weight: 500;
+  color: var(--text-mid);
+  background: var(--bg-2);
+  border-radius: 6px;
+  padding: 0.28em 0.7em;
+}
+.sv-slide .sv-point::before {
+  content: '';
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+/* Callout note (used on pivot slide) */
+.sv-slide .sv-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55em;
+  background: rgba(23,61,237,0.05);
+  border: 1px solid rgba(23,61,237,0.18);
+  border-radius: 8px;
+  padding: clamp(0.45rem, 0.9vw, 0.7rem) clamp(0.6rem, 1.2vw, 0.95rem);
+  font-size: var(--t-small);
+  color: var(--text-mid);
+  line-height: 1.55;
+  max-width: 56ch;
+}
+.sv-slide .sv-note em { color: var(--accent); font-style: normal; font-weight: 500; }
+
+/* Screenshot zone — fills remaining height */
+.sv-slide .sv-screens {
+  display: grid;
+  grid-template-columns: 1.65fr 1fr;
+  gap: clamp(0.6rem, 1.2vw, 1rem);
+  flex: 1;
+  min-height: 0;
+}
+.sv-slide .sv-col {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.6rem, 1.2vw, 1rem);
+  min-height: 0;
+}
+.sv-slide .sv-col .sv-ph { flex: 1; }
+
+/* Placeholder card */
+.sv-slide .sv-ph {
+  background: var(--bg-2);
+  border: 1.5px dashed var(--bg-3);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.3rem, 0.6vw, 0.5rem);
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.sv-slide .sv-ph:hover { border-color: rgba(23,61,237,0.3); }
+.sv-slide .sv-ph .ph-icon {
+  width: clamp(1.2rem, 2vw, 1.8rem);
+  height: clamp(1.2rem, 2vw, 1.8rem);
+  opacity: 0.2;
+}
+.sv-slide .sv-ph .ph-icon svg {
+  width: 100%; height: 100%;
+  stroke: var(--text);
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.sv-slide .sv-ph .ph-label {
+  font-size: var(--t-label);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  font-weight: 500;
+}
+.sv-slide .sv-ph .ph-tag {
+  font-size: var(--t-label);
+  color: var(--text-dim);
+  opacity: 0.65;
+}
+
+/* Slide 3: coral accent on step chip + subtle screen tint */
+#sv3 .sv-step {
+  background: rgba(23,61,237,0.07);
+  border-color: rgba(23,61,237,0.22);
+  color: var(--accent);
+}
+#sv3 .sv-ph {
+  border-color: rgba(23,61,237,0.14);
+  background: rgba(23,61,237,0.018);
+}
+
+/* ============================================
+   SLIDES 06–09 — MILESTONE DETAIL (shared)
+   ============================================ */
+.milestone-slide { background: var(--bg); }
+.milestone-slide .ms-layout {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: clamp(3rem, 6vw, 6rem);
+  align-items: start;
+  height: 100%;
+  padding-top: clamp(0.5rem, 1vh, 1rem);
+}
+.milestone-slide .ms-left {}
+.milestone-slide .ms-phase {
+  font-family: var(--font-b);
+  font-size: var(--t-label);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: clamp(0.4rem, 0.8vw, 0.7rem);
+}
+.milestone-slide .ms-num {
+  font-family: var(--font-d);
+  font-size: clamp(5rem, 15vw, 13rem);
+  font-weight: 700;
+  line-height: 0.85;
+  color: rgba(11,11,11,0.05);
+  letter-spacing: -0.04em;
+  margin-bottom: clamp(-1rem, -2vh, -0.5rem);
+  -webkit-text-stroke: 1px rgba(11,11,11,0.1);
+}
+.milestone-slide.m1 .ms-num { color: rgba(11,11,11,0.05); -webkit-text-stroke: 1px rgba(11,11,11,0.1); }
+.milestone-slide.m2 .ms-num { color: rgba(11,11,11,0.05); -webkit-text-stroke: 1px rgba(23,61,237,0.2); }
+.milestone-slide.m3 .ms-num { color: rgba(11,11,11,0.05); -webkit-text-stroke: 1px rgba(23,61,237,0.2); }
+.milestone-slide .ms-title {
+  font-family: var(--font-d);
+  font-size: clamp(1.6rem, 3.5vw, 3rem);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.15;
+  margin-bottom: clamp(0.5rem, 1vw, 0.9rem);
+}
+.milestone-slide .ms-period {
+  font-family: var(--font-b);
+  font-size: var(--t-body);
+  color: var(--text-dim);
+  margin-bottom: clamp(1rem, 2vw, 1.75rem);
+}
+.milestone-slide .ms-right {}
+.milestone-slide .ms-right .ms-tag {
+  font-family: var(--font-b);
+  font-size: var(--t-label);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: clamp(0.5rem, 1vw, 0.9rem);
+}
+.milestone-slide .ms-bullets {
+  list-style: none;
+  display: flex; flex-direction: column;
+  gap: clamp(0.6rem, 1.2vw, 1rem);
+  margin-bottom: clamp(1rem, 2vw, 2rem);
+}
+.milestone-slide .ms-bullets li {
+  font-size: var(--t-body);
+  color: var(--text-mid);
+  line-height: 1.55;
+  padding-left: clamp(0.9rem, 1.5vw, 1.25rem);
+  position: relative;
+}
+.milestone-slide .ms-bullets li::before {
+  content: '—';
+  position: absolute; left: 0;
+  color: var(--accent);
+  font-size: 0.8em;
+}
+.milestone-slide.m3 .ms-bullets li::before { color: var(--accent-2); }
+.milestone-slide .ms-stats {
+  display: flex; gap: clamp(1rem, 2.5vw, 2.5rem);
+  flex-wrap: wrap;
+}
+.milestone-slide .ms-stat {
+  display: flex; flex-direction: column;
+}
+.milestone-slide .ms-stat .ms-sv {
+  font-family: var(--font-d);
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+}
+.milestone-slide.m3 .ms-stat .ms-sv { color: var(--accent-2); }
+.milestone-slide .ms-stat .ms-sl {
+  font-size: var(--t-small);
+  color: var(--text-dim);
+  margin-top: 0.2em;
+}
+
+/* Pre-phase variation */
+.milestone-slide.pre .ms-bullets li::before { color: var(--text-dim); }
+.milestone-slide.pre .ms-stat .ms-sv { color: var(--text-mid); }
+
+/* ============================================
+   SLIDE 10 — ECHO TODAY (features)
+   ============================================ */
+#s10 { background: var(--bg); }
+#s10 .feat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(0.6rem, 1.2vw, 1rem);
+  margin-top: clamp(1rem, 2vw, 1.75rem);
+}
+#s10 .feat-card {
+  background: var(--bg-2);
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  padding: clamp(0.9rem, 1.8vw, 1.5rem);
+  position: relative;
+  overflow: hidden;
+}
+#s10 .feat-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+#s10 .feat-card:hover::before { opacity: 1; }
+#s10 .feat-card.new::before { background: var(--accent-2); opacity: 1; }
+#s10 .feat-card .fc-icon {
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  margin-bottom: clamp(0.5rem, 0.9vw, 0.75rem);
+}
+#s10 .feat-card .fc-title {
+  font-family: var(--font-d);
+  font-size: var(--t-h3);
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.25em;
+  line-height: 1.2;
+}
+#s10 .feat-card .fc-body {
+  font-size: var(--t-small);
+  color: var(--text-dim);
+  line-height: 1.55;
+}
+#s10 .feat-card .fc-badge {
+  display: inline-block;
+  font-size: clamp(0.55rem, 0.7vw, 0.65rem);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-2);
+  background: rgba(23,61,237,0.08);
+  border: 1px solid rgba(23,61,237,0.2);
+  border-radius: 3px;
+  padding: 0.15em 0.5em;
+  margin-top: 0.5em;
+}
+@media (max-width: 800px) {
+  #s10 .feat-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ============================================
+   SLIDE 11 — ECOSYSTEM
+   ============================================ */
+#s11 { background: var(--bg); }
+#s11 .eco-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(0.75rem, 1.5vw, 1.25rem);
+  margin-top: clamp(1rem, 2vw, 1.75rem);
+  max-height: min(70vh, 520px);
+}
+#s11 .eco-card {
+  background: var(--bg-2);
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  padding: clamp(1.2rem, 2.2vw, 2rem);
+  display: flex; flex-direction: column;
+}
+#s11 .eco-card.primary { border-color: rgba(23,61,237,0.3); background: rgba(23,61,237,0.04); }
+#s11 .eco-card .ec-tag {
+  font-size: var(--t-label);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 0.5em;
+}
+#s11 .eco-card .ec-name {
+  font-family: var(--font-d);
+  font-size: var(--t-h3);
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: clamp(0.4rem, 0.8vw, 0.7rem);
+}
+#s11 .eco-card.primary .ec-name { color: var(--accent); }
+#s11 .eco-card .ec-status {
+  font-size: var(--t-label);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: clamp(0.5rem, 1vw, 0.9rem);
+}
+#s11 .ec-status.live { color: var(--accent-2); }
+#s11 .ec-status.poc  { color: #4969F5; }
+#s11 .ec-status.plan { color: var(--text-dim); }
+#s11 .eco-card .ec-body {
+  font-size: var(--t-small);
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+
+/* ============================================
+   FEATURE DETAIL SLIDES (ft1–ft7)
+   ============================================ */
+.ft-slide { background: var(--bg); }
+.ft-slide .slide-content {
+  justify-content: flex-start;
+  gap: clamp(0.35rem, 0.7vw, 0.55rem);
+}
+
+/* Eyebrow row */
+.ft-slide .ft-eyebrow {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: clamp(0.5rem, 1vw, 0.75rem);
+}
+.ft-slide .ft-step {
+  font-family: var(--font-b);
+  font-size: var(--t-label);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  background: var(--bg-2);
+  border: 1px solid var(--line-strong);
+  border-radius: 100px;
+  padding: 0.28em 0.85em;
+  color: var(--text-dim);
+}
+.ft-slide .ft-title {
+  flex-shrink: 0;
+  font-family: var(--font-d);
+  font-size: clamp(1.7rem, 3.4vw, 3rem);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+}
+.ft-slide .ft-desc {
+  flex-shrink: 0;
+  font-size: var(--t-body);
+  color: var(--text-mid);
+  line-height: 1.55;
+  max-width: 68ch;
+}
+
+/* Divider + main body below */
+.ft-slide .ft-body {
+  display: grid;
+  grid-template-columns: 0.48fr 1fr;
+  gap: clamp(1.5rem, 3vw, 3rem);
+  flex: 1;
+  min-height: 0;
+  border-top: 1px solid var(--line);
+  padding-top: clamp(0.6rem, 1.2vw, 1rem);
+}
+
+/* Left panel: accent number + key points */
+.ft-slide .ft-panel {
+  display: flex;
+  flex-direction: column;
+}
+.ft-slide .ft-num {
+  font-family: var(--font-d);
+  font-size: clamp(2.8rem, 6.5vw, 6rem);
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  margin-bottom: clamp(0.75rem, 1.5vw, 1.25rem);
+}
+.ft-slide .ft-points {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.4rem, 0.8vw, 0.65rem);
+}
+.ft-slide .ft-point {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6em;
+  font-size: var(--t-body);
+  color: var(--text-mid);
+  line-height: 1.45;
+}
+.ft-slide .ft-point::before {
+  content: '—';
+  color: var(--accent);
+  flex-shrink: 0;
+  font-weight: 400;
+}
+
+/* Right: screenshot zone — 1 primary top + 2 secondary bottom row */
+.ft-slide .ft-screens {
+  display: grid;
+  grid-template-rows: 1.5fr 1fr;
+  gap: clamp(0.6rem, 1.2vw, 1rem);
+  min-height: 0;
+}
+.ft-slide .ft-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(0.6rem, 1.2vw, 1rem);
+  min-height: 0;
+}
+.ft-slide .ft-ph {
+  background: var(--bg-2);
+  border: 1.5px dashed var(--bg-3);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.3rem, 0.55vw, 0.45rem);
+  overflow: hidden;
+  min-height: 0;
+  transition: border-color 0.2s;
+}
+.ft-slide .ft-ph:hover { border-color: rgba(23,61,237,0.3); }
+.ft-slide .ft-ph .ph-icon {
+  width: clamp(1.1rem, 1.8vw, 1.6rem);
+  height: clamp(1.1rem, 1.8vw, 1.6rem);
+  opacity: 0.18;
+}
+.ft-slide .ft-ph .ph-icon svg {
+  width: 100%; height: 100%;
+  stroke: var(--text); fill: none;
+  stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+}
+.ft-slide .ft-ph .ph-label {
+  font-size: var(--t-label);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  font-weight: 500;
+}
+.ft-slide .ft-ph .ph-tag {
+  font-size: var(--t-label);
+  color: var(--text-dim);
+  opacity: 0.6;
+}
+
+/* ============================================
+   SLIDE 17 — WORKFLOW COMPARISON
+   ============================================ */
+#s_compare { background: var(--bg); }
+#s_compare .slide-content {
+  gap: clamp(0.6rem, 1.2vw, 1.2rem);
+  justify-content: flex-start;
+}
+
+#s_compare .cmp-head { flex-shrink: 0; }
+#s_compare .cmp-title {
+  font-family: var(--font-d);
+  font-size: clamp(1.4rem, 2.8vw, 2.4rem);
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.025em;
+  margin-top: 0.3em;
+}
+
+/* Main arena */
+#s_compare .cmp-arena {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: clamp(1rem, 2.5vw, 2.5rem);
+  flex: 1;
+  min-height: 0;
+}
+
+/* Column panels */
+#s_compare .cmp-side {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.4rem, 0.8vw, 0.8rem);
+  padding: clamp(1rem, 1.6vw, 1.6rem);
+  border-radius: 12px;
+  min-height: 0;
+}
+#s_compare .cmp-trad { background: var(--bg-2); }
+#s_compare .cmp-echo-side {
+  background: var(--bg);
+  border: 1px solid rgba(23,61,237,0.15);
+}
+
+/* Column label */
+#s_compare .cmp-side-label {
+  font-family: var(--font-b);
+  font-size: var(--t-label);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+#s_compare .cmp-side-label--echo { color: var(--accent); }
+
+/* Flow */
+#s_compare .cmp-flow {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Nodes */
+#s_compare .cmp-node {
+  border: 1.5px solid var(--line-strong);
+  border-radius: 8px;
+  padding: clamp(0.5rem, 0.85vw, 0.85rem) clamp(0.7rem, 1.1vw, 1.1rem);
+  background: #fff;
+  flex-shrink: 0;
+}
+#s_compare .cmp-node--actor {
+  border-color: var(--text);
+  background: var(--text);
+  color: #fff;
+}
+#s_compare .cmp-node--output {
+  border-color: var(--accent);
+  background: rgba(23,61,237,0.07);
+}
+#s_compare .cmp-node--skip {
+  opacity: 0.22;
+  border-style: dashed;
+  position: relative;
+}
+#s_compare .cmp-node--skip::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  height: 1.5px;
+  width: 80%;
+  background: var(--text-dim);
+}
+
+/* Node internals */
+#s_compare .cmp-node-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75em;
+}
+#s_compare .cmp-node-title {
+  font-family: var(--font-d);
+  font-size: var(--t-body);
+  font-weight: 600;
+  color: inherit;
+  line-height: 1.2;
+}
+#s_compare .cmp-node--actor .cmp-node-title { color: #fff; }
+#s_compare .cmp-node--output .cmp-node-title { color: var(--accent); }
+#s_compare .cmp-node-sub {
+  font-size: var(--t-small);
+  color: var(--text-dim);
+  margin-top: 0.2em;
+}
+
+/* Resource bubbles */
+#s_compare .cmp-bubbles {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+#s_compare .cmp-bub {
+  width: clamp(20px, 2.2vw, 26px);
+  height: clamp(20px, 2.2vw, 26px);
+  border-radius: 50%;
+  border: 2px solid #fff;
+  margin-left: -6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(7px, 0.7vw, 10px);
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0;
+  flex-shrink: 0;
+}
+#s_compare .cmp-bubbles .cmp-bub:first-child { margin-left: 0; }
+#s_compare .bub-d { background: var(--accent); }
+#s_compare .bub-v { background: var(--navy); }
+#s_compare .bub-d-single { background: rgba(23,61,237,0.6); }
+
+/* Vertical connector lines */
+#s_compare .cmp-connector {
+  width: 1.5px;
+  height: clamp(18px, 2.5vh, 30px);
+  background: var(--line-strong);
+  margin: 0 auto;
+  position: relative;
+  flex-shrink: 0;
+}
+#s_compare .cmp-connector--echo {
+  background: var(--accent);
+  height: clamp(28px, 4vh, 44px);
+}
+#s_compare .cmp-connector--ghost { background: var(--line); }
+
+/* Echo badge on connector */
+#s_compare .echo-chip {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--accent);
+  color: #fff;
+  font-size: clamp(0.52rem, 0.68vw, 0.64rem);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-radius: 100px;
+  padding: 0.22em 0.7em;
+  white-space: nowrap;
+}
+
+/* Divider */
+#s_compare .cmp-sep {
+  width: 1px;
+  background: var(--line-strong);
+  align-self: stretch;
+  margin: 0;
+}
+
+/* Timeline badge */
+#s_compare .cmp-timeline { margin-top: auto; padding-top: clamp(0.5rem, 0.8vw, 0.8rem); flex-shrink: 0; }
+#s_compare .tl-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-family: var(--font-b);
+  font-size: var(--t-label);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: 100px;
+  padding: 0.3em 0.9em;
+}
+#s_compare .tl-slow { background: rgba(11,11,11,0.08); color: var(--text-mid); }
+#s_compare .tl-fast { background: rgba(23,61,237,0.1); color: var(--accent); }
+
+/* Campaign examples bar */
+#s_compare .cmp-cases {
+  display: flex;
+  gap: clamp(1rem, 2vw, 2rem);
+  padding-top: clamp(0.6rem, 1vw, 1rem);
+  border-top: 1px solid var(--line);
+  flex-shrink: 0;
+  align-items: center;
+}
+#s_compare .cmp-case {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6em;
+  flex: 1;
+}
+#s_compare .cmp-case-brand {
+  font-family: var(--font-d);
+  font-size: var(--t-body);
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+#s_compare .cmp-case-brand--echo { color: var(--accent); }
+#s_compare .cmp-case-detail {
+  font-size: var(--t-small);
+  color: var(--text-dim);
+  line-height: 1.4;
+}
+#s_compare .cmp-case-note {
+  font-size: var(--t-small);
+  color: var(--text-dim);
+  font-style: italic;
+  flex-shrink: 0;
+}
+#s_compare .cmp-case-sep {
+  width: 1px;
+  height: clamp(1.5rem, 2.5vh, 2.5rem);
+  background: var(--line-strong);
+  flex-shrink: 0;
+}
+
+/* ============================================
+   SLIDE 12 — HARD KPIs
+   ============================================ */
+#s12 { background: var(--bg); }
+#s12 .kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(0.75rem, 1.5vw, 1.5rem);
+  margin-top: clamp(1rem, 2vw, 1.75rem);
+}
+#s12 .kpi-card {
+  background: var(--bg-2);
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  padding: clamp(1.2rem, 2vw, 2rem);
+}
+#s12 .kpi-card .kv {
+  font-family: var(--font-d);
+  font-size: clamp(2.5rem, 7vw, 5.5rem);
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+}
+#s12 .kpi-card .kl {
+  font-family: var(--font-b);
+  font-size: var(--t-h3);
+  font-weight: 500;
+  color: var(--text);
+  margin: 0.3em 0 0.2em;
+}
+#s12 .kpi-card .ks {
+  font-size: var(--t-small);
+  color: var(--text-dim);
+  line-height: 1.55;
+}
+#s12 .source-note {
+  font-size: var(--t-label);
+  color: var(--text-dim);
+  margin-top: clamp(0.75rem, 1.5vw, 1.25rem);
+  opacity: 0.6;
+}
+
+/* ============================================
+   SLIDE 13 — SOFT KPIs
+   ============================================ */
+#s13 { background: var(--bg); }
+#s13 .soft-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(0.6rem, 1.2vw, 1rem);
+  margin-top: clamp(1rem, 2vw, 1.75rem);
+}
+#s13 .soft-card {
+  border-top: 2px solid var(--accent-2);
+  padding-top: clamp(0.9rem, 1.5vw, 1.25rem);
+}
+#s13 .soft-card .sv {
+  font-family: var(--font-d);
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 700;
+  color: var(--accent-2);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+}
+#s13 .soft-card .sl {
+  font-family: var(--font-b);
+  font-size: var(--t-body);
+  font-weight: 500;
+  color: var(--text);
+  margin: 0.35em 0 0.2em;
+}
+#s13 .soft-card .sd {
+  font-size: var(--t-small);
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+#s13 .soft-divider {
+  margin: clamp(1.2rem, 2.5vw, 2.5rem) 0 clamp(0.75rem, 1.5vw, 1.25rem);
+  border: none;
+  border-top: 1px solid var(--line-strong);
+}
+#s13 .soft-note {
+  font-size: var(--t-small);
+  color: var(--text-dim);
+  line-height: 1.6;
+  max-width: 80ch;
+}
+@media (max-width: 700px) {
+  #s13 .soft-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ============================================
+   SLIDE 14 — PHASE 2 ROADMAP
+   ============================================ */
+#s14 { background: var(--bg); }
+#s14 .roadmap-wrap {
+  display: grid;
+  grid-template-columns: 1.1fr 1.1fr 0.8fr;
+  gap: clamp(0.5rem, 1vw, 0.9rem);
+  margin-top: clamp(1rem, 2vw, 1.75rem);
+  align-items: start;
+}
+#s14 .rm-col {
+  background: var(--bg-2);
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  padding: clamp(1rem, 1.8vw, 1.6rem);
+  display: flex; flex-direction: column;
+  gap: clamp(0.5rem, 0.9vw, 0.75rem);
+}
+#s14 .rm-col.current { border-color: rgba(23,61,237,0.3); background: rgba(23,61,237,0.04); }
+#s14 .rm-col.next    { border-color: rgba(23,61,237,0.25); background: rgba(23,61,237,0.03); }
+#s14 .rm-header {
+  display: flex; align-items: center; gap: 0.5em;
+  margin-bottom: 0.2em;
+}
+#s14 .rm-badge {
+  font-size: var(--t-label);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 500;
+  padding: 0.2em 0.6em;
+  border-radius: 3px;
+}
+#s14 .rm-badge.current { color: var(--accent); background: rgba(23,61,237,0.12); }
+#s14 .rm-badge.next    { color: var(--accent-2); background: rgba(23,61,237,0.1); }
+#s14 .rm-badge.future  { color: var(--text-dim); background: var(--bg-3); }
+#s14 .rm-product {
+  font-family: var(--font-d);
+  font-size: clamp(0.88rem, 1.3vw, 1.1rem);
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  padding-bottom: clamp(0.4rem, 0.6vw, 0.6rem);
+  border-bottom: 1px solid var(--line-strong);
+  margin-bottom: clamp(0.3rem, 0.5vw, 0.5rem);
+}
+#s14 .rm-col.current .rm-product { color: var(--accent); }
+#s14 .rm-col.next .rm-product { color: var(--accent); }
+#s14 .rm-title {
+  font-family: var(--font-d);
+  font-size: var(--t-h3);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+}
+#s14 .rm-date {
+  font-size: var(--t-label);
+  color: var(--text-dim);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+#s14 .rm-items {
+  list-style: none;
+  display: flex; flex-direction: column;
+  gap: clamp(0.35rem, 0.6vw, 0.5rem);
+}
+#s14 .rm-items li {
+  font-size: var(--t-small);
+  color: var(--text-dim);
+  padding-left: 1em;
+  position: relative;
+  line-height: 1.45;
+}
+#s14 .rm-items li::before {
+  content: '▸';
+  position: absolute; left: 0;
+  color: var(--text-dim);
+  font-size: 0.7em;
+  top: 0.15em;
+}
+#s14 .rm-col.current .rm-items li::before { color: var(--accent); }
+#s14 .rm-col.next .rm-items li::before { color: var(--accent-2); }
+#s14 .rm-more {
+  font-size: var(--t-small);
+  color: var(--text-dim);
+  font-style: italic;
+  margin-top: 0.25em;
+}
+@media (max-width: 800px) {
+  #s14 .roadmap-wrap { grid-template-columns: 1fr; }
+}
+
+/* ============================================
+   SLIDE 15 — THE ASK / CTA
+   ============================================ */
+#s15 { background: var(--bg); overflow: hidden; }
+#s15 .cta-bg {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 30% 50%, rgba(23,61,237,0.08) 0%, transparent 60%),
+              radial-gradient(ellipse at 70% 60%, rgba(23,61,237,0.04) 0%, transparent 55%);
+  pointer-events: none;
+}
+#s15 .cta-content {
+  flex: 1;
+  display: flex; flex-direction: column;
+  justify-content: center;
+  padding: var(--pad);
+  position: relative; z-index: 1;
+}
+#s15 .cta-headline {
+  font-family: var(--font-d);
+  font-size: clamp(2.5rem, 7vw, 7rem);
+  font-weight: 700;
+  line-height: 0.95;
+  color: var(--text);
+  letter-spacing: -0.03em;
+  margin-bottom: clamp(1.5rem, 3vw, 3rem);
+}
+#s15 .cta-headline .hl-2 { color: var(--accent); display: block; }
+#s15 .cta-steps {
+  display: flex; gap: clamp(1.5rem, 4vw, 4rem);
+  margin-bottom: clamp(2rem, 4vw, 4rem);
+  flex-wrap: wrap;
+}
+#s15 .cta-step {
+  display: flex; flex-direction: column; gap: 0.25em;
+}
+#s15 .cta-step .cs-num {
+  font-family: var(--font-b);
+  font-size: var(--t-label);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+#s15 .cta-step .cs-action {
+  font-family: var(--font-d);
+  font-size: var(--t-h3);
+  font-weight: 600;
+  color: var(--text);
+}
+#s15 .cta-step .cs-date {
+  font-size: var(--t-small);
+  color: var(--text-dim);
+}
+#s15 .cta-tagline {
+  font-family: var(--font-b);
+  font-size: var(--t-body);
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+  border-top: 1px solid var(--line-strong);
+  padding-top: clamp(0.75rem, 1.5vw, 1.25rem);
+  max-width: 55ch;
+}
+
+/* ============================================
+   HIDDEN SLIDES (temporarily off)
+   ============================================ */
+.slide-off { display: none !important; }
+
+/* ============================================
+   TECH STACK SLIDE
+   ============================================ */
+#s_tech { background: var(--bg); }
+#s_tech .slide-content { justify-content: flex-start; }
+
+/* Two-column layout */
+#s_tech .ts-layout {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: clamp(3rem, 6vw, 6rem);
+  align-items: start;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+}
+
+/* LEFT — scale statement */
+#s_tech .ts-headline {
+  font-family: var(--font-d);
+  font-size: clamp(2.4rem, 5.5vw, 5rem);
+  font-weight: 700;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  margin: clamp(0.5rem, 1vw, 0.75rem) 0 clamp(1.75rem, 3.5vw, 3.25rem);
+}
+#s_tech .ts-headline .hl-scale { color: var(--accent); }
+
+#s_tech .ts-attrs {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2vw, 1.75rem);
+}
+#s_tech .ts-attr {
+  padding-left: clamp(0.9rem, 1.8vw, 1.5rem);
+  border-left: 2px solid var(--accent);
+}
+#s_tech .ts-attr-label {
+  font-family: var(--font-d);
+  font-size: var(--t-h3);
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.2em;
+}
+#s_tech .ts-attr-desc {
+  font-size: var(--t-small);
+  color: var(--text-dim);
+  line-height: 1.55;
+  max-width: 30ch;
+}
+
+/* RIGHT — 2×3 card grid */
+#s_tech .ts-right {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+#s_tech .ts-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(0.5rem, 0.9vw, 0.85rem);
+  flex: 1;
+  min-height: 0;
+  align-content: stretch;
+}
+#s_tech .ts-item {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(0.85rem, 1.3vw, 1.2rem);
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  border-top: 2.5px solid var(--tc, var(--accent));
+  position: relative;
+  min-height: 0;
+}
+#s_tech .ts-num { display: none; }
+#s_tech .ts-icon {
+  width: clamp(28px, 2.8vw, 36px);
+  height: clamp(28px, 2.8vw, 36px);
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--tc-bg, rgba(23,61,237,0.07));
+  flex-shrink: 0;
+  margin-bottom: clamp(0.55rem, 0.85vw, 0.85rem);
+}
+#s_tech .ts-icon svg {
+  width: clamp(13px, 1.3vw, 17px);
+  height: clamp(13px, 1.3vw, 17px);
+  stroke: var(--tc, var(--accent));
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+#s_tech .ts-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+  flex: 1;
+  min-width: 0;
+}
+#s_tech .ts-name {
+  font-family: var(--font-d);
+  font-size: clamp(0.82rem, 1.25vw, 1.05rem);
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.25;
+  padding-right: 3.5em;
+}
+#s_tech .ts-desc {
+  font-size: var(--t-small);
+  color: var(--text-dim);
+  line-height: 1.45;
+}
+#s_tech .ts-cat {
+  position: absolute;
+  top: clamp(0.85rem, 1.3vw, 1.2rem);
+  right: clamp(0.85rem, 1.3vw, 1.2rem);
+  font-family: var(--font-b);
+  font-size: var(--t-label);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tc, var(--text-dim));
+  font-weight: 600;
+}
+
+/* Per-tech brand colors */
+#s_tech .tc-next   { --tc: #000051;  --tc-bg: rgba(0,0,81,0.06); }
+#s_tech .tc-pg     { --tc: #336791;  --tc-bg: rgba(51,103,145,0.08); }
+#s_tech .tc-tiptap { --tc: #6366F1;  --tc-bg: rgba(99,102,241,0.08); }
+#s_tech .tc-github { --tc: #4A535C;  --tc-bg: rgba(74,83,92,0.07); }
+#s_tech .tc-openai { --tc: #10A37F;  --tc-bg: rgba(16,163,127,0.08); }
+#s_tech .tc-azure  { --tc: #0078D4;  --tc-bg: rgba(0,120,212,0.08); }
+
+/* ============================================
+   OWNPATH BRAND GEOMETRIC MOTIF
+   ============================================ */
+
+/* Squares + 45° diamonds grid mark */
+.op-grid-mark {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+.op-grid-mark svg { display: block; }
+
+/* Cover slide: brand mark top-right, slight corner bleed */
+#s1 .op-grid-mark {
+  top: clamp(-0.5rem, -1vw, -1rem);
+  right: clamp(-0.5rem, -1vw, -1rem);
+  width: clamp(160px, 20vw, 240px);
+  opacity: 1;
+}
+
+/* CTA slide: brand mark bottom-left */
+#s15 .op-grid-mark {
+  bottom: clamp(3rem, 6vw, 6rem);
+  right: var(--pad);
+  width: clamp(80px, 10vw, 130px);
+  opacity: 0.55;
+}
+
+/* ============================================
+   VISUAL ENHANCEMENTS — brand depth
+   ============================================ */
+
+/* Thicker progress bar */
+#progress-bar { height: 2px; }
+
+/* Active nav dot: blue glow */
+#nav-dots button.active {
+  background: var(--accent);
+  box-shadow: 0 0 0 3px rgba(23,61,237,0.18);
+}
+
+/* Very subtle blue bloom — brand-consistent */
+.slide {
+  background-image: radial-gradient(ellipse at 88% 5%, rgba(23,61,237,0.03) 0%, transparent 45%);
+}
+
+/* Cards: clean neutral shadow on white bg */
+#s2 .challenge-card,
+#s3 .pillar,
+#s10 .feat-card,
+#s11 .eco-card,
+#s12 .kpi-card,
+#s14 .rm-col {
+  border: none;
+  box-shadow: 0 1px 3px rgba(11,11,11,0.07), 0 3px 12px rgba(11,11,11,0.06);
+}
+
+/* Eco primary: blue shadow */
+#s11 .eco-card.primary {
+  border: none;
+  box-shadow: 0 2px 12px rgba(23,61,237,0.12), 0 0 0 1.5px rgba(23,61,237,0.22);
+}
+
+/* Roadmap current: blue shadow */
+#s14 .rm-col.current {
+  box-shadow: 0 2px 12px rgba(23,61,237,0.1), 0 0 0 1.5px rgba(23,61,237,0.18);
+  border: none;
+}
+
+/* CTA slide: soft blue wash */
+#s15 .cta-bg {
+  background:
+    radial-gradient(ellipse at 18% 55%, rgba(23,61,237,0.08) 0%, transparent 58%),
+    radial-gradient(ellipse at 75% 30%, rgba(0,0,81,0.05) 0%, transparent 52%);
+}
+
+/* Diff cards: bottom padding for balance */
+#s4 .diff-card { padding-bottom: clamp(0.9rem, 1.5vw, 1.5rem); }
+
+/* Pillar icon hover */
+#s3 .pillar:hover { box-shadow: 0 4px 20px rgba(11,11,11,0.08); }
+
+/* Feature card hover */
+#s10 .feat-card:hover {
+  box-shadow: 0 4px 20px rgba(11,11,11,0.09);
+  transform: translateY(-1px);
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+/* Accent border on key cards */
+#s11 .eco-card.primary,
+#s14 .rm-col.current {
+  border-top: 2px solid var(--accent) !important;
+}
+
+/* ============================================
+   EDIT MODE — in-browser text editing
+   ============================================ */
+html.edit-mode { scroll-snap-type: none; }
+
+/* Show all reveal content immediately while editing */
+body.edit-mode .reveal,
+body.edit-mode .reveal-left,
+body.edit-mode .reveal-scale {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+/* Let tall slides scroll so every block is reachable */
+body.edit-mode .slide { overflow: visible; }
+
+/* Editable affordances */
+body.edit-mode [contenteditable="true"] {
+  outline: 1px dashed transparent;
+  transition: outline 0.15s ease;
+  cursor: text;
+  min-height: 1em;
+  border-radius: 2px;
+}
+body.edit-mode [contenteditable="true"]:hover {
+  outline: 1px dashed var(--text-dim);
+}
+body.edit-mode [contenteditable="true"]:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Amber progress bar signals edit mode is on */
+body.edit-mode #progress-bar { background: #D4A017; }
+
+/* Edit-mode controls */
+.edit-toggle-btn {
+  position: fixed;
+  bottom: clamp(0.85rem, 2vw, 1.5rem);
+  left: clamp(0.85rem, 2vw, 1.5rem);
+  z-index: 1000;
+  font-family: var(--font-b);
+  font-size: var(--t-label);
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: var(--text-dim);
+  background: var(--bg-2);
+  border: 1px solid var(--line-strong);
+  padding: 0.4em 0.9em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.edit-toggle-btn:hover {
+  color: var(--text);
+  border-color: var(--text);
+}
+.edit-toggle-btn.active {
+  color: #fff;
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.edit-export-group {
+  position: fixed;
+  bottom: clamp(0.85rem, 2vw, 1.5rem);
+  left: calc(clamp(0.85rem, 2vw, 1.5rem) + 5.25rem);
+  z-index: 1000;
+  display: none;
+  gap: 0.4rem;
+}
+body.edit-mode .edit-export-group { display: flex; }
+
+.edit-export-btn {
+  font-family: var(--font-b);
+  font-size: var(--t-label);
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: var(--text-dim);
+  background: var(--bg-2);
+  border: 1px solid var(--line-strong);
+  padding: 0.4em 0.9em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.edit-export-btn:hover {
+  color: var(--text);
+  border-color: var(--text);
+}
+
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<nav id="nav-dots" aria-label="Slide navigation"></nav>
+
+<!-- Edit-mode controls -->
+<button class="edit-toggle-btn" id="editToggle" title="Toggle edit mode (Ctrl/Cmd+E)">EDIT</button>
+<div class="edit-export-group">
+  <button class="edit-export-btn" id="exportHTML" title="Download edited HTML">SAVE HTML</button>
+  <button class="edit-export-btn" id="resetEdits" title="Discard all edits">RESET</button>
+</div>
+
+<!-- ══════════════════════════════════════
+     SLIDE 01 — TITLE
+══════════════════════════════════════ -->
+<section class="slide no-accent" id="s1" aria-label="Title slide">
+
+  <!-- Ownpath brand geometric mark — 5×4 grid, checker active squares + diamonds at joints -->
+  <div class="op-grid-mark reveal d4" aria-hidden="true">
+    <svg viewBox="0 0 150 118" xmlns="http://www.w3.org/2000/svg">
+      <!-- Ghost grid — all 20 positions -->
+      <g fill="#0B0B0B" opacity="0.06">
+        <rect x="0"   y="0"  width="22" height="22" rx="1"/>
+        <rect x="32"  y="0"  width="22" height="22" rx="1"/>
+        <rect x="64"  y="0"  width="22" height="22" rx="1"/>
+        <rect x="96"  y="0"  width="22" height="22" rx="1"/>
+        <rect x="128" y="0"  width="22" height="22" rx="1"/>
+        <rect x="0"   y="32" width="22" height="22" rx="1"/>
+        <rect x="32"  y="32" width="22" height="22" rx="1"/>
+        <rect x="64"  y="32" width="22" height="22" rx="1"/>
+        <rect x="96"  y="32" width="22" height="22" rx="1"/>
+        <rect x="128" y="32" width="22" height="22" rx="1"/>
+        <rect x="0"   y="64" width="22" height="22" rx="1"/>
+        <rect x="32"  y="64" width="22" height="22" rx="1"/>
+        <rect x="64"  y="64" width="22" height="22" rx="1"/>
+        <rect x="96"  y="64" width="22" height="22" rx="1"/>
+        <rect x="128" y="64" width="22" height="22" rx="1"/>
+        <rect x="0"   y="96" width="22" height="22" rx="1"/>
+        <rect x="32"  y="96" width="22" height="22" rx="1"/>
+        <rect x="64"  y="96" width="22" height="22" rx="1"/>
+        <rect x="96"  y="96" width="22" height="22" rx="1"/>
+        <rect x="128" y="96" width="22" height="22" rx="1"/>
+      </g>
+      <!-- Active black squares — checker pattern radiating from top-right -->
+      <g fill="#0B0B0B" opacity="0.62">
+        <rect x="0"   y="0"  width="22" height="22" rx="1"/>
+        <rect x="64"  y="0"  width="22" height="22" rx="1"/>
+        <rect x="128" y="0"  width="22" height="22" rx="1"/>
+        <rect x="32"  y="32" width="22" height="22" rx="1"/>
+        <rect x="96"  y="32" width="22" height="22" rx="1"/>
+        <rect x="0"   y="64" width="22" height="22" rx="1"/>
+        <rect x="64"  y="64" width="22" height="22" rx="1"/>
+        <rect x="128" y="64" width="22" height="22" rx="1"/>
+        <rect x="32"  y="96" width="22" height="22" rx="1"/>
+      </g>
+      <!-- Blue diamonds — precisely at each diagonal joint between active squares -->
+      <g fill="#173DED">
+        <polygon points="27,16  38,27  27,38  16,27"/>
+        <polygon points="91,16  102,27 91,38  80,27"/>
+        <polygon points="59,48  70,59  59,70  48,59"/>
+        <polygon points="123,48 134,59 123,70 112,59"/>
+        <polygon points="27,80  38,91  27,102 16,91"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="hero-word reveal d1" aria-hidden="true">
+    <span class="echo-e">E</span>CHO
+  </div>
+
+  <div class="sub-block">
+    <p class="sub-line reveal d2">Design System Intelligence Platform</p>
+    <div class="client-line reveal d3">
+      <span>Ownpath</span>
+      <span class="sep"></span>
+      <span>Hero Motorcorp VIDA</span>
+      <span class="sep"></span>
+      <span>May 2026</span>
+    </div>
+  </div>
+
+  <div class="slide-bar"><span>01 / 22</span></div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SLIDE 02 — THE CHALLENGE
+══════════════════════════════════════ -->
+<section class="slide grid-bg" id="s2" aria-label="The challenge">
+  <div class="slide-content">
+    <span class="tag reveal d1">The Challenge</span>
+    <h2 class="s2-headline reveal d2">Brand at scale<br>has no centre.</h2>
+    <div class="challenge-grid">
+
+      <!-- Card 1: Fragmentation — scattered nodes, no hub -->
+      <div class="challenge-card reveal-scale d3">
+        <div class="cc-visual">
+          <svg viewBox="0 0 110 58" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <!-- Outer scattered nodes -->
+            <circle cx="8"  cy="29" r="5" fill="none" stroke="#C2C3CC" stroke-width="1.5"/>
+            <circle cx="30" cy="7"  r="5" fill="none" stroke="#C2C3CC" stroke-width="1.5"/>
+            <circle cx="80" cy="7"  r="5" fill="none" stroke="#C2C3CC" stroke-width="1.5"/>
+            <circle cx="102" cy="29" r="5" fill="none" stroke="#C2C3CC" stroke-width="1.5"/>
+            <circle cx="55" cy="51" r="5" fill="none" stroke="#C2C3CC" stroke-width="1.5"/>
+            <!-- Broken lines approaching but not reaching centre -->
+            <line x1="13" y1="29" x2="38" y2="29" stroke="#9A9BAA" stroke-width="1" stroke-dasharray="3,4"/>
+            <line x1="34" y1="12" x2="44" y2="21" stroke="#9A9BAA" stroke-width="1" stroke-dasharray="3,4"/>
+            <line x1="76" y1="12" x2="66" y2="21" stroke="#9A9BAA" stroke-width="1" stroke-dasharray="3,4"/>
+            <line x1="97" y1="29" x2="72" y2="29" stroke="#9A9BAA" stroke-width="1" stroke-dasharray="3,4"/>
+            <line x1="55" y1="46" x2="55" y2="38" stroke="#9A9BAA" stroke-width="1" stroke-dasharray="3,4"/>
+            <!-- Empty centre — the missing hub -->
+            <circle cx="55" cy="29" r="12" fill="rgba(23,61,237,0.05)" stroke="#173DED" stroke-width="1" stroke-dasharray="3,3"/>
+            <line x1="50" y1="29" x2="60" y2="29" stroke="#173DED" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+            <line x1="55" y1="24" x2="55" y2="34" stroke="#173DED" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="cc-title">No single source of truth</div>
+        <div class="cc-body">Brand assets, guidelines, and decisions scatter across teams — no governing centre, no shared reference.</div>
+      </div>
+
+      <!-- Card 2: Bottleneck — sequential flow blocked -->
+      <div class="challenge-card reveal-scale d4">
+        <div class="cc-visual">
+          <svg viewBox="0 0 110 58" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <!-- Stage 1 (active) -->
+            <rect x="2" y="19" width="20" height="20" rx="3" fill="none" stroke="#C2C3CC" stroke-width="1.5"/>
+            <line x1="7" y1="29" x2="17" y2="29" stroke="#C2C3CC" stroke-width="1" stroke-linecap="round"/>
+            <!-- Stage 2 (active) -->
+            <rect x="30" y="19" width="20" height="20" rx="3" fill="none" stroke="#C2C3CC" stroke-width="1.5"/>
+            <line x1="35" y1="29" x2="45" y2="29" stroke="#C2C3CC" stroke-width="1" stroke-linecap="round"/>
+            <!-- Stage 3 (BLOCKED) -->
+            <rect x="58" y="16" width="24" height="26" rx="3" fill="rgba(23,61,237,0.07)" stroke="#173DED" stroke-width="1.5"/>
+            <line x1="64" y1="23" x2="76" y2="35" stroke="#173DED" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="76" y1="23" x2="64" y2="35" stroke="#173DED" stroke-width="1.8" stroke-linecap="round"/>
+            <!-- Stage 4 (waiting / faded) -->
+            <rect x="90" y="19" width="18" height="20" rx="3" fill="none" stroke="#9A9BAA" stroke-width="1" opacity="0.35"/>
+            <!-- Arrows -->
+            <path d="M22 29 L30 29" stroke="#C2C3CC" stroke-width="1.2" marker-end="none"/>
+            <polyline points="27,26.5 30,29 27,31.5" fill="none" stroke="#C2C3CC" stroke-width="1.2" stroke-linecap="round"/>
+            <path d="M50 29 L58 29" stroke="#173DED" stroke-width="1.2" stroke-dasharray="2,2"/>
+            <path d="M82 29 L90 29" stroke="#9A9BAA" stroke-width="1" opacity="0.3" stroke-dasharray="2,3"/>
+          </svg>
+        </div>
+        <div class="cc-title">Every release is a bottleneck</div>
+        <div class="cc-body">Sequential handoffs between design and engineering slow every launch. Misalignment compounds at each stage.</div>
+      </div>
+
+      <!-- Card 3: Misfit — generic platform doesn't match the shape of the need -->
+      <div class="challenge-card reveal-scale d5">
+        <div class="cc-visual">
+          <svg viewBox="0 0 110 58" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <!-- Generic off-the-shelf platform (rigid rectangle with grid) -->
+            <rect x="4" y="9" width="40" height="40" rx="3" fill="none" stroke="#C2C3CC" stroke-width="1.5" stroke-dasharray="5,3"/>
+            <line x1="4"  y1="23" x2="44" y2="23" stroke="#C2C3CC" stroke-width="0.7" opacity="0.45"/>
+            <line x1="4"  y1="35" x2="44" y2="35" stroke="#C2C3CC" stroke-width="0.7" opacity="0.45"/>
+            <line x1="18" y1="9"  x2="18" y2="49" stroke="#C2C3CC" stroke-width="0.7" opacity="0.45"/>
+            <line x1="31" y1="9"  x2="31" y2="49" stroke="#C2C3CC" stroke-width="0.7" opacity="0.45"/>
+            <!-- Gap / mismatch indicator -->
+            <line x1="49" y1="29" x2="60" y2="29" stroke="#173DED" stroke-width="2" stroke-linecap="round"/>
+            <line x1="54.5" y1="23.5" x2="54.5" y2="34.5" stroke="#173DED" stroke-width="2" stroke-linecap="round"/>
+            <!-- Hero's actual need (irregular, custom shape) -->
+            <path d="M67 10 L98 10 L107 29 L98 48 L67 48 L58 29 Z" fill="none" stroke="#C2C3CC" stroke-width="1.5"/>
+            <!-- Inner mark showing it's active/real -->
+            <circle cx="82" cy="29" r="4" fill="none" stroke="#C2C3CC" stroke-width="1.2"/>
+            <line x1="79" y1="29" x2="85" y2="29" stroke="#C2C3CC" stroke-width="1" opacity="0.6"/>
+            <line x1="82" y1="26" x2="82" y2="32" stroke="#C2C3CC" stroke-width="1" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="cc-title">Generic platforms don't fit</div>
+        <div class="cc-body">Off-the-shelf tools are rigid and expensive — designed for everyone in general and Hero in particular not at all.</div>
+      </div>
+
+    </div>
+  </div>
+  <div class="slide-bar"><span>02 / 22</span></div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SLIDE 03 — MEET ECHO (solution intro)
+══════════════════════════════════════ -->
+<section class="slide" id="s_intro" aria-label="Introducing Echo">
+  <div class="slide-content">
+    <div class="intro-header">
+      <span class="tag reveal d1">The Solution</span>
+      <h2 class="intro-hl reveal d2">Meet <span class="echo-accent">Echo</span> — one platform, every brand.</h2>
+    </div>
+    <div class="screen-grid reveal-scale d3">
+      <!-- Hero: main recording, left large -->
+      <div class="screen-ph hero">
+        <div class="ph-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        </div>
+        <div class="ph-label">Brand Guidelines Portal</div>
+        <div class="ph-tag">Screen Recording</div>
+      </div>
+      <!-- Right column: two stacked -->
+      <div class="screen-side">
+        <div class="screen-ph">
+          <div class="ph-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+          </div>
+          <div class="ph-label">Dashboard Overview</div>
+          <div class="ph-tag">Screenshot</div>
+        </div>
+        <div class="screen-ph">
+          <div class="ph-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div class="ph-label">Approval Workflow</div>
+          <div class="ph-tag">Screenshot</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-bar"><span>03 / 22</span></div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SLIDE 04 — WHAT IS ECHO
+══════════════════════════════════════ -->
+<section class="slide" id="s3" aria-label="What is Echo">
+  <div class="slide-content">
+    <span class="tag reveal d1">What is Echo?</span>
+    <h2 class="definition reveal d2">
+      The <em>single source of truth</em> for every brand, product, and design asset across Hero.
+    </h2>
+    <div class="pillars">
+      <div class="pillar reveal-scale d3">
+        <div class="p-icon">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8"/><circle cx="10" cy="10" r="4"/><circle cx="10" cy="10" r="1.5" fill="var(--accent)" stroke="none"/></svg>
+        </div>
+        <div class="p-title">Centralised</div>
+        <div class="p-body">One platform for Vida, Dirt-E, Leaf — all brand systems unified.</div>
+      </div>
+      <div class="pillar reveal-scale d4">
+        <div class="p-icon">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2L4 5v5c0 3.5 2.5 6 6 7 3.5-1 6-3.5 6-7V5L10 2z"/><polyline points="7,10 9.5,12.5 13.5,8"/></svg>
+        </div>
+        <div class="p-title">Governed</div>
+        <div class="p-body">Multi-stage approval workflows ensure quality before anything goes live.</div>
+      </div>
+      <div class="pillar reveal-scale d5">
+        <div class="p-icon">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="7" cy="7" r="3.5"/><circle cx="13" cy="7" r="3.5"/><path d="M3 18c0-3 2-5 4-5h6c2 0 4 2 4 5"/></svg>
+        </div>
+        <div class="p-title">Collaborative</div>
+        <div class="p-body">Designers, developers, marketing — all contributing under one roof.</div>
+      </div>
+      <div class="pillar reveal-scale d6">
+        <div class="p-icon">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><polyline points="2,10 5,10 7,4 10,16 13,7 15,10 18,10"/></svg>
+        </div>
+        <div class="p-title">Living</div>
+        <div class="p-body">A system that grows with Hero — not a static document or rigid SaaS tool.</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-bar"><span>04 / 22</span></div>
+</section>
+
+<!-- ══════════════════════════════════════
+     STORY 01 — INITIAL VISION
+══════════════════════════════════════ -->
+<section class="slide sv-slide" id="sv1" aria-label="Initial vision">
+  <div class="sv-ghost-num" aria-hidden="true">01</div>
+  <div class="slide-content">
+
+    <div class="sv-header reveal d1">
+      <div class="sv-eyebrow">
+        <span class="tag">The Story</span>
+        <span class="sv-step">01 / 03</span>
+      </div>
+      <h2 class="sv-title">We started with knowledge.<br>A single source of truth.</h2>
+      <p class="sv-desc">The original vision was a brand knowledge portal — design system documentation, style guidelines, component references, and design token libraries. One place for every team to align on the Hero VIDA brand.</p>
+      <div class="sv-points">
+        <span class="sv-point">Guidelines Portal</span>
+        <span class="sv-point">Token Library</span>
+        <span class="sv-point">Component Docs</span>
+        <span class="sv-point">Brand Rules</span>
+      </div>
+    </div>
+
+    <div class="sv-screens reveal-scale d2">
+      <div class="sv-col">
+        <div class="sv-ph">
+          <div class="ph-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+          <span class="ph-label">Guidelines Portal</span>
+          <span class="ph-tag">Screenshot / Screen recording</span>
+        </div>
+      </div>
+      <div class="sv-col">
+        <div class="sv-ph">
+          <div class="ph-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></div>
+          <span class="ph-label">Token Library</span>
+          <span class="ph-tag">Screenshot</span>
+        </div>
+        <div class="sv-ph">
+          <div class="ph-icon"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h8M4 18h8"/></svg></div>
+          <span class="ph-label">Component Docs</span>
+          <span class="ph-tag">Screenshot</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="slide-bar"><span>05 / 22</span></div>
+</section>
+
+<!-- ══════════════════════════════════════
+     STORY 02 — THE PIVOT
+══════════════════════════════════════ -->
+<section class="slide sv-slide" id="sv2" aria-label="The pivot">
+  <div class="sv-ghost-num" aria-hidden="true">02</div>
+  <div class="slide-content">
+
+    <div class="sv-header reveal d1">
+      <div class="sv-eyebrow">
+        <span class="tag">The Story</span>
+        <span class="sv-step">02 / 03</span>
+      </div>
+      <h2 class="sv-title">Six months in —<br>we discovered the real problem.</h2>
+      <p class="sv-desc">A static knowledge base solved documentation. It didn't solve the process of creating, approving, and evolving design decisions across teams. The gap was bigger than the initial scope anticipated.</p>
+      <div class="sv-points">
+        <span class="sv-point">No contribution workflow</span>
+        <span class="sv-point">Manual approvals &amp; governance</span>
+        <span class="sv-point">Multi-brand complexity</span>
+        <span class="sv-point">Tech stack limitations</span>
+      </div>
+    </div>
+
+    <div class="sv-screens reveal-scale d2">
+      <div class="sv-col">
+        <div class="sv-ph">
+          <div class="ph-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg></div>
+          <span class="ph-label">The Gap / Challenge</span>
+          <span class="ph-tag">Screenshot / Diagram</span>
+        </div>
+      </div>
+      <div class="sv-col">
+        <div class="sv-ph">
+          <div class="ph-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <span class="ph-label">Team Collaboration Gap</span>
+          <span class="ph-tag">Screenshot</span>
+        </div>
+        <div class="sv-ph">
+          <div class="ph-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+          <span class="ph-label">Process Breakdown</span>
+          <span class="ph-tag">Screenshot</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="slide-bar"><span>06 / 22</span></div>
+</section>
+
+<!-- ══════════════════════════════════════
+     STORY 03 — CURRENT VISION
+══════════════════════════════════════ -->
+<section class="slide sv-slide" id="sv3" aria-label="Current vision">
+  <div class="sv-ghost-num" aria-hidden="true">03</div>
+  <div class="slide-content">
+
+    <div class="sv-header reveal d1">
+      <div class="sv-eyebrow">
+        <span class="tag">The Story</span>
+        <span class="sv-step">03 / 03</span>
+      </div>
+      <h2 class="sv-title">A living, collaborative<br>design ecosystem.</h2>
+      <p class="sv-desc">Echo evolved from a passive reference portal into a full collaborative platform — end-to-end publish and review workflows, a contributor portal for the broader team, Echo Studio for in-context creation, and an AI layer for intelligent automation.</p>
+      <div class="sv-points">
+        <span class="sv-point">Echo Studio</span>
+        <span class="sv-point">Collaborator Portal</span>
+        <span class="sv-point">Publish &amp; Review</span>
+        <span class="sv-point">AI Layer</span>
+        <span class="sv-point">Governance Workflows</span>
+      </div>
+    </div>
+
+    <div class="sv-screens reveal-scale d2">
+      <div class="sv-col">
+        <div class="sv-ph">
+          <div class="ph-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+          <span class="ph-label">Echo Platform — Full View</span>
+          <span class="ph-tag">Screen recording</span>
+        </div>
+      </div>
+      <div class="sv-col">
+        <div class="sv-ph">
+          <div class="ph-icon"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+          <span class="ph-label">Publish &amp; Review Workflow</span>
+          <span class="ph-tag">Screen recording</span>
+        </div>
+        <div class="sv-ph">
+          <div class="ph-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <span class="ph-label">Collaborator Portal</span>
+          <span class="ph-tag">Screenshot</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="slide-bar"><span>07 / 22</span></div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SLIDE 06 — JOURNEY TIMELINE
+══════════════════════════════════════ -->
+<section class="slide" id="s5" aria-label="Project journey">
+  <div class="slide-content">
+
+    <span class="tag reveal d1">The Journey</span>
+
+    <div class="tl-wrapper reveal d2">
+
+      <!-- Phase grouping chips -->
+      <div class="tl-phase-row" aria-label="Phase grouping">
+        <div class="tl-ph-pre">Pre-Phase 1</div>
+        <div class="tl-ph-p1">Phase 1</div>
+        <div class="tl-ph-p2">Phase 2</div>
+      </div>
+
+      <!-- Dot track with progress line -->
+      <div class="tl-dots-row" aria-hidden="true">
+        <div class="tl-done-fill"></div>
+        <div class="tl-dot-cell"><div class="tl-nd done"></div></div>
+        <div class="tl-dot-cell"><div class="tl-nd done"></div></div>
+        <div class="tl-dot-cell"><div class="tl-nd done"></div></div>
+        <div class="tl-dot-cell"><div class="tl-nd active"></div></div>
+        <div class="tl-dot-cell"><div class="tl-nd future"></div></div>
+      </div>
+
+      <!-- Node content -->
+      <div class="tl-track">
+
+        <div class="tl-node">
+          <div class="tl-date">Nov – Dec 2024</div>
+          <div class="tl-title">Foundation</div>
+          <div class="tl-desc">Ideation &amp; PoC. Concept proven in weeks.</div>
+        </div>
+
+        <div class="tl-node">
+          <div class="tl-date">Jan – Jul 2025</div>
+          <div class="tl-title">Milestone 1</div>
+          <div class="tl-desc">Initial prototype. Vue.js portal live.</div>
+        </div>
+
+        <div class="tl-node">
+          <div class="tl-date">Oct 2025 – Jan 2026</div>
+          <div class="tl-title">Milestone 2</div>
+          <div class="tl-desc">Full stack migration. 70+ features. React.</div>
+        </div>
+
+        <div class="tl-node active">
+          <div class="tl-date">Jan 2026 – Present</div>
+          <div class="tl-title">Milestone 3</div>
+          <div class="tl-desc">Living design system. End-to-end governed workflow.</div>
+        </div>
+
+        <div class="tl-node future">
+          <div class="tl-date">H2 2026</div>
+          <div class="tl-title">Phase 2</div>
+          <div class="tl-desc">Security, AI compliance, DAM, Echo Studio.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <p class="tl-summary reveal d3">
+      <strong>18 months.</strong> Three milestones. One continuously evolving platform — built in deep collaboration with Hero at every step.
+    </p>
+
+  </div>
+  <div class="slide-bar"><span>08 / 22</span></div>
+</section>
+
+<!-- ══════════════════════════════════════
+     FEATURE 01 — DASHBOARD
+══════════════════════════════════════ -->
+<section class="slide ft-slide" id="ft1" aria-label="Feature: Dashboard">
+  <div class="slide-content">
+    <div class="ft-eyebrow reveal d1">
+      <span class="tag">Echo Features</span>
+      <span class="ft-step">01 / 07</span>
+    </div>
+    <h2 class="ft-title reveal d2">Dashboard</h2>
+    <p class="ft-desc reveal d3">The central hub — every user lands here. Live activity feed, content status at a glance, and pending workflow items in one clear view.</p>
+    <div class="ft-body">
+      <div class="ft-panel reveal d3">
+        <div class="ft-num">01</div>
+        <div class="ft-points">
+          <div class="ft-point">Live activity feed across all brands and users</div>
+          <div class="ft-point">Content status overview by section and type</div>
+          <div class="ft-point">Pending approvals and workflow items at a glance</div>
+          <div class="ft-point">Quick navigation to recent and active content</div>
+        </div>
+      </div>
+      <div class="ft-screens reveal-scale d4">
+        <div class="ft-ph">
+          <div class="ph-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+          <span class="ph-label">Dashboard — Main View</span>
+          <span class="ph-tag">Screen recording</span>
+        </div>
+        <div class="ft-row">
+          <div class="ft-ph">
+            <div class="ph-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+            <span class="ph-label">Activity Feed</span>
+            <span class="ph-tag">Screenshot</span>
+          </div>
+          <div class="ft-ph">
+            <div class="ph-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+            <span class="ph-label">Workflow Status</span>
+            <span class="ph-tag">Screenshot</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-bar"><span>09 / 22</span></div>
+</section>
+
+<!-- ══════════════════════════════════════
+     FEATURE 02 — APPROVAL WORKFLOW
+══════════════════════════════════════ -->
+<section class="slide ft-slide" id="ft2" aria-label="Feature: Approval workflow">
+  <div class="slide-content">
+    <div class="ft-eyebrow reveal d1">
+      <span class="tag">Echo Features</span>
+      <span class="ft-step">02 / 07</span>
+    </div>
+    <h2 class="ft-title reveal d2">Approval Workflow</h2>
+    <p class="ft-desc reveal d3">A 7-stage governed flow from creation to publication — with structured feedback loops, version control, and a complete audit trail at every step.</p>
+    <div class="ft-body">
+      <div class="ft-panel reveal d3">
+        <div class="ft-num">02</div>
+        <div class="ft-points">
+          <div class="ft-point">Draft → Submit → Review → Feedback → Approval → Admin → Published</div>
+          <div class="ft-point">Structured feedback with inline commenting per stage</div>
+          <div class="ft-point">Role-based approver assignment at each gate</div>
+          <div class="ft-point">Full audit trail and version history on every change</div>
+        </div>
+      </div>
+      <div class="ft-screens reveal-scale d4">
+        <div class="ft-ph">
+          <div class="ph-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+          <span class="ph-label">Workflow — Stage View</span>
+          <span class="ph-tag">Screen recording</span>
+        </div>
+        <div class="ft-row">
+          <div class="ft-ph">
+            <div class="ph-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+            <span class="ph-label">Feedback &amp; Comments</span>
+            <span class="ph-tag">Screenshot</span>
+          </div>
+          <div class="ft-ph">
+            <div class="ph-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+            <span class="ph-label">Audit Trail</span>
+            <span class="ph-tag">Screenshot</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-bar"><span>10 / 22</span></div>
+</section>
+
+<!-- ══════════════════════════════════════
+     FEATURE 03 — MULTIBRAND SYSTEM IA
+══════════════════════════════════════ -->
+<section class="slide ft-slide" id="ft3" aria-label="Feature: Multibrand system IA">
+  <div class="slide-content">
+    <div class="ft-eyebrow reveal d1">
+      <span class="tag">Echo Features</span>
+      <span class="ft-step">03 / 07</span>
+    </div>
+    <h2 class="ft-title reveal d2">Multibrand System IA</h2>
+    <p class="ft-desc reveal d3">One platform, multiple brand personalities. Vida, Dirt-E, Leaf, and future sub-brands each have isolated guidelines and assets — all within a shared, scalable infrastructure.</p>
+    <div class="ft-body">
+      <div class="ft-panel reveal d3">
+        <div class="ft-num">03</div>
+        <div class="ft-points">
+          <div class="ft-point">Brand-isolated content, guidelines, and assets per brand</div>
+          <div class="ft-point">Shared platform infrastructure reduces maintenance overhead</div>
+          <div class="ft-point">Scalable information architecture — new brands in hours</div>
+          <div class="ft-point">Cross-brand visibility for admin and leadership roles</div>
+        </div>
+      </div>
+      <div class="ft-screens reveal-scale d4">
+        <div class="ft-ph">
+          <div class="ph-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></div>
+          <span class="ph-label">Brand Switcher / Navigation</span>
+          <span class="ph-tag">Screen recording</span>
+        </div>
+        <div class="ft-row">
+          <div class="ft-ph">
+            <div class="ph-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+            <span class="ph-label">Brand — Vida View</span>
+            <span class="ph-tag">Screenshot</span>
+          </div>
+          <div class="ft-ph">
+            <div class="ph-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+            <span class="ph-label">Brand — Dirt-E View</span>
+            <span class="ph-tag">Screenshot</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-bar"><span>11 / 22</span></div>
+</section>
+
+<!-- ══════════════════════════════════════
+     FEATURE 04 — ASSET VIEWER / UPLOADER
+══════════════════════════════════════ -->
+<section class="slide ft-slide" id="ft4" aria-label="Feature: Asset viewer and uploader">
+  <div class="slide-content">
+    <div class="ft-eyebrow reveal d1">
+      <span class="tag">Echo Features</span>
+      <span class="ft-step">04 / 07</span>
+    </div>
+    <h2 class="ft-title reveal d2">Asset Viewer &amp; Uploader</h2>
+    <p class="ft-desc reveal d3">Browse, preview, and upload brand assets directly within Echo — the foundation for the full Digital Asset Management system planned for Phase 2.</p>
+    <div class="ft-body">
+      <div class="ft-panel reveal d3">
+        <div class="ft-num">04</div>
+        <div class="ft-points">
+          <div class="ft-point">Inline asset preview with download and sharing</div>
+          <div class="ft-point">Bulk upload with metadata tagging and brand attribution</div>
+          <div class="ft-point">Asset organisation by brand, type, and section</div>
+          <div class="ft-point">Phase 2 roadmap: full DAM with version control</div>
+        </div>
+      </div>
+      <div class="ft-screens reveal-scale d4">
+        <div class="ft-ph">
+          <div class="ph-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+          <span class="ph-label">Asset Browser</span>
+          <span class="ph-tag">Screen recording</span>
+        </div>
+        <div class="ft-row">
+          <div class="ft-ph">
+            <div class="ph-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+            <span class="ph-label">Upload Flow</span>
+            <span class="ph-tag">Screenshot</span>
+          </div>
+          <div class="ft-ph">
+            <div class="ph-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+            <span class="ph-label">Asset Detail View</span>
+            <span class="ph-tag">Screenshot</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-bar"><span>12 / 22</span></div>
+</section>
+
+<!-- ══════════════════════════════════════
+     FEATURE 05 — AI INTEGRATION
+══════════════════════════════════════ -->
+<section class="slide ft-slide" id="ft5" aria-label="Feature: AI integration">
+  <div class="slide-content">
+    <div class="ft-eyebrow reveal d1">
+      <span class="tag">Echo Features</span>
+      <span class="ft-step">05 / 07</span>
+    </div>
+    <h2 class="ft-title reveal d2">AI Integration</h2>
+    <p class="ft-desc reveal d3">AI woven into the platform — not bolted on. Brand compliance analysis, content assistance, and intelligent automation powered by OpenAI and LangChain.</p>
+    <div class="ft-body">
+      <div class="ft-panel reveal d3">
+        <div class="ft-num">05</div>
+        <div class="ft-points">
+          <div class="ft-point">Real-time brand compliance analysis against live guidelines</div>
+          <div class="ft-point">AI-assisted content drafting and refinement</div>
+          <div class="ft-point">Automated metadata tagging and content classification</div>
+          <div class="ft-point">Intelligent search across the entire design system</div>
+        </div>
+      </div>
+      <div class="ft-screens reveal-scale d4">
+        <div class="ft-ph">
+          <div class="ph-icon"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+          <span class="ph-label">AI Assistant — In Action</span>
+          <span class="ph-tag">Screen recording</span>
+        </div>
+        <div class="ft-row">
+          <div class="ft-ph">
+            <div class="ph-icon"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+            <span class="ph-label">Compliance Check</span>
+            <span class="ph-tag">Screenshot</span>
+          </div>
+          <div class="ft-ph">
+            <div class="ph-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+            <span class="ph-label">Intelligent Search</span>
+            <span class="ph-tag">Screenshot</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-bar"><span>13 / 22</span></div>
+</section>
+
+<!-- ══════════════════════════════════════
+     FEATURE 06 — BRAND SCOPING & AUTH
+══════════════════════════════════════ -->
+<section class="slide ft-slide" id="ft6" aria-label="Feature: Brand scoping and authorization">
+  <div class="slide-content">
+    <div class="ft-eyebrow reveal d1">
+      <span class="tag">Echo Features</span>
+      <span class="ft-step">06 / 07</span>
+    </div>
+    <h2 class="ft-title reveal d2">Brand Scoping &amp; Authorization</h2>
+    <p class="ft-desc reveal d3">Granular, role-based access control scoped to specific brands, sections, and content types — ensuring the right people have access to exactly the right content.</p>
+    <div class="ft-body">
+      <div class="ft-panel reveal d3">
+        <div class="ft-num">06</div>
+        <div class="ft-points">
+          <div class="ft-point">Role-based access: Admin, Editor, Reviewer, Viewer</div>
+          <div class="ft-point">Brand-level and section-level permission scoping</div>
+          <div class="ft-point">Content type-specific authorization rules</div>
+          <div class="ft-point">Real-time permission updates with audit logging</div>
+        </div>
+      </div>
+      <div class="ft-screens reveal-scale d4">
+        <div class="ft-ph">
+          <div class="ph-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+          <span class="ph-label">Permissions &amp; Role Management</span>
+          <span class="ph-tag">Screen recording</span>
+        </div>
+        <div class="ft-row">
+          <div class="ft-ph">
+            <div class="ph-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+            <span class="ph-label">User Role Assignment</span>
+            <span class="ph-tag">Screenshot</span>
+          </div>
+          <div class="ft-ph">
+            <div class="ph-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            <span class="ph-label">Brand-Level Access Scope</span>
+            <span class="ph-tag">Screenshot</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-bar"><span>14 / 22</span></div>
+</section>
+
+<!-- ══════════════════════════════════════
+     FEATURE 07 — EDITOR
+══════════════════════════════════════ -->
+<section class="slide ft-slide" id="ft7" aria-label="Feature: Editor">
+  <div class="slide-content">
+    <div class="ft-eyebrow reveal d1">
+      <span class="tag">Echo Features</span>
+      <span class="ft-step">07 / 07</span>
+    </div>
+    <h2 class="ft-title reveal d2">Editor</h2>
+    <p class="ft-desc reveal d3">A Tiptap-powered rich content editor built for brand documentation — structured content blocks, inline media, live preview, and seamless version control.</p>
+    <div class="ft-body">
+      <div class="ft-panel reveal d3">
+        <div class="ft-num">07</div>
+        <div class="ft-points">
+          <div class="ft-point">Rich text with structured, reusable content blocks</div>
+          <div class="ft-point">Inline asset embedding and media support</div>
+          <div class="ft-point">Real-time collaboration with inline commenting</div>
+          <div class="ft-point">Version history with change diffing and restore</div>
+        </div>
+      </div>
+      <div class="ft-screens reveal-scale d4">
+        <div class="ft-ph">
+          <div class="ph-icon"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+          <span class="ph-label">Editor — Full View</span>
+          <span class="ph-tag">Screen recording</span>
+        </div>
+        <div class="ft-row">
+          <div class="ft-ph">
+            <div class="ph-icon"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h8M4 18h8"/></svg></div>
+            <span class="ph-label">Content Blocks</span>
+            <span class="ph-tag">Screenshot</span>
+          </div>
+          <div class="ft-ph">
+            <div class="ph-icon"><svg viewBox="0 0 24 24"><path d="M3 3h18v18H3zM3 9h18M3 15h18M9 3v18"/></svg></div>
+            <span class="ph-label">Version History</span>
+            <span class="ph-tag">Screenshot</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-bar"><span>15 / 22</span></div>
+</section>
+
+<!-- ══════════════════════════════════════
+     TECH STACK
+══════════════════════════════════════ -->
+<section class="slide" id="s_tech" aria-label="Technology Stack">
+  <div class="slide-content">
+    <div class="ts-layout">
+
+      <!-- LEFT: scale statement -->
+      <div class="ts-left">
+        <span class="tag reveal d1">Technology Stack</span>
+        <h2 class="ts-headline reveal d2">Built for<br>enterprise<br><span class="hl-scale">scale.</span></h2>
+        <div class="ts-attrs">
+          <div class="ts-attr reveal d3">
+            <div class="ts-attr-label">Scalable</div>
+            <div class="ts-attr-desc">Cloud-native, built to grow — from single team to enterprise without re-architecting.</div>
+          </div>
+          <div class="ts-attr reveal d4">
+            <div class="ts-attr-label">Robust</div>
+            <div class="ts-attr-desc">Type-safe data, governed workflows, production-grade auth. Nothing breaks quietly.</div>
+          </div>
+          <div class="ts-attr reveal d5">
+            <div class="ts-attr-label">Accelerated</div>
+            <div class="ts-attr-desc">AI-native from day one — faster delivery, smarter workflows, immediate time-to-value.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: numbered tech list -->
+      <div class="ts-right">
+        <div class="ts-list">
+
+          <div class="ts-item tc-next reveal d3">
+            <span class="ts-num">01</span>
+            <div class="ts-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            </div>
+            <div class="ts-info">
+              <span class="ts-name">Next.js + React</span>
+              <span class="ts-desc">Modern web application and interactive frontend.</span>
+            </div>
+            <span class="ts-cat">Frontend</span>
+          </div>
+
+          <div class="ts-item tc-pg reveal d4">
+            <span class="ts-num">02</span>
+            <div class="ts-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+            </div>
+            <div class="ts-info">
+              <span class="ts-name">PostgreSQL + Prisma + Local DB</span>
+              <span class="ts-desc">Structured data, database access, and local persistence.</span>
+            </div>
+            <span class="ts-cat">Data</span>
+          </div>
+
+          <div class="ts-item tc-tiptap reveal d5">
+            <span class="ts-num">03</span>
+            <div class="ts-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            </div>
+            <div class="ts-info">
+              <span class="ts-name">Tiptap / ProseMirror Editor</span>
+              <span class="ts-desc">Rich content editing and document-style workflows.</span>
+            </div>
+            <span class="ts-cat">Content</span>
+          </div>
+
+          <div class="ts-item tc-github reveal d4">
+            <span class="ts-num">04</span>
+            <div class="ts-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
+            </div>
+            <div class="ts-info">
+              <span class="ts-name">GitHub API / Octokit</span>
+              <span class="ts-desc">Versioning, branching, commits, reviews, and pull requests.</span>
+            </div>
+            <span class="ts-cat">Versioning</span>
+          </div>
+
+          <div class="ts-item tc-openai reveal d5">
+            <span class="ts-num">05</span>
+            <div class="ts-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+            <div class="ts-info">
+              <span class="ts-name">OpenAI + LangChain</span>
+              <span class="ts-desc">AI-powered analysis, assistant features, and intelligent automation.</span>
+            </div>
+            <span class="ts-cat">AI Layer</span>
+          </div>
+
+          <div class="ts-item tc-azure reveal d6">
+            <span class="ts-num">06</span>
+            <div class="ts-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+            </div>
+            <div class="ts-info">
+              <span class="ts-name">Azure Cloud</span>
+              <span class="ts-desc">Enterprise-grade cloud hosting, scalability, security, and future deployment infrastructure.</span>
+            </div>
+            <span class="ts-cat">Infrastructure</span>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="slide-bar"><span>16 / 22</span></div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SLIDE 17 — WORKFLOW COMPARISON
+══════════════════════════════════════ -->
+<section class="slide" id="s_compare" aria-label="Traditional vs Echo workflow">
+  <div class="slide-content">
+
+    <div class="cmp-head">
+      <span class="tag reveal d1">Workflow Comparison</span>
+      <h2 class="cmp-title reveal d2">Where Echo eliminates friction.</h2>
+    </div>
+
+    <div class="cmp-arena reveal d3">
+
+      <!-- LEFT: Traditional -->
+      <div class="cmp-side cmp-trad">
+        <div class="cmp-side-label">Traditional</div>
+        <div class="cmp-flow">
+
+          <div class="cmp-node cmp-node--actor">
+            <div class="cmp-node-title">Brand Stakeholder</div>
+          </div>
+          <div class="cmp-connector"></div>
+
+          <div class="cmp-node">
+            <div class="cmp-node-row">
+              <div>
+                <div class="cmp-node-title">Designers</div>
+                <div class="cmp-node-sub">Creative direction &amp; execution</div>
+              </div>
+              <div class="cmp-bubbles">
+                <span class="cmp-bub bub-d">D</span>
+                <span class="cmp-bub bub-d">D</span>
+                <span class="cmp-bub bub-d">D</span>
+              </div>
+            </div>
+          </div>
+          <div class="cmp-connector"></div>
+
+          <div class="cmp-node">
+            <div class="cmp-node-row">
+              <div>
+                <div class="cmp-node-title">Developers</div>
+                <div class="cmp-node-sub">Build &amp; integration</div>
+              </div>
+              <div class="cmp-bubbles">
+                <span class="cmp-bub bub-v">V</span>
+                <span class="cmp-bub bub-v">V</span>
+              </div>
+            </div>
+          </div>
+          <div class="cmp-connector"></div>
+
+          <div class="cmp-node cmp-node--output">
+            <div class="cmp-node-title">Polished Campaign</div>
+          </div>
+
+        </div>
+        <div class="cmp-timeline">
+          <span class="tl-badge tl-slow">~30 days</span>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div class="cmp-sep" aria-hidden="true"></div>
+
+      <!-- RIGHT: Echo-assisted -->
+      <div class="cmp-side cmp-echo-side">
+        <div class="cmp-side-label cmp-side-label--echo">Echo-assisted</div>
+        <div class="cmp-flow">
+
+          <div class="cmp-node cmp-node--actor">
+            <div class="cmp-node-title">Brand Stakeholder</div>
+          </div>
+          <div class="cmp-connector cmp-connector--echo">
+            <span class="echo-chip">Echo</span>
+          </div>
+
+          <div class="cmp-node">
+            <div class="cmp-node-row">
+              <div>
+                <div class="cmp-node-title">Designer</div>
+                <div class="cmp-node-sub">Guided by Echo outputs</div>
+              </div>
+              <div class="cmp-bubbles">
+                <span class="cmp-bub bub-d-single">D</span>
+              </div>
+            </div>
+          </div>
+          <div class="cmp-connector cmp-connector--ghost"></div>
+
+          <div class="cmp-node cmp-node--skip">
+            <div class="cmp-node-row">
+              <div>
+                <div class="cmp-node-title">Developers</div>
+                <div class="cmp-node-sub">Eliminated by Echo</div>
+              </div>
+              <div class="cmp-bubbles">
+                <span class="cmp-bub bub-v">V</span>
+                <span class="cmp-bub bub-v">V</span>
+              </div>
+            </div>
+          </div>
+          <div class="cmp-connector"></div>
+
+          <div class="cmp-node cmp-node--output">
+            <div class="cmp-node-title">Polished Campaign</div>
+          </div>
+
+        </div>
+        <div class="cmp-timeline">
+          <span class="tl-badge tl-fast">Days, not weeks</span>
+        </div>
+      </div>
+
+    </div><!-- /cmp-arena -->
+
+    <!-- Campaign examples footnote -->
+    <div class="cmp-cases reveal d4">
+      <div class="cmp-case">
+        <span class="cmp-case-brand">KKR</span>
+        <span class="cmp-case-detail">Brand/engagement activation · 3 designers + 2 developers · ~30 days</span>
+      </div>
+      <div class="cmp-case-sep"></div>
+      <div class="cmp-case">
+        <span class="cmp-case-brand cmp-case-brand--echo">Vira</span>
+        <span class="cmp-case-detail">Brand activation · Echo-assisted · 1 designer · Significantly faster</span>
+      </div>
+      <span class="cmp-case-note">Illustrative examples, not commitments.</span>
+    </div>
+
+  </div>
+  <div class="slide-bar"><span>17 / 22</span></div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SLIDE 07 — PRE-PHASE 1
+══════════════════════════════════════ -->
+<section class="slide slide-off milestone-slide pre" id="s6" aria-label="Pre-Phase 1 Foundation">
+  <div class="slide-content">
+    <div class="ms-layout">
+      <div class="ms-left">
+        <div class="ms-phase reveal d1">Pre-Phase 1</div>
+        <div class="ms-num reveal d2" aria-hidden="true">00</div>
+        <div class="ms-title reveal d3">Foundation<br>&amp; Ideation</div>
+        <div class="ms-period reveal d4">November – December 2024</div>
+      </div>
+      <div class="ms-right">
+        <div class="ms-tag dim-text reveal d2">Accomplishments</div>
+        <ul class="ms-bullets reveal d3">
+          <li>Abstract idea became a working, demonstrable prototype.</li>
+          <li>First alignment with Hero on portal vision — scope defined in weeks.</li>
+          <li>AI-assisted development proved speed was possible from day one.</li>
+        </ul>
+        <div class="ms-tag dim-text reveal d4" style="margin-top: var(--gap);">Key Learning</div>
+        <p class="body reveal d5" style="max-width: 42ch;">Show, don't plan. A visible prototype unlocks more stakeholder alignment than any document ever will.</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-bar">
+    <span>ECHO × OWNPATH</span><span>07 / 16</span>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SLIDE 08 — MILESTONE 1
+══════════════════════════════════════ -->
+<section class="slide slide-off milestone-slide m1" id="s7" aria-label="Milestone 1 — Initial Prototype">
+  <div class="slide-content">
+    <div class="ms-layout">
+      <div class="ms-left">
+        <div class="ms-phase reveal d1">Milestone 1</div>
+        <div class="ms-num reveal d2" aria-hidden="true">01</div>
+        <div class="ms-title reveal d3">Initial<br>Prototype</div>
+        <div class="ms-period reveal d4">January – July 2025</div>
+      </div>
+      <div class="ms-right">
+        <div class="ms-tag reveal d2" style="color: var(--accent);">Accomplishments</div>
+        <ul class="ms-bullets reveal d3">
+          <li>Full portal live in Vue.js — design-to-code in real time, no handoff lag.</li>
+          <li>Multi-brand architecture established: Vida, Dirt-E, and others unified under one portal.</li>
+          <li>Collaborative model set: design and engineering as one continuous dialogue, not a relay.</li>
+        </ul>
+        <div class="ms-tag reveal d4" style="color: var(--text-dim); margin-top: var(--gap);">Key Learning</div>
+        <p class="body reveal d5" style="max-width: 42ch;">Tight design-engineering integration from day one produces a product that feels designed — not assembled.</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-bar">
+    <span>ECHO × OWNPATH</span><span>08 / 16</span>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SLIDE 09 — MILESTONE 2
+══════════════════════════════════════ -->
+<section class="slide slide-off milestone-slide m2" id="s8" aria-label="Milestone 2 — Tech Stack Migration">
+  <div class="slide-content">
+    <div class="ms-layout">
+      <div class="ms-left">
+        <div class="ms-phase reveal d1">Milestone 2</div>
+        <div class="ms-num reveal d2" aria-hidden="true">02</div>
+        <div class="ms-title reveal d3">Tech Stack<br>Migration</div>
+        <div class="ms-period reveal d4">October 2025 – January 2026</div>
+      </div>
+      <div class="ms-right">
+        <div class="ms-tag reveal d2" style="color: var(--accent);">Accomplishments</div>
+        <ul class="ms-bullets reveal d3">
+          <li>Migrated entire platform from Vue to React — a strategic investment, not a rebuild.</li>
+          <li>Mapped 70++ features across personas through deep workshops with the Hero team.</li>
+          <li>Echo's scope grew from product style guide to company-wide brand intelligence platform.</li>
+        </ul>
+        <div class="ms-tag reveal d4" style="color: var(--text-dim); margin-top: var(--gap);">Key Learning</div>
+        <p class="body reveal d5" style="max-width: 42ch;">Migrations aren't rework — they're the investment that makes everything else possible at scale.</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-bar">
+    <span>ECHO × OWNPATH</span><span>09 / 16</span>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SLIDE 10 — MILESTONE 3
+══════════════════════════════════════ -->
+<section class="slide slide-off milestone-slide m3 accent-lime" id="s9" aria-label="Milestone 3 — Current Iteration">
+  <div class="slide-content">
+    <div class="ms-layout">
+      <div class="ms-left">
+        <div class="ms-phase reveal d1" style="color: var(--accent);">Milestone 3 — Active</div>
+        <div class="ms-num reveal d2" aria-hidden="true">03</div>
+        <div class="ms-title reveal d3">Current<br>Iteration</div>
+        <div class="ms-period reveal d4">January 2026 – Present</div>
+      </div>
+      <div class="ms-right">
+        <div class="ms-tag reveal d2" style="color: var(--accent);">Accomplishments</div>
+        <ul class="ms-bullets reveal d3">
+          <li>Most polished iteration — 'living system' design language aligned to Hero's brand direction.</li>
+          <li>End-to-end approval workflow validated live: Draft → Review → Admin → Published in real time.</li>
+          <li>Dashboard, notifications, user profiles, asset viewer, and branch scoping &amp; auth — all shipped.</li>
+        </ul>
+        <div class="ms-tag reveal d4" style="color: var(--text-dim); margin-top: var(--gap);">Key Learning</div>
+        <p class="body reveal d5" style="max-width: 42ch;">A clear creative direction makes every design decision faster, more consistent, and more confident.</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-bar">
+    <span>ECHO × OWNPATH</span><span>10 / 16</span>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SLIDE 11 — ECHO TODAY (FEATURES)
+══════════════════════════════════════ -->
+<section class="slide slide-off" id="s10" aria-label="Echo today — features">
+  <div class="slide-content">
+    <span class="tag reveal d1">Echo Today</span>
+    <h2 class="h2 reveal d2" style="font-size: var(--t-h2); margin-bottom: 0;">What's inside the platform right now</h2>
+    <div class="feat-grid">
+      <div class="feat-card reveal-scale d2">
+        <div class="fc-icon">◱</div>
+        <div class="fc-title">Dashboard</div>
+        <div class="fc-body">Centralised overview of content, activity, workflow status — live for all users.</div>
+      </div>
+      <div class="feat-card reveal-scale d3">
+        <div class="fc-icon">⟳</div>
+        <div class="fc-title">Approval Workflow</div>
+        <div class="fc-body">7-stage governed flow: Draft → Submit → Review → Feedback → Approval → Admin → Published.</div>
+      </div>
+      <div class="feat-card reveal-scale d4">
+        <div class="fc-icon">◎</div>
+        <div class="fc-title">Multi-Brand System</div>
+        <div class="fc-body">Vida, Dirt-E, Leaf and others — each with separate guidelines within one unified platform.</div>
+      </div>
+      <div class="feat-card reveal-scale d4">
+        <div class="fc-icon">⊞</div>
+        <div class="fc-title">Admin Controls</div>
+        <div class="fc-body">User management, content governance, system configuration — full control for administrators.</div>
+      </div>
+      <div class="feat-card reveal-scale d5">
+        <div class="fc-icon">⬡</div>
+        <div class="fc-title">Asset Viewer / Uploader</div>
+        <div class="fc-body">POC for brand asset viewing and uploading — foundation for the full DAM expansion in Phase 2.</div>
+      </div>
+      <div class="feat-card reveal-scale d6">
+        <div class="fc-icon">⌥</div>
+        <div class="fc-title">Branch Scoping &amp; Auth</div>
+        <div class="fc-body">Granular access control and branch-level authorisation — in current milestone scope.</div>
+        <div class="fc-badge">Current Milestone</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-bar">
+    <span>ECHO × OWNPATH</span><span>11 / 16</span>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SLIDE 12 — HARD KPIs
+══════════════════════════════════════ -->
+<section class="slide" id="s12" aria-label="Hard KPIs — ROI">
+  <div class="slide-content">
+    <span class="tag reveal d1">Measurable ROI</span>
+    <h2 class="h2 reveal d2" style="font-size: var(--t-h2);">What Echo delivers in numbers</h2>
+    <div class="kpi-grid">
+      <div class="kpi-card reveal-scale d2">
+        <div class="kv" data-count-to="65" data-suffix="%">65%</div>
+        <div class="kl">Faster Time-to-Market</div>
+        <div class="ks">Feature deployment drops from 6+ months to 8–10 weeks. Rapid iteration cycles via Echo's governed workflow eliminate sequential bottlenecks.</div>
+      </div>
+      <div class="kpi-card reveal-scale d3">
+        <div class="kv" data-count-to="10" data-suffix="×">10×</div>
+        <div class="kl">Split Testing Velocity</div>
+        <div class="ks">A/B design experiments that previously took 4–6 weeks now execute in 3–5 days. Echo's versioning and approval layer enables rapid controlled testing.</div>
+      </div>
+      <div class="kpi-card reveal-scale d4">
+        <div class="kv" data-count-to="75" data-suffix="%">75%</div>
+        <div class="kl">Lower Platform Cost</div>
+        <div class="ks">Custom build vs. enterprise design system licensing ($150K–$500K/year). No licence ceiling, no feature gap, no vendor roadmap dependency.</div>
+      </div>
+      <div class="kpi-card reveal-scale d5">
+        <div class="kv" data-count-to="60" data-suffix="%">60%</div>
+        <div class="kl">Fewer Dev-Handoff Cycles</div>
+        <div class="ks">Design-to-dev rework reduced by 60–70%. Echo as living source of truth eliminates repeated alignment loops between design and engineering teams.</div>
+      </div>
+    </div>
+    <p class="source-note reveal d6">Extrapolated from industry benchmarks (Forrester, McKinsey Digital) and Echo's current deployment trajectory. Ranges ±5–10%.</p>
+  </div>
+  <div class="slide-bar"><span>18 / 22</span></div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SLIDE 13 — SOFT KPIs
+══════════════════════════════════════ -->
+<section class="slide accent-lime" id="s13" aria-label="Soft KPIs">
+  <div class="slide-content">
+    <span class="tag lime reveal d1">Cultural &amp; Systemic Impact</span>
+    <h2 class="h2 reveal d2" style="font-size: var(--t-h2);">The multiplier effects</h2>
+    <div class="soft-grid">
+      <div class="soft-card reveal d2">
+        <div class="sv">5×</div>
+        <div class="sl">Design System Adoption</div>
+        <div class="sd">Scalable design patterns adopted across all Hero teams — from one department to a company-wide standard.</div>
+      </div>
+      <div class="soft-card reveal d3">
+        <div class="sv">10×</div>
+        <div class="sl">Brand Compliance</div>
+        <div class="sd">AI-assisted RAG compliance checks via Echo Studio. Brand governance moves from manual review to intelligent automation.</div>
+      </div>
+      <div class="soft-card reveal d4">
+        <div class="sv">3×</div>
+        <div class="sl">Design Culture</div>
+        <div class="sd">Design thinking embedded across Hero's organisation. New team members onboard to guidelines instantly — 3× faster design onboarding.</div>
+      </div>
+      <div class="soft-card reveal d5">
+        <div class="sv">∞</div>
+        <div class="sl">AI Workflow Integration</div>
+        <div class="sd">Echo's guidelines become the training context for Echo Studio's AI — a closed-loop brand intelligence system that improves over time.</div>
+      </div>
+    </div>
+    <hr class="soft-divider reveal d6">
+    <p class="soft-note reveal d6">Beyond numbers: Echo creates a <strong style="color:var(--text); font-weight:500;">design culture</strong> at Hero. When every team member has instant access to a living, governed source of truth — design decisions become faster, more consistent, and more confident at every level of the organisation.</p>
+  </div>
+  <div class="slide-bar"><span>19 / 22</span></div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SLIDE 15 — PHASE 2 ROADMAP
+══════════════════════════════════════ -->
+<section class="slide" id="s14" aria-label="Ecosystem and Roadmap">
+  <div class="slide-content">
+    <span class="tag reveal d1">Ecosystem &amp; Roadmap</span>
+    <h2 class="h2 reveal d2" style="font-size: var(--t-h2);">Echo Portal is live. Here's what comes next.</h2>
+    <div class="roadmap-wrap">
+      <!-- Column 1: Live — Echo Portal -->
+      <div class="rm-col current reveal-scale d2">
+        <div class="rm-header">
+          <span class="rm-badge current">Phase 1 — Live</span>
+        </div>
+        <div class="rm-product">Echo Portal</div>
+        <div class="rm-title">Milestone 3 Launch</div>
+        <div class="rm-date">Jan 2026 – Jun 2026</div>
+        <ul class="rm-items">
+          <li>Design system portal — production-grade React</li>
+          <li>Multi-brand: Vida, Dirt-E, Leaf</li>
+          <li>7-stage approval workflow</li>
+          <li>Admin controls &amp; branch governance</li>
+          <li>Hero ID authentication</li>
+        </ul>
+      </div>
+      <!-- Column 2: Pitching — Echo Studio + DAM -->
+      <div class="rm-col next reveal-scale d3">
+        <div class="rm-header">
+          <span class="rm-badge next">Phase 2 — Pitching</span>
+        </div>
+        <div class="rm-product">Echo Studio &amp; DAM</div>
+        <div class="rm-title">Security + AI + Assets</div>
+        <div class="rm-date">H2 2026</div>
+        <ul class="rm-items">
+          <li>VAPT security certification</li>
+          <li>AI brand compliance — RAG over Echo guidelines</li>
+          <li>Full DAM expansion &amp; lifecycle management</li>
+          <li>Echo Studio integration with core portal</li>
+          <li>External stakeholder access (dealers, vendors)</li>
+        </ul>
+      </div>
+      <!-- Column 3: Future — Full Platform -->
+      <div class="rm-col reveal-scale d4">
+        <div class="rm-header">
+          <span class="rm-badge future">Future</span>
+        </div>
+        <div class="rm-product">Full Platform</div>
+        <div class="rm-title">And more to come…</div>
+        <div class="rm-date">2027 +</div>
+        <ul class="rm-items">
+          <li>Echo Studio at scale — dealers &amp; vendors</li>
+          <li>Multi-company brand standardisation</li>
+          <li>AI content &amp; campaign generation</li>
+          <li>Advanced cross-brand intelligence</li>
+        </ul>
+        <p class="rm-more">The platform grows with Hero — not against it.</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-bar"><span>20 / 22</span></div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SLIDE 05 — THE OWNPATH DIFFERENCE
+══════════════════════════════════════ -->
+<section class="slide" id="s4" aria-label="The Ownpath difference">
+  <div class="s4-ghost" aria-hidden="true">×</div>
+  <div class="slide-content">
+    <div class="s4-top">
+      <span class="tag reveal d1">Why Us</span>
+      <p class="s4-sub reveal d2">Design <span class="x-mark">×</span> Engineering.</p>
+      <h2 class="s4-hero reveal d3">1&nbsp;team,&nbsp;<span class="s4-hl">10x</span>&nbsp;outcome.</h2>
+    </div>
+    <div class="diff-grid">
+      <div class="diff-card reveal d4">
+        <div class="dc-title">Speed of Delivery</div>
+        <div class="dc-body">Rapid iteration cycles compress quarters into weeks. AI-assisted development at every layer — architecture, scaffolding, testing, documentation.</div>
+      </div>
+      <div class="diff-card reveal d5">
+        <div class="dc-title">Production-Grade Quality</div>
+        <div class="dc-body">Echo is not a demo. Architecture reviews, security hardening, VAPT readiness, and enterprise compliance — built in from day one.</div>
+      </div>
+      <div class="diff-card reveal d6">
+        <div class="dc-title">Enterprise Scalability</div>
+        <div class="dc-body">Multiple brand systems, cross-team workflows, role-based access, and an expanding ecosystem — all within a single coherent architecture.</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-bar"><span>21 / 22</span></div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SLIDE 16 — THE ASK / CTA
+══════════════════════════════════════ -->
+<section class="slide no-accent" id="s15" aria-label="Next steps">
+  <div class="cta-bg" aria-hidden="true"></div>
+  <!-- Brand mark -->
+  <div class="op-grid-mark" aria-hidden="true">
+    <svg viewBox="0 0 130 100" xmlns="http://www.w3.org/2000/svg">
+      <g fill="#0B0B0B" opacity="0.06">
+        <rect x="0"  y="0"  width="18" height="18" rx="1"/><rect x="24" y="0"  width="18" height="18" rx="1"/>
+        <rect x="48" y="0"  width="18" height="18" rx="1"/><rect x="72" y="0"  width="18" height="18" rx="1"/>
+        <rect x="96" y="0"  width="18" height="18" rx="1"/><rect x="120" y="0" width="18" height="18" rx="1"/>
+        <rect x="0"  y="24" width="18" height="18" rx="1"/><rect x="24" y="24" width="18" height="18" rx="1"/>
+        <rect x="48" y="24" width="18" height="18" rx="1"/><rect x="72" y="24" width="18" height="18" rx="1"/>
+        <rect x="96" y="24" width="18" height="18" rx="1"/><rect x="120" y="24" width="18" height="18" rx="1"/>
+        <rect x="0"  y="48" width="18" height="18" rx="1"/><rect x="24" y="48" width="18" height="18" rx="1"/>
+        <rect x="48" y="48" width="18" height="18" rx="1"/><rect x="72" y="48" width="18" height="18" rx="1"/>
+        <rect x="96" y="48" width="18" height="18" rx="1"/><rect x="120" y="48" width="18" height="18" rx="1"/>
+        <rect x="0"  y="72" width="18" height="18" rx="1"/><rect x="24" y="72" width="18" height="18" rx="1"/>
+        <rect x="48" y="72" width="18" height="18" rx="1"/><rect x="72" y="72" width="18" height="18" rx="1"/>
+        <rect x="96" y="72" width="18" height="18" rx="1"/><rect x="120" y="72" width="18" height="18" rx="1"/>
+      </g>
+      <g fill="#0B0B0B" opacity="0.45">
+        <rect x="0"  y="0"  width="18" height="18" rx="1"/>
+        <rect x="48" y="24" width="18" height="18" rx="1"/>
+        <rect x="0"  y="48" width="18" height="18" rx="1"/>
+        <rect x="96" y="48" width="18" height="18" rx="1"/>
+        <rect x="48" y="72" width="18" height="18" rx="1"/>
+      </g>
+      <g fill="#173DED">
+        <polygon points="85,9 94,18 85,27 76,18"/>
+        <polygon points="37,33 46,42 37,51 28,42"/>
+        <polygon points="109,33 118,42 109,51 100,42"/>
+        <polygon points="61,57 70,66 61,75 52,66"/>
+        <polygon points="13,81 22,90 13,99 4,90"/>
+      </g>
+    </svg>
+  </div>
+  <div class="cta-content">
+    <h2 class="cta-headline reveal d1">
+      What we've built<br>
+      <span class="hl-2">is just the start.</span>
+    </h2>
+    <p class="cta-tagline reveal d2">Ownpath is a unique end-to-end design and technology partner — working in deep collaboration, with agility, and with outcomes in mind. <strong style="color:var(--text); font-weight:500;">Echo is the proof.</strong></p>
+  </div>
+  <div class="slide-bar"><span>22 / 22</span></div>
+</section>
+
+<!-- ══════════════════════════════════════
+     JAVASCRIPT CONTROLLER
+══════════════════════════════════════ -->
+<script>
+(function() {
+  'use strict';
+
+  /* === SLIDE CONTROLLER === */
+  const slides    = Array.from(document.querySelectorAll('.slide:not(.slide-off)'));
+  const navDots   = document.getElementById('nav-dots');
+  const progressBar = document.getElementById('progress-bar');
+  const total     = slides.length;
+  let current     = 0;
+  let isScrolling = false;
+
+  /* ============================================
+     EDIT MODE — in-browser text editing
+     Click EDIT (or Ctrl/Cmd+E), edit any text in
+     place, SAVE HTML to download a copy, RESET to
+     discard. Edits persist in localStorage.
+     ============================================ */
+  class EditMode {
+    constructor() {
+      this.active = false;
+      this.STORAGE_KEY = 'echo-pitch-v2-edits';
+      this.originalContent = new Map();
+      this.saveTimeout = null;
+
+      // Compute the editable set ONCE and hold element references, so
+      // indices stay stable even if an edit empties a block's text.
+      this.editables = this._computeEditables();
+
+      this._cacheOriginals();
+      this.applyStoredEdits();
+
+      this.toggleBtn = document.getElementById('editToggle');
+      this.exportBtn = document.getElementById('exportHTML');
+      this.resetBtn  = document.getElementById('resetEdits');
+
+      if (this.toggleBtn) this.toggleBtn.addEventListener('click', () => this.toggle());
+      if (this.exportBtn) this.exportBtn.addEventListener('click', () => this.exportHTML());
+      if (this.resetBtn)  this.resetBtn.addEventListener('click', () => this.resetAll());
+    }
+
+    /* Generically collect every text-owning leaf block in a slide.
+       An element qualifies if it owns a direct non-whitespace text
+       node and lives outside chrome (nav, slide badge, svg, count-up
+       KPI numbers). Nested matches are dropped so only the outermost
+       text block becomes editable — inline <strong>/<span>/<br> are
+       edited within it, never as separate fields. */
+    _ownsText(el) {
+      for (const node of el.childNodes) {
+        if (node.nodeType === 3 && node.nodeValue.trim() !== '') return true;
+      }
+      return false;
+    }
+
+    _isExcluded(el) {
+      return !!el.closest('.slide-bar, #nav-dots, svg') || el.hasAttribute('data-count-to');
+    }
+
+    _slideEditables(slide) {
+      const owners = Array.from(slide.querySelectorAll('*'))
+        .filter(el => this._ownsText(el) && !this._isExcluded(el));
+      // Keep only the outermost owner in any nested chain
+      return owners.filter(el => !owners.some(other => other !== el && other.contains(el)));
+    }
+
+    _computeEditables() {
+      const result = [];
+      document.querySelectorAll('.slide').forEach((slide, si) => {
+        this._slideEditables(slide).forEach((el, ei) => {
+          result.push({ el, key: si + ':' + ei });
+        });
+      });
+      return result;
+    }
+
+    _getEditableElements() { return this.editables; }
+
+    _cacheOriginals() {
+      this._getEditableElements().forEach(({ el, key }) => {
+        this.originalContent.set(key, el.innerHTML);
+      });
+    }
+
+    toggle() { this.active ? this.deactivate() : this.activate(); }
+
+    activate() {
+      this.active = true;
+      document.documentElement.classList.add('edit-mode');
+      document.body.classList.add('edit-mode');
+      if (this.toggleBtn) this.toggleBtn.classList.add('active');
+
+      // Reveal every slide's content so nothing is hidden mid-edit
+      document.querySelectorAll('.slide').forEach(s => s.classList.add('visible'));
+
+      this._getEditableElements().forEach(({ el }) => {
+        el.setAttribute('contenteditable', 'true');
+      });
+
+      document.addEventListener('input', this._onInput);
+      document.addEventListener('paste', this._onPaste);
+    }
+
+    deactivate() {
+      this.active = false;
+      document.documentElement.classList.remove('edit-mode');
+      document.body.classList.remove('edit-mode');
+      if (this.toggleBtn) this.toggleBtn.classList.remove('active');
+
+      this._getEditableElements().forEach(({ el }) => {
+        el.removeAttribute('contenteditable');
+      });
+
+      document.removeEventListener('input', this._onInput);
+      document.removeEventListener('paste', this._onPaste);
+
+      if (this.saveTimeout) { clearTimeout(this.saveTimeout); this.saveTimeout = null; }
+      this.saveToStorage();
+    }
+
+    _onInput = () => {
+      if (this.saveTimeout) clearTimeout(this.saveTimeout);
+      this.saveTimeout = setTimeout(() => this.saveToStorage(), 500);
+    };
+
+    _onPaste = (e) => {
+      const target = e.target;
+      if (target && target.getAttribute && target.getAttribute('contenteditable') === 'true') {
+        e.preventDefault();
+        const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+        document.execCommand('insertText', false, text);
+      }
+    };
+
+    saveToStorage() {
+      const edits = {};
+      this._getEditableElements().forEach(({ el, key }) => {
+        if (el.innerHTML !== this.originalContent.get(key)) edits[key] = el.innerHTML;
+      });
+      if (Object.keys(edits).length > 0) {
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(edits));
+      } else {
+        localStorage.removeItem(this.STORAGE_KEY);
+      }
+    }
+
+    applyStoredEdits() {
+      const raw = localStorage.getItem(this.STORAGE_KEY);
+      if (!raw) return;
+      try {
+        const edits = JSON.parse(raw);
+        const all = this._getEditableElements();
+        const byKey = new Map(all.map(({ el, key }) => [key, el]));
+        for (const [key, html] of Object.entries(edits)) {
+          const el = byKey.get(key);
+          if (el) el.innerHTML = html;
+        }
+      } catch (e) {
+        console.warn('EditMode: failed to apply stored edits', e);
+      }
+    }
+
+    exportHTML() {
+      const clone = document.documentElement.cloneNode(true);
+
+      clone.classList.remove('edit-mode');
+      const body = clone.querySelector('body');
+      if (body) body.classList.remove('edit-mode');
+
+      clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+
+      // Strip baked-in runtime state so the exported file replays fresh
+      clone.querySelectorAll('.slide').forEach(s => s.classList.remove('visible'));
+      const nav = clone.querySelector('#nav-dots');
+      if (nav) nav.innerHTML = '';
+      const bar = clone.querySelector('#progress-bar');
+      if (bar) bar.removeAttribute('style');
+      // Restore count-up KPIs to their displayed final value (markup already holds it)
+
+      const html = '<!DOCTYPE html>\n' + clone.outerHTML;
+      const blob = new Blob([html], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'echo-pitch-edited.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    resetAll() {
+      if (!confirm('Discard all edits and restore original content?')) return;
+      localStorage.removeItem(this.STORAGE_KEY);
+      this._getEditableElements().forEach(({ el, key }) => {
+        const original = this.originalContent.get(key);
+        if (original !== undefined) el.innerHTML = original;
+      });
+    }
+  }
+
+  const editMode = new EditMode();
+
+  /* Build nav dots */
+  slides.forEach((slide, i) => {
+    const btn = document.createElement('button');
+    btn.setAttribute('aria-label', `Go to slide ${i + 1}`);
+    if (i === 0) btn.classList.add('active');
+    btn.addEventListener('click', () => goTo(i));
+    navDots.appendChild(btn);
+  });
+
+  function updateChrome(idx) {
+    current = idx;
+    const pct = total > 1 ? (idx / (total - 1)) * 100 : 100;
+    progressBar.style.width = pct + '%';
+    Array.from(navDots.children).forEach((btn, i) => {
+      btn.classList.toggle('active', i === idx);
+    });
+  }
+
+  function goTo(idx) {
+    idx = Math.max(0, Math.min(total - 1, idx));
+    slides[idx].scrollIntoView({ behavior: 'smooth' });
+    updateChrome(idx);
+  }
+
+  /* === INTERSECTION OBSERVER: visibility + animations === */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        const idx = slides.indexOf(entry.target);
+        if (idx !== -1) updateChrome(idx);
+        /* Trigger count-up animations on KPI slide */
+        if (entry.target.id === 's12') {
+          entry.target.querySelectorAll('[data-count-to]').forEach(el => {
+            animateCount(el);
+          });
+        }
+      }
+    });
+  }, { threshold: 0.5 });
+
+  slides.forEach(s => observer.observe(s));
+
+  /* First slide visible immediately */
+  slides[0].classList.add('visible');
+
+  /* === KEYBOARD NAVIGATION === */
+  document.addEventListener('keydown', (e) => {
+    /* Ctrl/Cmd+E toggles edit mode */
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'e' || e.key === 'E')) {
+      e.preventDefault();
+      editMode.toggle();
+      return;
+    }
+    /* Don't navigate while editing text */
+    if (editMode.active) return;
+    switch(e.key) {
+      case 'ArrowDown': case 'ArrowRight': case ' ': case 'PageDown':
+        e.preventDefault(); goTo(current + 1); break;
+      case 'ArrowUp': case 'ArrowLeft': case 'PageUp':
+        e.preventDefault(); goTo(current - 1); break;
+      case 'Home': e.preventDefault(); goTo(0); break;
+      case 'End':  e.preventDefault(); goTo(total - 1); break;
+    }
+  });
+
+  /* === MOUSE WHEEL NAVIGATION === */
+  let wheelCooldown = false;
+  document.addEventListener('wheel', (e) => {
+    if (editMode.active) return;
+    if (wheelCooldown) return;
+    wheelCooldown = true;
+    setTimeout(() => { wheelCooldown = false; }, 800);
+    if (e.deltaY > 0) goTo(current + 1);
+    else              goTo(current - 1);
+  }, { passive: true });
+
+  /* === TOUCH / SWIPE NAVIGATION === */
+  let touchStartY = 0;
+  document.addEventListener('touchstart', e => {
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+  document.addEventListener('touchend', e => {
+    if (editMode.active) return;
+    const delta = touchStartY - e.changedTouches[0].clientY;
+    if (Math.abs(delta) > 50) {
+      if (delta > 0) goTo(current + 1);
+      else           goTo(current - 1);
+    }
+  }, { passive: true });
+
+  /* === COUNT-UP ANIMATION === */
+  function animateCount(el) {
+    const target  = parseInt(el.getAttribute('data-count-to'), 10);
+    const suffix  = el.getAttribute('data-suffix') || '';
+    const duration = 1400;
+    const start   = performance.now();
+    function step(now) {
+      const elapsed  = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      /* Ease out cubic */
+      const eased    = 1 - Math.pow(1 - progress, 3);
+      const value    = Math.round(eased * target);
+      el.textContent = value + suffix;
+      if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* === HANDLE SCROLL POSITION SYNC === */
+  /* Keep current slide in sync when user scrolls manually */
+  let scrollTimeout;
+  window.addEventListener('scroll', () => {
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(() => {
+      const center = window.scrollY + window.innerHeight / 2;
+      let closest = 0, minDist = Infinity;
+      slides.forEach((s, i) => {
+        const mid = s.offsetTop + s.offsetHeight / 2;
+        const d = Math.abs(mid - center);
+        if (d < minDist) { minDist = d; closest = i; }
+      });
+      updateChrome(closest);
+    }, 60);
+  }, { passive: true });
+
+})();
+</script>
+
+</body>
+</html>
