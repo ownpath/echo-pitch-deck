@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Echo — Ownpath Studios × VIDA Hero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ─────────────────────────────────────── */
+:root{
+  --bg:#F7F7F5; --bg2:#EFEFED; --bg3:#E2E2DF;
+  --ink:#0B0B0B; --mid:#3A3B45; --dim:#88888F;
+  --blue:#173DED; --navy:#000051;
+  --line:rgba(11,11,11,.07); --lines:rgba(11,11,11,.13);
+  --dkbg:#0B0B0B; --dktext:#fff;
+  --dkdim:rgba(255,255,255,.5); --dkfaint:rgba(255,255,255,.25);
+  --dkline:rgba(255,255,255,.1);
+  --font:'DM Sans','Helvetica Neue',sans-serif;
+  --logo:'Fraunces',serif;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --pad:clamp(2.5rem,5vw,5rem);
+  --t-hero:clamp(4rem,11vw,10rem);
+  --t-disp:clamp(2rem,4.5vw,4rem);
+  --t-h2:clamp(1.4rem,2.8vw,2.4rem);
+  --t-h3:clamp(1rem,1.8vw,1.5rem);
+  --t-body:clamp(.8rem,1.2vw,1rem);
+  --t-sm:clamp(.65rem,.85vw,.78rem);
+  --t-lbl:clamp(.58rem,.78vw,.7rem);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow-x:hidden}
+html{scroll-snap-type:y mandatory;scroll-behavior:smooth}
+body{background:var(--dkbg);color:var(--ink);font-family:var(--font)}
+
+/* ── VIEWPORT BASE ───────────────────────────────── */
+.slide{width:100vw;height:100vh;height:100dvh;overflow:hidden;scroll-snap-align:start;display:flex;flex-direction:column;position:relative}
+.sc{flex:1;display:flex;flex-direction:column;justify-content:center;max-height:100%;overflow:hidden;padding:var(--pad)}
+@media(max-height:700px){:root{--pad:clamp(1.2rem,3vw,2.5rem);--t-h2:clamp(1.2rem,2.5vw,1.9rem)}}
+@media(max-height:600px){:root{--pad:clamp(.75rem,2.5vw,1.75rem);--t-body:clamp(.68rem,1vw,.85rem)}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.15s!important}}
+
+/* ── CHROME ──────────────────────────────────────── */
+#prog{position:fixed;top:0;left:0;height:2px;background:var(--blue);width:0%;transition:width .45s var(--ease);z-index:9999}
+#ctr{position:fixed;bottom:clamp(1.25rem,2vw,2rem);right:clamp(1.5rem,3vw,3rem);font-size:var(--t-lbl);letter-spacing:.12em;font-weight:500;color:var(--dkfaint);z-index:9999;user-select:none;transition:color .3s}
+#ctr.lt{color:var(--dim)}
+#hint{position:fixed;bottom:clamp(1.25rem,2vw,2rem);left:50%;transform:translateX(-50%);font-size:var(--t-lbl);letter-spacing:.1em;color:var(--dkfaint);z-index:9999;user-select:none;transition:opacity .5s;pointer-events:none}
+#hint.gone{opacity:0}
+
+/* ── TAG ─────────────────────────────────────────── */
+.tag{display:inline-flex;align-items:center;gap:.5em;font-size:var(--t-lbl);font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--blue);margin-bottom:clamp(.5rem,1vw,.9rem)}
+.tag::before{content:'';width:6px;height:6px;background:var(--blue);transform:rotate(45deg);flex-shrink:0}
+.tag-dk{color:var(--dkdim)}.tag-dk::before{background:var(--dkdim)}
+
+/* ── DARK SLIDE ──────────────────────────────────── */
+.dk{background:var(--dkbg);color:var(--dktext)}
+.dk .tag{color:var(--dkdim)}.dk .tag::before{background:var(--dkdim)}
+
+/* ── AUTO-REVEAL ─────────────────────────────────── */
+.ar{opacity:0;transform:translateY(14px);transition:opacity .5s var(--ease),transform .5s var(--ease)}
+.slide.active .ar{opacity:1;transform:none}
+.slide.active .ar:nth-child(1){transition-delay:.04s}
+.slide.active .ar:nth-child(2){transition-delay:.12s}
+.slide.active .ar:nth-child(3){transition-delay:.2s}
+.slide.active .ar:nth-child(4){transition-delay:.28s}
+.slide.active .ar:nth-child(5){transition-delay:.36s}
+
+/* ── STEP REVEAL ─────────────────────────────────── */
+[data-step]{opacity:0;transform:translateY(16px);transition:opacity .5s var(--ease),transform .5s var(--ease)}
+[data-step].revealed{opacity:1;transform:none}
+[data-step].rs{transform:scale(.96) translateY(8px)}
+[data-step].rs.revealed{transform:none}
+[data-step].rl{transform:translateX(calc(-1 * clamp(16px,2vw,24px)))}
+[data-step].rl.revealed{transform:none}
+[data-step].rr{transform:translateX(clamp(16px,2vw,24px))}
+[data-step].rr.revealed{transform:none}
+
+/* ═══════════════════════════════════════════════════
+   S01 — COVER
+═══════════════════════════════════════════════════ */
+#s1{background:var(--dkbg);justify-content:center;align-items:center}
+.cover-inner{display:flex;flex-direction:column;align-items:center;gap:clamp(1.5rem,3vw,3rem);text-align:center}
+.cover-logo{display:flex;align-items:baseline;gap:.15em;line-height:1}
+.logo-op{font-family:var(--logo);font-weight:900;font-style:italic;font-size:clamp(2.2rem,5.5vw,5rem);color:#fff;letter-spacing:-.03em}
+.logo-st{font-family:var(--font);font-weight:600;font-size:clamp(2.2rem,5.5vw,5rem);color:#fff;letter-spacing:-.02em}
+.cover-divider{width:clamp(40px,6vw,80px);height:1px;background:var(--dkline)}
+.cover-sub{text-align:center}
+.cover-echo{font-size:clamp(1.1rem,2.2vw,2rem);font-weight:700;letter-spacing:-.02em;color:var(--blue);margin-bottom:.3em}
+.cover-tagline{font-size:var(--t-body);color:var(--dkdim);letter-spacing:.04em}
+.cover-meta{font-size:var(--t-lbl);letter-spacing:.14em;text-transform:uppercase;color:var(--dkfaint);margin-top:clamp(1rem,2vw,2rem)}
+/* Brand mark top-right */
+#s1 .mark{position:absolute;top:calc(-1 * clamp(.5rem,.8vw,1rem));right:calc(-1 * clamp(.5rem,.8vw,1rem));width:clamp(140px,18vw,220px);opacity:1;pointer-events:none}
+
+/* ═══════════════════════════════════════════════════
+   S02 — THE CHALLENGE (headline)
+═══════════════════════════════════════════════════ */
+#s2{background:var(--dkbg)}
+.ch-hl-wrap{max-width:min(900px,90vw)}
+.ch-pre{font-size:var(--t-h3);color:var(--dkdim);font-weight:400;margin-bottom:.5em;letter-spacing:.01em}
+.ch-line1{font-size:var(--t-disp);font-weight:700;letter-spacing:-.03em;line-height:1;color:var(--dktext)}
+.ch-line2{font-size:var(--t-disp);font-weight:700;letter-spacing:-.03em;line-height:1;color:var(--blue)}
+.ch-sub{font-size:var(--t-body);color:var(--dkdim);margin-top:clamp(1.5rem,3vw,3rem);max-width:40ch;line-height:1.6}
+
+/* ═══════════════════════════════════════════════════
+   S03 — CHALLENGE 1: CAPTURED IN HEADS
+═══════════════════════════════════════════════════ */
+#s3{background:var(--bg)}
+.c1-layout{display:grid;grid-template-columns:1fr 1fr;gap:clamp(3rem,7vw,7rem);align-items:center;width:100%}
+.c1-visual{position:relative;display:flex;align-items:center;justify-content:center}
+.c1-head-wrap{position:relative;width:clamp(180px,28vw,320px);height:clamp(180px,28vw,320px)}
+.c1-circle{width:100%;height:100%;border-radius:50%;background:var(--bg2);border:2px solid var(--lines);display:flex;align-items:center;justify-content:center;position:relative;overflow:visible}
+.c1-circle svg{width:45%;height:45%;stroke:var(--dim);fill:none;stroke-width:1.5;stroke-linecap:round}
+/* Floating thought fragments */
+.c1-frag{position:absolute;background:#fff;border:1px solid var(--lines);border-radius:100px;padding:.35em .85em;font-size:var(--t-sm);color:var(--mid);white-space:nowrap;font-weight:500}
+.c1-frag.f1{top:-8%;left:-18%;transform:rotate(-6deg)}
+.c1-frag.f2{top:10%;right:-22%;transform:rotate(4deg)}
+.c1-frag.f3{bottom:20%;right:-25%;transform:rotate(-3deg)}
+.c1-frag.f4{bottom:-5%;left:-10%;transform:rotate(5deg)}
+.c1-frag.f5{top:45%;left:-28%;transform:rotate(-8deg)}
+.c1-text{}
+.c1-num{font-size:clamp(5rem,10vw,9rem);font-weight:700;line-height:1;color:transparent;-webkit-text-stroke:1px var(--bg3);letter-spacing:-.04em;user-select:none;margin-bottom:-.3em}
+.c1-title{font-size:var(--t-disp);font-weight:700;letter-spacing:-.03em;color:var(--ink);line-height:1;margin-bottom:clamp(.75rem,1.5vw,1.4rem)}
+.c1-title em{font-style:normal;color:var(--blue)}
+.c1-desc{font-size:var(--t-body);color:var(--mid);line-height:1.7;max-width:36ch}
+.c1-pills{display:flex;flex-wrap:wrap;gap:.5em;margin-top:clamp(.9rem,1.6vw,1.5rem)}
+.c1-pill{padding:.35em .85em;background:var(--bg2);border-radius:100px;font-size:var(--t-sm);color:var(--mid);font-weight:500}
+
+/* ═══════════════════════════════════════════════════
+   S04 — CHALLENGE 2: LOST IN TRANSIT
+═══════════════════════════════════════════════════ */
+#s4{background:var(--bg)}
+#s4 .sc{justify-content:flex-start}
+.c2-header{flex-shrink:0;margin-bottom:clamp(1.5rem,3vw,3rem)}
+.c2-title{font-size:var(--t-disp);font-weight:700;letter-spacing:-.03em;color:var(--ink);margin-top:.3em;line-height:1.05}
+.c2-title em{font-style:normal;color:var(--blue)}
+.c2-flow{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(.75rem,1.5vw,1.4rem);flex:1;min-height:0;align-items:stretch}
+.c2-node{border-radius:12px;padding:clamp(1rem,1.6vw,1.5rem);display:flex;flex-direction:column;position:relative;overflow:hidden;min-height:0}
+.c2-node.n1{background:rgba(23,61,237,.1);border:1.5px solid rgba(23,61,237,.25)}
+.c2-node.n2{background:rgba(23,61,237,.07);border:1.5px solid rgba(23,61,237,.15)}
+.c2-node.n3{background:rgba(23,61,237,.04);border:1.5px solid rgba(23,61,237,.1)}
+.c2-node.n4{background:var(--bg2);border:1.5px solid var(--lines)}
+.c2-arrow{position:absolute;top:50%;right:-12px;transform:translateY(-50%);z-index:2;color:var(--blue);font-size:.9rem;background:var(--bg);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;border:1px solid var(--lines)}
+.c2-pct{font-size:clamp(2rem,4vw,3.5rem);font-weight:700;letter-spacing:-.03em;line-height:1;margin-bottom:.2em}
+.n1 .c2-pct{color:var(--blue)}
+.n2 .c2-pct{color:rgba(23,61,237,.65)}
+.n3 .c2-pct{color:rgba(23,61,237,.35)}
+.n4 .c2-pct{color:var(--dim)}
+.c2-role{font-size:var(--t-sm);font-weight:700;color:var(--ink);margin-bottom:.25em}
+.c2-desc{font-size:var(--t-sm);color:var(--dim);line-height:1.5;flex:1}
+.c2-loss{margin-top:auto;padding-top:.6em;font-size:var(--t-lbl);letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+.n1 .c2-loss{color:rgba(23,61,237,.5)}
+.n2 .c2-loss{color:var(--dim)}
+.n3 .c2-loss{color:var(--dim)}
+.n4 .c2-loss{color:#c0392b}
+
+/* ═══════════════════════════════════════════════════
+   S05 — CHALLENGE 3: SCATTERED EVERYWHERE
+═══════════════════════════════════════════════════ */
+#s5{background:var(--bg)}
+.c3-wrap{width:100%;height:100%;position:relative;display:flex;flex-direction:column}
+.c3-header{flex-shrink:0;margin-bottom:clamp(1rem,2vw,2rem)}
+.c3-title{font-size:var(--t-disp);font-weight:700;letter-spacing:-.03em;color:var(--ink);margin-top:.3em;line-height:1.05}
+.c3-title em{font-style:normal;color:var(--blue)}
+/* Scatter field */
+.c3-field{flex:1;position:relative;min-height:0;overflow:hidden}
+.st{position:absolute;display:inline-flex;align-items:center;gap:.5em;padding:.45em 1em;border-radius:100px;font-size:var(--t-body);font-weight:600;color:var(--mid);border:1.5px solid var(--lines);background:#fff;white-space:nowrap}
+.st svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;flex-shrink:0}
+.st.lg{font-size:var(--t-h3);padding:.5em 1.2em}
+.st.sm{font-size:var(--t-sm);padding:.35em .8em;opacity:.7}
+/* Positions */
+.st.figma{top:5%;left:5%;transform:rotate(-4deg)}
+.st.canva{top:10%;left:38%;transform:rotate(3deg)}
+.st.adobe{top:5%;right:8%;transform:rotate(-2deg)}
+.st.gdocs{top:38%;left:2%;transform:rotate(5deg)}
+.st.notion{top:32%;right:15%;transform:rotate(-6deg)}
+.st.slack{top:48%;left:30%;transform:rotate(2deg)}
+.st.email{top:55%;right:5%;transform:rotate(-3deg)}
+.st.whatsapp{bottom:20%;left:8%;transform:rotate(4deg)}
+.st.sheets{bottom:25%;left:42%;transform:rotate(-5deg)}
+.st.miro{bottom:15%;right:18%;transform:rotate(3deg)}
+.st.drive{bottom:5%;left:22%;transform:rotate(-3deg)}
+.c3-statement{position:absolute;bottom:0;left:0;right:0;text-align:center;font-size:var(--t-h2);font-weight:700;letter-spacing:-.025em;color:var(--ink);line-height:1.1;padding-top:.5em;background:linear-gradient(to bottom,transparent,var(--bg) 40%);padding-bottom:.5em}
+.c3-statement em{font-style:normal;color:var(--blue)}
+
+/* ═══════════════════════════════════════════════════
+   S06 — WHY THIS PROBLEM MATTERS
+═══════════════════════════════════════════════════ */
+#s6{background:var(--dkbg)}
+.wm-layout{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,4vw,4rem);align-items:start;width:100%}
+.wm-left{}
+.wm-hl{font-size:var(--t-h2);font-weight:700;letter-spacing:-.025em;line-height:1.1;color:var(--dktext);margin-top:.4em;margin-bottom:clamp(1.5rem,3vw,3rem)}
+.wm-hl em{font-style:normal;color:var(--blue)}
+.wm-stats{display:flex;flex-direction:column;gap:clamp(.75rem,1.4vw,1.3rem)}
+.wm-stat{background:rgba(255,255,255,.05);border:1px solid var(--dkline);border-left:2.5px solid var(--blue);border-radius:8px;padding:clamp(.85rem,1.4vw,1.3rem) clamp(1rem,1.6vw,1.5rem)}
+.wm-stat-num{font-size:clamp(1.6rem,3.5vw,3rem);font-weight:700;letter-spacing:-.03em;color:var(--blue);line-height:1;margin-bottom:.15em}
+.wm-stat-lbl{font-size:var(--t-body);font-weight:600;color:var(--dktext);margin-bottom:.2em}
+.wm-stat-desc{font-size:var(--t-sm);color:var(--dkdim);line-height:1.5}
+.wm-right{display:flex;flex-direction:column;gap:clamp(.75rem,1.4vw,1.3rem);padding-top:clamp(1.5rem,3vw,3rem)}
+.wm-risk{background:rgba(255,255,255,.04);border:1px solid var(--dkline);border-radius:10px;padding:clamp(1rem,1.6vw,1.5rem)}
+.wm-risk-icon{width:clamp(32px,3vw,42px);height:clamp(32px,3vw,42px);border-radius:9px;background:rgba(23,61,237,.2);display:flex;align-items:center;justify-content:center;margin-bottom:.75em}
+.wm-risk-icon svg{width:16px;height:16px;stroke:var(--blue);fill:none;stroke-width:1.8;stroke-linecap:round}
+.wm-risk-title{font-size:var(--t-h3);font-weight:700;color:var(--dktext);margin-bottom:.3em}
+.wm-risk-desc{font-size:var(--t-sm);color:var(--dkdim);line-height:1.55}
+
+/* ═══════════════════════════════════════════════════
+   S07 — OUR APPROACH (bridge)
+═══════════════════════════════════════════════════ */
+#s7{background:var(--bg)}
+#s7 .sc{justify-content:flex-start}
+.ap-head{flex-shrink:0;margin-bottom:clamp(1.5rem,3vw,3rem)}
+.ap-hl{font-size:var(--t-h2);font-weight:700;letter-spacing:-.025em;line-height:1.1;color:var(--ink);margin-top:.35em}
+.ap-hl em{font-style:normal;color:var(--blue)}
+.ap-map{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(.75rem,1.5vw,1.4rem);flex:1;min-height:0}
+.ap-card{border-radius:12px;background:#fff;border:1px solid var(--lines);border-top:2.5px solid var(--blue);padding:clamp(1rem,1.6vw,1.5rem);display:flex;flex-direction:column;position:relative;overflow:hidden;min-height:0}
+.ap-ghost{position:absolute;bottom:calc(-1 * clamp(.5rem,1vw,1rem));right:clamp(.8rem,1.2vw,1.2rem);font-size:clamp(5rem,10vw,9rem);font-weight:700;line-height:1;color:transparent;-webkit-text-stroke:1px var(--bg3);user-select:none;pointer-events:none;letter-spacing:-.04em}
+.ap-icon{width:clamp(32px,3vw,42px);height:clamp(32px,3vw,42px);border-radius:9px;background:rgba(23,61,237,.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-bottom:clamp(.8rem,1.4vw,1.2rem)}
+.ap-icon svg{width:16px;height:16px;stroke:var(--blue);fill:none;stroke-width:1.8;stroke-linecap:round}
+.ap-prob{font-size:var(--t-lbl);letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:.4em;font-weight:600}
+.ap-name{font-size:var(--t-h3);font-weight:700;color:var(--ink);line-height:1.15;margin-bottom:clamp(.5rem,.9vw,.85rem)}
+.ap-desc{font-size:var(--t-sm);color:var(--dim);line-height:1.6;flex:1}
+
+/* ═══════════════════════════════════════════════════
+   S08 — INTRODUCING ECHO
+═══════════════════════════════════════════════════ */
+#s8{background:var(--dkbg)}
+.intro-layout{display:grid;grid-template-columns:.9fr 1.1fr;height:100%;min-height:0}
+.intro-left{display:flex;flex-direction:column;justify-content:center;padding:var(--pad);border-right:1px solid var(--dkline)}
+.intro-wordmark{display:flex;align-items:baseline;gap:.12em;margin-bottom:clamp(1.2rem,2.5vw,2.5rem)}
+.intro-echo-word{font-family:var(--font);font-weight:700;font-size:clamp(2rem,5vw,4.5rem);letter-spacing:-.04em;color:var(--dktext)}
+.intro-hl{font-size:var(--t-h2);font-weight:700;letter-spacing:-.025em;line-height:1.1;color:var(--dktext);margin-bottom:clamp(1.5rem,3vw,3rem)}
+.intro-hl em{font-style:normal;color:var(--blue)}
+.intro-pts{display:flex;flex-direction:column;gap:clamp(.7rem,1.3vw,1.2rem)}
+.intro-pt{display:flex;align-items:flex-start;gap:.75em;font-size:var(--t-body);color:var(--dkdim)}
+.intro-pt strong{color:var(--dktext);font-weight:600}
+.intro-pt::before{content:'→';color:var(--blue);flex-shrink:0;margin-top:.05em}
+/* Right: screenshot zone */
+.intro-right{background:var(--bg2);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(1.5rem,3vw,3rem);gap:clamp(1rem,1.8vw,1.5rem);overflow:hidden}
+.intro-screen{width:100%;border-radius:12px;overflow:hidden;border:1.5px solid var(--lines);box-shadow:0 20px 60px rgba(0,0,0,.15);display:flex;flex-direction:column;flex:1;min-height:0}
+.sc-bar{display:flex;align-items:center;gap:5px;padding:8px 12px;background:var(--bg3);border-bottom:1px solid var(--lines);flex-shrink:0}
+.sc-dot{width:8px;height:8px;border-radius:50%}
+.sc-dot:nth-child(1){background:#FF5F57}
+.sc-dot:nth-child(2){background:#FEBC2E}
+.sc-dot:nth-child(3){background:#28C840}
+.sc-url{margin:0 auto;background:#fff;border-radius:4px;padding:2px 12px;font-size:10px;color:var(--dim);width:40%;text-align:center}
+.sc-body{flex:1;display:flex;background:var(--bg);min-height:0;overflow:hidden}
+.sc-nav{width:17%;background:var(--ink);padding:10px 6px;display:flex;flex-direction:column;gap:6px;flex-shrink:0}
+.sc-nv{height:5px;border-radius:2px;background:rgba(255,255,255,.1);width:80%;margin:0 auto}
+.sc-nv.on{background:var(--blue)}
+.sc-nv.dim{width:50%;opacity:.4}
+.sc-main{flex:1;padding:12px;display:flex;flex-direction:column;gap:8px;overflow:hidden}
+.sc-metrics{display:flex;gap:7px;flex-shrink:0}
+.sc-m{flex:1;background:#fff;border-radius:7px;padding:8px 10px;border:1px solid var(--line)}
+.sc-mv{height:7px;border-radius:2px;background:var(--blue);margin-bottom:4px}
+.sc-mv.b{background:rgba(23,61,237,.4);width:75%}
+.sc-mv.c{background:rgba(23,61,237,.2);width:55%}
+.sc-ml{height:4px;border-radius:2px;background:var(--line);width:80%}
+.sc-chart{flex:1;background:#fff;border-radius:7px;border:1px solid var(--line);padding:10px;display:flex;flex-direction:column;gap:6px;overflow:hidden}
+.sc-ch{display:flex;justify-content:space-between;align-items:center}
+.sc-ct{height:7px;border-radius:3px;background:var(--ink);opacity:.4;width:35%}
+.sc-cb{height:6px;border-radius:10px;background:rgba(23,61,237,.15);width:16%}
+.sc-bars{display:flex;align-items:flex-end;gap:5px;flex:1;padding-top:4px}
+.sc-b{flex:1;border-radius:3px 3px 0 0;background:rgba(23,61,237,.12)}
+.sc-b.hi{background:var(--blue)}.sc-b.md{background:rgba(23,61,237,.5)}
+.sc-flow{background:#fff;border-radius:7px;border:1px solid var(--line);padding:9px 11px;flex-shrink:0;display:flex;align-items:center;gap:5px}
+.sc-fd{width:9px;height:9px;border-radius:50%;background:var(--blue);flex-shrink:0}
+.sc-fd.dn{background:rgba(23,61,237,.3)}.sc-fd.wt{background:var(--bg3);border:1.5px solid var(--lines)}
+.sc-fl{flex:1;height:1.5px;background:var(--line)}
+.intro-label{font-size:var(--t-sm);color:var(--dim);text-align:center;font-style:italic}
+
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+<div id="ctr">01 / 24</div>
+<div id="hint">SPACE or → to advance</div>
+
+<!-- S01 COVER ─────────────────────────────────── -->
+<section class="slide dk" id="s1" data-steps="0">
+  <!-- brand mark top-right -->
+  <div class="mark" aria-hidden="true">
+    <svg viewBox="0 0 150 118" xmlns="http://www.w3.org/2000/svg">
+      <g fill="#fff" opacity="0.05"><rect x="0" y="0" width="22" height="22" rx="1"/><rect x="32" y="0" width="22" height="22" rx="1"/><rect x="64" y="0" width="22" height="22" rx="1"/><rect x="96" y="0" width="22" height="22" rx="1"/><rect x="128" y="0" width="22" height="22" rx="1"/><rect x="0" y="32" width="22" height="22" rx="1"/><rect x="32" y="32" width="22" height="22" rx="1"/><rect x="64" y="32" width="22" height="22" rx="1"/><rect x="96" y="32" width="22" height="22" rx="1"/><rect x="128" y="32" width="22" height="22" rx="1"/><rect x="0" y="64" width="22" height="22" rx="1"/><rect x="32" y="64" width="22" height="22" rx="1"/><rect x="64" y="64" width="22" height="22" rx="1"/><rect x="96" y="64" width="22" height="22" rx="1"/><rect x="128" y="64" width="22" height="22" rx="1"/><rect x="0" y="96" width="22" height="22" rx="1"/><rect x="32" y="96" width="22" height="22" rx="1"/><rect x="64" y="96" width="22" height="22" rx="1"/><rect x="96" y="96" width="22" height="22" rx="1"/><rect x="128" y="96" width="22" height="22" rx="1"/></g>
+      <g fill="#fff" opacity="0.55"><rect x="0" y="0" width="22" height="22" rx="1"/><rect x="64" y="0" width="22" height="22" rx="1"/><rect x="128" y="0" width="22" height="22" rx="1"/><rect x="32" y="32" width="22" height="22" rx="1"/><rect x="96" y="32" width="22" height="22" rx="1"/><rect x="0" y="64" width="22" height="22" rx="1"/><rect x="64" y="64" width="22" height="22" rx="1"/><rect x="128" y="64" width="22" height="22" rx="1"/><rect x="32" y="96" width="22" height="22" rx="1"/></g>
+      <g fill="#173DED"><polygon points="27,16 38,27 27,38 16,27"/><polygon points="91,16 102,27 91,38 80,27"/><polygon points="59,48 70,59 59,70 48,59"/><polygon points="123,48 134,59 123,70 112,59"/><polygon points="27,80 38,91 27,102 16,91"/></g>
+    </svg>
+  </div>
+  <div class="cover-inner">
+    <div class="cover-logo ar">
+      <span class="logo-op">ownpath</span><span class="logo-st">Studios</span>
+    </div>
+    <div class="cover-divider ar"></div>
+    <div class="cover-sub">
+      <div class="cover-echo ar">Echo</div>
+      <div class="cover-tagline ar">A custom product, built for VIDA · Hero MotoCorp</div>
+    </div>
+    <div class="cover-meta ar">June 2026</div>
+  </div>
+</section>
+
+<!-- S02 THE CHALLENGE ─────────────────────────── -->
+<section class="slide dk" id="s2" data-steps="2">
+  <div class="sc">
+    <div class="ch-hl-wrap">
+      <p class="ch-pre ar">02 · The Challenge</p>
+      <h2 class="ch-line1 ar">Intelligence is the goal.</h2>
+      <h2 class="ch-line2" data-step="1">Memory is the challenge.</h2>
+      <p class="ch-sub" data-step="2">VIDA's brand is complex, fast-moving, and spread across teams, tools, and time zones. The systems to manage it haven't kept pace.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S03 CHALLENGE 1: CAPTURED IN HEADS ─────────── -->
+<section class="slide" id="s3" data-steps="3">
+  <div class="sc">
+    <div class="c1-layout">
+      <div class="c1-visual ar">
+        <div class="c1-head-wrap">
+          <!-- Floating thought fragments -->
+          <div class="c1-frag f1" data-step="1">verbal brief</div>
+          <div class="c1-frag f2" data-step="2">remembered decision</div>
+          <div class="c1-frag f3" data-step="2">emailed file</div>
+          <div class="c1-frag f4" data-step="3">walked out with them</div>
+          <div class="c1-frag f5" data-step="3">no one documented it</div>
+          <!-- Head -->
+          <div class="c1-circle">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="5"/><path d="M3 21v-1a9 9 0 0 1 9-9v0a9 9 0 0 1 9 9v1"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="c1-text">
+        <div class="c1-num ar" aria-hidden="true">01</div>
+        <h2 class="c1-title ar">Captured<br>in <em>heads.</em></h2>
+        <p class="c1-desc ar">Briefs are verbal. Decisions are remembered. Files are emailed. Institutional knowledge about brand lives in people — and walks out when they do.</p>
+        <div class="c1-pills ar">
+          <span class="c1-pill">No documentation</span>
+          <span class="c1-pill">Context lost daily</span>
+          <span class="c1-pill">Onboarding breaks</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S04 CHALLENGE 2: LOST IN TRANSIT ───────────── -->
+<section class="slide" id="s4" data-steps="4">
+  <div class="sc">
+    <div class="c2-header">
+      <span class="tag ar">Challenge 02</span>
+      <h2 class="c2-title ar">Lost <em>in transit.</em></h2>
+    </div>
+    <div class="c2-flow">
+      <div class="c2-node n1 rs" data-step="1">
+        <div class="c2-pct">100%</div>
+        <div class="c2-role">Brand sets intent</div>
+        <div class="c2-desc">Vision, values, positioning — clearly defined at the source.</div>
+        <div class="c2-loss">Full intent</div>
+        <div class="c2-arrow">→</div>
+      </div>
+      <div class="c2-node n2 rs" data-step="2">
+        <div class="c2-pct">75%</div>
+        <div class="c2-role">Design translates</div>
+        <div class="c2-desc">Interpretation begins. Some nuance is lost in the visual translation.</div>
+        <div class="c2-loss">25% lost</div>
+        <div class="c2-arrow">→</div>
+      </div>
+      <div class="c2-node n3 rs" data-step="3">
+        <div class="c2-pct">45%</div>
+        <div class="c2-role">Vendor executes</div>
+        <div class="c2-desc">Guidelines arrive as PDFs. Context is guessed. More intent leaks.</div>
+        <div class="c2-loss">55% lost</div>
+        <div class="c2-arrow">→</div>
+      </div>
+      <div class="c2-node n4 rs" data-step="4">
+        <div class="c2-pct">?</div>
+        <div class="c2-role">Output</div>
+        <div class="c2-desc">What reaches the audience is a diluted echo of the original intent.</div>
+        <div class="c2-loss" style="color:#c0392b">Brand drift</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S05 CHALLENGE 3: SCATTERED EVERYWHERE ──────── -->
+<section class="slide" id="s5" data-steps="4">
+  <div class="sc" style="padding-bottom:0">
+    <div class="c3-wrap">
+      <div class="c3-header">
+        <span class="tag ar">Challenge 03</span>
+        <h2 class="c3-title ar">Scattered <em>everywhere.</em></h2>
+      </div>
+      <div class="c3-field">
+        <div class="st figma lg" data-step="1"><svg viewBox="0 0 24 24"><path d="M5 5.5A3.5 3.5 0 0 1 8.5 2H12v7H8.5A3.5 3.5 0 0 1 5 5.5z"/><path d="M12 2h3.5a3.5 3.5 0 1 1 0 7H12V2z"/><path d="M12 12.5a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/><path d="M5 19.5A3.5 3.5 0 0 1 8.5 16H12v3.5a3.5 3.5 0 0 1-7 0z"/><path d="M5 12.5A3.5 3.5 0 0 1 8.5 9H12v7H8.5A3.5 3.5 0 0 1 5 12.5z"/></svg>Figma</div>
+        <div class="st canva" data-step="1">Canva</div>
+        <div class="st adobe lg" data-step="2"><svg viewBox="0 0 24 24"><path d="M2 3h8l4 8H6z"/><path d="M22 3h-8l-4 8h8z"/><path d="M12 21l-4-8h8z"/></svg>Adobe Creative</div>
+        <div class="st gdocs" data-step="2"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Google Docs</div>
+        <div class="st notion" data-step="2">Notion</div>
+        <div class="st slack sm" data-step="3"><svg viewBox="0 0 24 24"><path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z"/><path d="M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/><path d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z"/><path d="M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z"/><path d="M14 14.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83 0-1.5-.67-1.5-1.5z"/><path d="M15.5 19H14v1.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/><path d="M10 9.5C10 8.67 9.33 8 8.5 8h-5C2.67 8 2 8.67 2 9.5S2.67 11 3.5 11h5c.83 0 1.5-.67 1.5-1.5z"/><path d="M8.5 5H10V3.5C10 2.67 9.33 2 8.5 2S7 2.67 7 3.5 7.67 5 8.5 5z"/></svg>Slack</div>
+        <div class="st email" data-step="3"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Email Chains</div>
+        <div class="st whatsapp sm" data-step="3"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>WhatsApp</div>
+        <div class="st sheets sm" data-step="4">Google Sheets</div>
+        <div class="st miro" data-step="4">Miro</div>
+        <div class="st drive sm" data-step="4"><svg viewBox="0 0 24 24"><path d="M22 16.74L17.33 8l-4.66 8z"/><path d="M2 16.74L6.67 8l4.66 8z"/><path d="M7 20h10l-2.67-4H9.67z"/><path d="M8 8h8L12 0z"/></svg>Drive</div>
+        <div class="c3-statement" data-step="4">Fragments in 5+ tools. <em>Memory in none.</em></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S06 WHY THIS PROBLEM MATTERS ───────────────── -->
+<section class="slide dk" id="s6" data-steps="4">
+  <div class="sc">
+    <div class="wm-layout">
+      <div class="wm-left">
+        <span class="tag tag-dk ar">Why It Matters</span>
+        <h2 class="wm-hl ar">At VIDA's scale,<br>this isn't <em>inconvenient.</em><br>It's expensive.</h2>
+      </div>
+      <div class="wm-right">
+        <div class="wm-stat rs" data-step="1">
+          <div class="wm-stat-num">30+</div>
+          <div class="wm-stat-lbl">Days per campaign cycle</div>
+          <div class="wm-stat-desc">Manual approvals, disconnected tools, and version confusion add weeks to every launch.</div>
+        </div>
+        <div class="wm-stat rs" data-step="2">
+          <div class="wm-stat-num">3–5×</div>
+          <div class="wm-stat-lbl">More people than necessary</div>
+          <div class="wm-stat-desc">Without governed tools, every task requires more coordination — designers, developers, reviewers, managers.</div>
+        </div>
+        <div class="wm-risk" data-step="3">
+          <div class="wm-risk-icon"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+          <div class="wm-risk-title">Brand integrity at risk</div>
+          <div class="wm-risk-desc">Every unapproved asset, inconsistent execution, and undocumented decision compounds. At scale, brand inconsistency becomes a systemic problem — not just a design one.</div>
+        </div>
+        <div class="wm-risk" data-step="4">
+          <div class="wm-risk-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <div class="wm-risk-title">Speed is a competitive advantage</div>
+          <div class="wm-risk-desc">Competitors who can launch brand-compliant campaigns in days — not months — move faster in market. VIDA's internal friction slows what should be fast.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S07 OUR APPROACH ────────────────────────────── -->
+<section class="slide" id="s7" data-steps="3">
+  <div class="sc">
+    <div class="ap-head">
+      <span class="tag ar">Our Approach</span>
+      <h2 class="ap-hl ar">Echo addresses each challenge<br><em>directly and specifically.</em></h2>
+    </div>
+    <div class="ap-map">
+      <div class="ap-card rs" data-step="1">
+        <div class="ap-ghost" aria-hidden="true">01</div>
+        <div class="ap-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div class="ap-prob">↳ Captured in heads</div>
+        <div class="ap-name">A single source of truth — always on, always current</div>
+        <div class="ap-desc">Every brand decision, guideline, and approved asset lives in Echo. Documented, versioned, accessible to every team member without asking anyone.</div>
+      </div>
+      <div class="ap-card rs" data-step="2">
+        <div class="ap-ghost" aria-hidden="true">02</div>
+        <div class="ap-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <div class="ap-prob">↳ Lost in transit</div>
+        <div class="ap-name">Intent preserved at every handoff</div>
+        <div class="ap-desc">Echo is the common layer between brand, design, and execution. Context travels with the asset — not through a game of telephone.</div>
+      </div>
+      <div class="ap-card rs" data-step="3">
+        <div class="ap-ghost" aria-hidden="true">03</div>
+        <div class="ap-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+        <div class="ap-prob">↳ Scattered everywhere</div>
+        <div class="ap-name">One platform instead of five tools</div>
+        <div class="ap-desc">Guidelines, assets, approvals, and creation in one governed system. No more context-switching — just one place where everything lives and nothing gets lost.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S08 INTRODUCING ECHO ───────────────────────── -->
+<section class="slide dk" id="s8" data-steps="2">
+  <div class="intro-layout">
+    <div class="intro-left">
+      <div class="intro-wordmark ar">
+        <span class="intro-echo-word">Echo</span>
+      </div>
+      <h2 class="intro-hl ar">Your brand's<br><em>single source of truth.</em></h2>
+      <div class="intro-pts">
+        <div class="intro-pt ar" data-step="1"><strong>Replaces</strong> scattered docs, DM approvals, and manual handoffs</div>
+        <div class="intro-pt ar" data-step="1"><strong>Enables</strong> governed brand decisions and fast campaign execution</div>
+        <div class="intro-pt ar" data-step="1"><strong>Grows into</strong> an AI-powered brand intelligence platform</div>
+      </div>
+    </div>
+    <div class="intro-right">
+      <div class="intro-screen rs" data-step="2">
+        <div class="sc-bar">
+          <span class="sc-dot"></span><span class="sc-dot"></span><span class="sc-dot"></span>
+          <div class="sc-url">echo.herovidalive.in</div>
+        </div>
+        <div class="sc-body">
+          <div class="sc-nav">
+            <div class="sc-nv on"></div><div class="sc-nv"></div><div class="sc-nv"></div>
+            <div class="sc-nv dim"></div><div class="sc-nv dim"></div><div class="sc-nv"></div>
+          </div>
+          <div class="sc-main">
+            <div class="sc-metrics">
+              <div class="sc-m"><div class="sc-mv"></div><div class="sc-ml"></div></div>
+              <div class="sc-m"><div class="sc-mv b"></div><div class="sc-ml"></div></div>
+              <div class="sc-m"><div class="sc-mv c"></div><div class="sc-ml"></div></div>
+            </div>
+            <div class="sc-chart">
+              <div class="sc-ch"><div class="sc-ct"></div><div class="sc-cb"></div></div>
+              <div class="sc-bars">
+                <div class="sc-b" style="height:45%"></div><div class="sc-b md" style="height:65%"></div>
+                <div class="sc-b hi" style="height:90%"></div><div class="sc-b md" style="height:70%"></div>
+                <div class="sc-b" style="height:50%"></div><div class="sc-b hi" style="height:85%"></div>
+                <div class="sc-b md" style="height:68%"></div><div class="sc-b" style="height:42%"></div>
+              </div>
+            </div>
+            <div class="sc-flow">
+              <div class="sc-fd dn"></div><div class="sc-fl"></div>
+              <div class="sc-fd dn"></div><div class="sc-fl"></div>
+              <div class="sc-fd"></div><div class="sc-fl"></div>
+              <div class="sc-fd wt"></div><div class="sc-fl"></div>
+              <div class="sc-fd wt"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="intro-label ar">Echo · Brand management portal · Live with Hero VIDA</div>
+    </div>
+  </div>
+</section>
+
+<!-- S09 KEY FEATURES PART 1 ─────────────────────── -->
+<section class="slide" id="s9" data-steps="2">
+  <div class="sc" style="justify-content:flex-start">
+    <div style="flex-shrink:0;margin-bottom:clamp(.8rem,1.4vw,1.3rem)">
+      <span class="tag ar">Key Features · 01</span>
+      <h2 class="ar" style="font-size:var(--t-h2);font-weight:700;letter-spacing:-.025em;color:var(--ink);margin-top:.3em">Built for <span style="color:var(--blue)">how VIDA actually works.</span></h2>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(.55rem,1vw,.9rem);flex:1;min-height:0">
+      <!-- Dashboard -->
+      <div class="rs" data-step="1" style="border-radius:10px;border:1.5px solid var(--lines);overflow:hidden;background:#fff;display:flex;flex-direction:column;box-shadow:0 2px 12px rgba(0,0,0,.04)">
+        <div style="display:flex;align-items:center;gap:5px;padding:6px 10px;background:var(--bg2);border-bottom:1px solid var(--line);flex-shrink:0">
+          <span style="width:7px;height:7px;border-radius:50%;background:#FF5F57;display:inline-block"></span><span style="width:7px;height:7px;border-radius:50%;background:#FEBC2E;display:inline-block"></span><span style="width:7px;height:7px;border-radius:50%;background:#28C840;display:inline-block"></span>
+          <div style="margin:0 auto;background:#fff;border-radius:3px;padding:2px 8px;font-size:9px;color:var(--dim);width:44%;text-align:center">echo.herovidalive.in</div>
+        </div>
+        <div style="display:flex;flex:1;min-height:0;overflow:hidden">
+          <div style="width:20%;background:var(--ink);padding:8px 5px;display:flex;flex-direction:column;gap:5px;flex-shrink:0">
+            <div style="height:5px;border-radius:2px;background:var(--blue);width:90%;margin:0 auto"></div>
+            <div style="height:5px;border-radius:2px;background:rgba(255,255,255,.1);width:75%;margin:0 auto"></div>
+            <div style="height:5px;border-radius:2px;background:rgba(255,255,255,.07);width:55%;margin:0 auto"></div>
+          </div>
+          <div style="flex:1;background:var(--bg);padding:8px;display:flex;flex-direction:column;gap:5px;overflow:hidden">
+            <div style="display:flex;gap:4px;flex-shrink:0">
+              <div style="flex:1;background:#fff;border-radius:5px;padding:5px 6px;border:1px solid var(--line)"><div style="height:7px;border-radius:2px;background:var(--blue);margin-bottom:3px;width:70%"></div><div style="height:4px;border-radius:2px;background:var(--line)"></div></div>
+              <div style="flex:1;background:#fff;border-radius:5px;padding:5px 6px;border:1px solid var(--line)"><div style="height:7px;border-radius:2px;background:rgba(23,61,237,.4);margin-bottom:3px;width:85%"></div><div style="height:4px;border-radius:2px;background:var(--line)"></div></div>
+              <div style="flex:1;background:#fff;border-radius:5px;padding:5px 6px;border:1px solid var(--line)"><div style="height:7px;border-radius:2px;background:rgba(23,61,237,.2);margin-bottom:3px;width:55%"></div><div style="height:4px;border-radius:2px;background:var(--line)"></div></div>
+            </div>
+            <div style="display:flex;align-items:flex-end;gap:3px;flex:1;background:#fff;border-radius:5px;padding:6px;border:1px solid var(--line)">
+              <div style="flex:1;height:50%;border-radius:2px 2px 0 0;background:rgba(23,61,237,.12)"></div>
+              <div style="flex:1;height:80%;border-radius:2px 2px 0 0;background:var(--blue)"></div>
+              <div style="flex:1;height:65%;border-radius:2px 2px 0 0;background:rgba(23,61,237,.5)"></div>
+              <div style="flex:1;height:45%;border-radius:2px 2px 0 0;background:rgba(23,61,237,.15)"></div>
+              <div style="flex:1;height:90%;border-radius:2px 2px 0 0;background:var(--blue)"></div>
+              <div style="flex:1;height:70%;border-radius:2px 2px 0 0;background:rgba(23,61,237,.5)"></div>
+              <div style="flex:1;height:55%;border-radius:2px 2px 0 0;background:rgba(23,61,237,.2)"></div>
+            </div>
+          </div>
+        </div>
+        <div style="padding:6px 10px 7px;font-size:var(--t-lbl);font-weight:700;color:var(--ink);background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-shrink:0">Dashboard &amp; Analytics <span style="color:var(--blue);font-weight:400;font-style:italic">↳ solves: no visibility</span></div>
+      </div>
+      <!-- Approval Workflow -->
+      <div class="rs" data-step="2" style="border-radius:10px;border:1.5px solid var(--lines);overflow:hidden;background:#fff;display:flex;flex-direction:column;box-shadow:0 2px 12px rgba(0,0,0,.04)">
+        <div style="display:flex;align-items:center;gap:5px;padding:6px 10px;background:var(--bg2);border-bottom:1px solid var(--line);flex-shrink:0">
+          <span style="width:7px;height:7px;border-radius:50%;background:#FF5F57;display:inline-block"></span><span style="width:7px;height:7px;border-radius:50%;background:#FEBC2E;display:inline-block"></span><span style="width:7px;height:7px;border-radius:50%;background:#28C840;display:inline-block"></span>
+          <div style="margin:0 auto;background:#fff;border-radius:3px;padding:2px 8px;font-size:9px;color:var(--dim);width:44%;text-align:center">echo.herovidalive.in/approvals</div>
+        </div>
+        <div style="display:flex;flex:1;min-height:0;overflow:hidden">
+          <div style="width:20%;background:var(--ink);padding:8px 5px;display:flex;flex-direction:column;gap:5px;flex-shrink:0">
+            <div style="height:5px;border-radius:2px;background:rgba(255,255,255,.1);width:80%;margin:0 auto"></div>
+            <div style="height:5px;border-radius:2px;background:var(--blue);width:90%;margin:0 auto"></div>
+            <div style="height:5px;border-radius:2px;background:rgba(255,255,255,.07);width:55%;margin:0 auto"></div>
+          </div>
+          <div style="flex:1;background:var(--bg);padding:10px;display:flex;flex-direction:column;justify-content:center;gap:6px;overflow:hidden">
+            <div style="display:flex;align-items:center;gap:4px">
+              <div style="width:10px;height:10px;border-radius:50%;background:rgba(23,61,237,.3);flex-shrink:0"></div>
+              <div style="flex:1;height:1.5px;background:var(--line)"></div>
+              <div style="width:10px;height:10px;border-radius:50%;background:rgba(23,61,237,.3);flex-shrink:0"></div>
+              <div style="flex:1;height:1.5px;background:var(--line)"></div>
+              <div style="width:10px;height:10px;border-radius:50%;background:var(--blue);flex-shrink:0"></div>
+              <div style="flex:1;height:1.5px;background:var(--line)"></div>
+              <div style="width:10px;height:10px;border-radius:50%;background:var(--bg3);border:1.5px solid var(--lines);flex-shrink:0"></div>
+              <div style="flex:1;height:1.5px;background:var(--line)"></div>
+              <div style="width:10px;height:10px;border-radius:50%;background:var(--bg3);border:1.5px solid var(--lines);flex-shrink:0"></div>
+            </div>
+            <div style="display:flex;gap:4px;justify-content:space-between">
+              <div style="height:4px;border-radius:2px;background:var(--blue);opacity:.6;width:22px"></div>
+              <div style="height:4px;border-radius:2px;background:var(--blue);opacity:.6;width:22px"></div>
+              <div style="height:4px;border-radius:2px;background:var(--blue);opacity:.8;width:22px"></div>
+              <div style="height:4px;border-radius:2px;background:var(--bg3);width:22px"></div>
+              <div style="height:4px;border-radius:2px;background:var(--bg3);width:22px"></div>
+            </div>
+            <div style="background:rgba(23,61,237,.08);border-radius:5px;padding:7px 9px;margin-top:4px">
+              <div style="height:4px;border-radius:2px;background:var(--blue);opacity:.6;margin-bottom:3px;width:80%"></div>
+              <div style="height:3px;border-radius:2px;background:var(--lines);width:55%"></div>
+            </div>
+          </div>
+        </div>
+        <div style="padding:6px 10px 7px;font-size:var(--t-lbl);font-weight:700;color:var(--ink);background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-shrink:0">7-Stage Approval Workflow <span style="color:var(--blue);font-weight:400;font-style:italic">↳ solves: DM approvals</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S10 KEY FEATURES PART 2 ─────────────────────── -->
+<section class="slide" id="s10" data-steps="2">
+  <div class="sc" style="justify-content:flex-start">
+    <div style="flex-shrink:0;margin-bottom:clamp(.8rem,1.4vw,1.3rem)">
+      <span class="tag ar">Key Features · 02</span>
+      <h2 class="ar" style="font-size:var(--t-h2);font-weight:700;letter-spacing:-.025em;color:var(--ink);margin-top:.3em">One platform. <span style="color:var(--blue)">Every touchpoint.</span></h2>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(.55rem,1vw,.9rem);flex:1;min-height:0">
+      <!-- Multi-brand -->
+      <div class="rs" data-step="1" style="border-radius:10px;border:1.5px solid var(--lines);overflow:hidden;background:#fff;display:flex;flex-direction:column;box-shadow:0 2px 12px rgba(0,0,0,.04)">
+        <div style="display:flex;align-items:center;gap:5px;padding:6px 10px;background:var(--bg2);border-bottom:1px solid var(--line);flex-shrink:0">
+          <span style="width:7px;height:7px;border-radius:50%;background:#FF5F57;display:inline-block"></span><span style="width:7px;height:7px;border-radius:50%;background:#FEBC2E;display:inline-block"></span><span style="width:7px;height:7px;border-radius:50%;background:#28C840;display:inline-block"></span>
+          <div style="margin:0 auto;background:#fff;border-radius:3px;padding:2px 8px;font-size:9px;color:var(--dim);width:44%;text-align:center">echo.herovidalive.in/brands</div>
+        </div>
+        <div style="display:flex;flex:1;min-height:0;overflow:hidden">
+          <div style="width:20%;background:var(--ink);padding:8px 5px;display:flex;flex-direction:column;gap:5px;flex-shrink:0">
+            <div style="height:5px;border-radius:2px;background:rgba(255,255,255,.1);width:80%;margin:0 auto"></div>
+            <div style="height:5px;border-radius:2px;background:rgba(255,255,255,.07);width:55%;margin:0 auto"></div>
+            <div style="height:5px;border-radius:2px;background:var(--blue);width:90%;margin:0 auto"></div>
+          </div>
+          <div style="flex:1;background:var(--bg);padding:8px;display:flex;flex-direction:column;gap:5px;overflow:hidden">
+            <div style="display:flex;align-items:center;gap:6px;padding:5px 7px;border-radius:5px;background:#fff;border:1px solid var(--line)"><div style="width:10px;height:10px;border-radius:2px;background:#173DED;flex-shrink:0"></div><div style="flex:1;height:4px;border-radius:2px;background:var(--ink);opacity:.25"></div><div style="height:5px;width:22px;border-radius:10px;background:rgba(23,61,237,.2)"></div></div>
+            <div style="display:flex;align-items:center;gap:6px;padding:5px 7px;border-radius:5px;background:#fff;border:1px solid var(--line)"><div style="width:10px;height:10px;border-radius:2px;background:#E30613;flex-shrink:0"></div><div style="flex:1;height:4px;border-radius:2px;background:var(--ink);opacity:.2;width:45%"></div><div style="height:5px;width:22px;border-radius:10px;background:rgba(23,61,237,.15)"></div></div>
+            <div style="display:flex;align-items:center;gap:6px;padding:5px 7px;border-radius:5px;background:#fff;border:1px solid var(--line)"><div style="width:10px;height:10px;border-radius:2px;background:#00843D;flex-shrink:0"></div><div style="flex:1;height:4px;border-radius:2px;background:var(--ink);opacity:.18;width:50%"></div><div style="height:5px;width:22px;border-radius:10px;background:var(--bg3)"></div></div>
+          </div>
+        </div>
+        <div style="padding:6px 10px 7px;font-size:var(--t-lbl);font-weight:700;color:var(--ink);background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-shrink:0">Multi-brand System <span style="color:var(--blue);font-weight:400;font-style:italic">↳ solves: scattered tools</span></div>
+      </div>
+      <!-- Echo Studio AI -->
+      <div class="rs" data-step="2" style="border-radius:10px;border:1.5px solid var(--lines);overflow:hidden;background:#fff;display:flex;flex-direction:column;box-shadow:0 2px 12px rgba(0,0,0,.04)">
+        <div style="display:flex;align-items:center;gap:5px;padding:6px 10px;background:var(--bg2);border-bottom:1px solid var(--line);flex-shrink:0">
+          <span style="width:7px;height:7px;border-radius:50%;background:#FF5F57;display:inline-block"></span><span style="width:7px;height:7px;border-radius:50%;background:#FEBC2E;display:inline-block"></span><span style="width:7px;height:7px;border-radius:50%;background:#28C840;display:inline-block"></span>
+          <div style="margin:0 auto;background:#fff;border-radius:3px;padding:2px 8px;font-size:9px;color:var(--dim);width:44%;text-align:center">echo.herovidalive.in/studio</div>
+        </div>
+        <div style="display:flex;flex:1;min-height:0;overflow:hidden">
+          <div style="width:20%;background:var(--ink);padding:8px 5px;display:flex;flex-direction:column;gap:5px;flex-shrink:0">
+            <div style="height:5px;border-radius:2px;background:rgba(255,255,255,.07);width:80%;margin:0 auto"></div>
+            <div style="height:5px;border-radius:2px;background:rgba(255,255,255,.07);width:55%;margin:0 auto"></div>
+            <div style="height:5px;border-radius:2px;background:rgba(255,255,255,.07);width:65%;margin:0 auto"></div>
+            <div style="height:5px;border-radius:2px;background:var(--blue);width:90%;margin:0 auto"></div>
+          </div>
+          <div style="flex:1;background:var(--bg);padding:8px;display:flex;flex-direction:column;gap:5px;justify-content:flex-end;overflow:hidden">
+            <div style="background:rgba(23,61,237,.08);border-radius:6px 6px 2px 6px;padding:6px 8px">
+              <div style="height:4px;border-radius:2px;background:var(--blue);opacity:.5;margin-bottom:3px"></div>
+              <div style="height:4px;border-radius:2px;background:var(--blue);opacity:.5;margin-bottom:3px;width:80%"></div>
+              <div style="height:4px;border-radius:2px;background:var(--blue);opacity:.5;width:55%"></div>
+            </div>
+            <div style="background:var(--bg2);border-radius:2px 6px 6px 6px;padding:6px 8px">
+              <div style="height:3px;border-radius:2px;background:var(--ink);opacity:.25;margin-bottom:3px"></div>
+              <div style="height:3px;border-radius:2px;background:var(--ink);opacity:.25;margin-bottom:3px;width:85%"></div>
+              <div style="height:3px;border-radius:2px;background:var(--ink);opacity:.25;width:60%"></div>
+            </div>
+          </div>
+        </div>
+        <div style="padding:6px 10px 7px;font-size:var(--t-lbl);font-weight:700;color:var(--ink);background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-shrink:0">Echo Studio — AI Generation <span style="color:var(--blue);font-weight:400;font-style:italic">↳ solves: lost in transit</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S11 BEFORE ECHO ─────────────────────────────── -->
+<section class="slide dk" id="s11" data-steps="4">
+  <div class="sc" style="justify-content:flex-start">
+    <div style="flex-shrink:0;margin-bottom:clamp(1rem,2vw,1.8rem)">
+      <span class="tag tag-dk ar">Before Echo</span>
+      <h2 class="ar" style="font-size:var(--t-h2);font-weight:700;letter-spacing:-.025em;color:var(--dktext);margin-top:.3em">The old way. <span style="color:rgba(200,50,50,.9)">Chaos by default.</span></h2>
+    </div>
+    <!-- Chaos grid -->
+    <div style="flex:1;min-height:0;position:relative;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(2,1fr);gap:clamp(.5rem,.9vw,.85rem)">
+      <div class="rs" data-step="1" style="border-radius:8px;border:1px dashed rgba(255,255,255,.15);padding:clamp(.7rem,1.2vw,1.1rem);display:flex;flex-direction:column;gap:.4em;transform:rotate(-1.5deg)">
+        <div style="font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,100,100,.7);font-weight:600">WhatsApp</div>
+        <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.4">"Is this the final version? Which file do I use?"</div>
+        <div style="margin-top:auto;font-size:var(--t-lbl);color:rgba(255,255,255,.2)">7:43 PM · Read</div>
+      </div>
+      <div class="rs" data-step="1" style="border-radius:8px;border:1px dashed rgba(255,255,255,.15);padding:clamp(.7rem,1.2vw,1.1rem);display:flex;flex-direction:column;gap:.4em;transform:rotate(.8deg)">
+        <div style="font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,100,100,.7);font-weight:600">Email</div>
+        <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.4">FWD: FWD: RE: RE: Brand assets — please use v3_FINAL2</div>
+        <div style="margin-top:auto;font-size:var(--t-lbl);color:rgba(255,255,255,.2)">+23 attachments</div>
+      </div>
+      <div class="rs" data-step="2" style="border-radius:8px;border:1px dashed rgba(255,255,255,.15);padding:clamp(.7rem,1.2vw,1.1rem);display:flex;flex-direction:column;gap:.4em;transform:rotate(-1deg)">
+        <div style="font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,100,100,.7);font-weight:600">Figma</div>
+        <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.4">vida_brand_v2_FINAL_v4_approved_USE-THIS.fig</div>
+        <div style="margin-top:auto;font-size:var(--t-lbl);color:rgba(255,255,255,.2)">Last edited: ???</div>
+      </div>
+      <div class="rs" data-step="2" style="border-radius:8px;border:1px solid rgba(200,50,50,.3);background:rgba(200,50,50,.07);padding:clamp(.7rem,1.2vw,1.1rem);display:flex;flex-direction:column;gap:.4em;transform:rotate(1.5deg)">
+        <div style="font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(200,50,50,.9);font-weight:600">⚠ Wrong version live</div>
+        <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.4">Someone used the old logo on the campaign. Now it's on billboards.</div>
+        <div style="margin-top:auto;font-size:var(--t-lbl);color:rgba(200,50,50,.6)">Critical · No audit trail</div>
+      </div>
+      <div class="rs" data-step="3" style="border-radius:8px;border:1px dashed rgba(255,255,255,.15);padding:clamp(.7rem,1.2vw,1.1rem);display:flex;flex-direction:column;gap:.4em;transform:rotate(.5deg)">
+        <div style="font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,100,100,.7);font-weight:600">Slack</div>
+        <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.4">"Quick call? Need to align on this before we send to print."</div>
+        <div style="margin-top:auto;font-size:var(--t-lbl);color:rgba(255,255,255,.2)">3 designers, 2 devs involved</div>
+      </div>
+      <div class="rs" data-step="3" style="border-radius:8px;border:1px dashed rgba(255,255,255,.15);padding:clamp(.7rem,1.2vw,1.1rem);display:flex;flex-direction:column;gap:.4em;transform:rotate(-2deg)">
+        <div style="font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,100,100,.7);font-weight:600">Google Drive</div>
+        <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.4">VIDA Brand Assets &gt; 2024 &gt; New &gt; Actually New &gt; Final &gt; Use This</div>
+        <div style="margin-top:auto;font-size:var(--t-lbl);color:rgba(255,255,255,.2)">47 folders · No naming convention</div>
+      </div>
+      <div class="rs" data-step="4" style="grid-column:span 2;border-radius:8px;border:1px solid rgba(200,50,50,.3);background:rgba(200,50,50,.05);padding:clamp(.7rem,1.2vw,1.1rem);display:flex;align-items:center;gap:clamp(1rem,2vw,2rem)">
+        <div style="font-size:clamp(2rem,5vw,4rem);flex-shrink:0">📞</div>
+        <div>
+          <div style="font-size:var(--t-h3);font-weight:700;color:var(--dktext);margin-bottom:.2em">30 days later…</div>
+          <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.5">3 designers + 2 developers. 6 WhatsApp threads. 4 email chains. 1 last-minute correction. Finally live — and no one's sure if it was approved.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S12 WITH ECHO ───────────────────────────────── -->
+<section class="slide" id="s12" data-steps="5">
+  <div class="sc" style="justify-content:flex-start">
+    <div style="flex-shrink:0;margin-bottom:clamp(1.2rem,2.5vw,2.5rem)">
+      <span class="tag ar">With Echo</span>
+      <h2 class="ar" style="font-size:var(--t-h2);font-weight:700;letter-spacing:-.025em;color:var(--ink);margin-top:.3em">The Echo way. <span style="color:var(--blue)">Clear, fast, governed.</span></h2>
+    </div>
+    <!-- Clean flow -->
+    <div style="display:flex;align-items:stretch;gap:0;flex:1;min-height:0;position:relative">
+      <!-- Step 1 -->
+      <div class="rs" data-step="1" style="flex:1;display:flex;flex-direction:column;align-items:center;position:relative">
+        <div style="width:clamp(40px,5vw,60px);height:clamp(40px,5vw,60px);border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-bottom:clamp(.75rem,1.4vw,1.2rem);z-index:1">
+          <svg style="width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <div style="text-align:center;padding:0 .5rem">
+          <div style="font-size:var(--t-lbl);letter-spacing:.1em;text-transform:uppercase;color:var(--blue);font-weight:600;margin-bottom:.3em">Day 1</div>
+          <div style="font-size:var(--t-h3);font-weight:700;color:var(--ink);margin-bottom:.3em">Brief</div>
+          <div style="font-size:var(--t-sm);color:var(--dim);line-height:1.5">Campaign brief submitted into Echo. Brand context instantly available.</div>
+        </div>
+        <div style="position:absolute;top:clamp(20px,2.5vw,30px);left:50%;right:0;height:2px;background:rgba(23,61,237,.2)"></div>
+      </div>
+      <!-- Step 2 -->
+      <div class="rs" data-step="2" style="flex:1;display:flex;flex-direction:column;align-items:center;position:relative">
+        <div style="width:clamp(40px,5vw,60px);height:clamp(40px,5vw,60px);border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-bottom:clamp(.75rem,1.4vw,1.2rem);z-index:1">
+          <svg style="width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <div style="text-align:center;padding:0 .5rem">
+          <div style="font-size:var(--t-lbl);letter-spacing:.1em;text-transform:uppercase;color:var(--blue);font-weight:600;margin-bottom:.3em">Day 1–2</div>
+          <div style="font-size:var(--t-h3);font-weight:700;color:var(--ink);margin-bottom:.3em">1 Designer + Echo</div>
+          <div style="font-size:var(--t-sm);color:var(--dim);line-height:1.5">Works within governed brand system. Echo Studio generates compliant assets.</div>
+        </div>
+        <div style="position:absolute;top:clamp(20px,2.5vw,30px);left:0;right:0;height:2px;background:rgba(23,61,237,.2)"></div>
+      </div>
+      <!-- Step 3 -->
+      <div class="rs" data-step="3" style="flex:1;display:flex;flex-direction:column;align-items:center;position:relative">
+        <div style="width:clamp(40px,5vw,60px);height:clamp(40px,5vw,60px);border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-bottom:clamp(.75rem,1.4vw,1.2rem);z-index:1">
+          <svg style="width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </div>
+        <div style="text-align:center;padding:0 .5rem">
+          <div style="font-size:var(--t-lbl);letter-spacing:.1em;text-transform:uppercase;color:var(--blue);font-weight:600;margin-bottom:.3em">Day 3–4</div>
+          <div style="font-size:var(--t-h3);font-weight:700;color:var(--ink);margin-bottom:.3em">7-Stage Review</div>
+          <div style="font-size:var(--t-sm);color:var(--dim);line-height:1.5">Digital approval chain. Everyone sees exactly what they're approving.</div>
+        </div>
+        <div style="position:absolute;top:clamp(20px,2.5vw,30px);left:0;right:0;height:2px;background:rgba(23,61,237,.2)"></div>
+      </div>
+      <!-- Step 4 -->
+      <div class="rs" data-step="4" style="flex:1;display:flex;flex-direction:column;align-items:center;position:relative">
+        <div style="width:clamp(40px,5vw,60px);height:clamp(40px,5vw,60px);border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-bottom:clamp(.75rem,1.4vw,1.2rem);z-index:1">
+          <svg style="width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <div style="text-align:center;padding:0 .5rem">
+          <div style="font-size:var(--t-lbl);letter-spacing:.1em;text-transform:uppercase;color:var(--blue);font-weight:600;margin-bottom:.3em">Day 5</div>
+          <div style="font-size:var(--t-h3);font-weight:700;color:var(--ink);margin-bottom:.3em">Live</div>
+          <div style="font-size:var(--t-sm);color:var(--dim);line-height:1.5">Full audit trail. Version history. Brand compliance confirmed. No guessing.</div>
+        </div>
+        <div style="position:absolute;top:clamp(20px,2.5vw,30px);left:0;right:50%;height:2px;background:rgba(23,61,237,.2)"></div>
+      </div>
+    </div>
+    <!-- Bottom summary -->
+    <div class="ar" data-step="5" style="display:flex;gap:clamp(1rem,2vw,2rem);padding-top:clamp(.75rem,1.4vw,1.3rem);border-top:1px solid var(--line);flex-shrink:0;margin-top:clamp(1rem,2vw,2rem)">
+      <div style="flex:1;text-align:center"><div style="font-size:var(--t-h3);font-weight:700;color:var(--blue)">1 designer</div><div style="font-size:var(--t-sm);color:var(--dim)">vs 3–5 people before</div></div>
+      <div style="width:1px;background:var(--line)"></div>
+      <div style="flex:1;text-align:center"><div style="font-size:var(--t-h3);font-weight:700;color:var(--blue)">5 days</div><div style="font-size:var(--t-sm);color:var(--dim)">vs 30+ days before</div></div>
+      <div style="width:1px;background:var(--line)"></div>
+      <div style="flex:1;text-align:center"><div style="font-size:var(--t-h3);font-weight:700;color:var(--blue)">Full audit trail</div><div style="font-size:var(--t-sm);color:var(--dim)">vs zero visibility before</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- S13 IMPACT ──────────────────────────────────── -->
+<section class="slide dk" id="s13" data-steps="4">
+  <div class="sc">
+    <span class="tag tag-dk ar">Impact</span>
+    <h2 class="ar" style="font-size:var(--t-h2);font-weight:700;letter-spacing:-.025em;color:var(--dktext);margin-top:.4em;margin-bottom:clamp(1.5rem,3vw,3rem)">Measurable from <span style="color:var(--blue)">day one.</span></h2>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(.75rem,1.4vw,1.3rem);margin-bottom:clamp(1rem,1.8vw,1.7rem)">
+      <div class="rs" data-step="1" style="background:rgba(255,255,255,.05);border:1px solid var(--dkline);border-top:2px solid var(--blue);border-radius:10px;padding:clamp(1rem,1.7vw,1.6rem)">
+        <div style="font-size:clamp(2rem,5vw,4.5rem);font-weight:700;letter-spacing:-.03em;color:var(--blue);line-height:1;margin-bottom:.25em" data-count-to="65" data-suffix="%">65%</div>
+        <div style="font-size:var(--t-h3);font-weight:600;color:var(--dktext);margin-bottom:.3em">Faster to market</div>
+        <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.5">Campaign cycles compress from months to days. Bottlenecks eliminated by Echo's governed workflow.</div>
+      </div>
+      <div class="rs" data-step="2" style="background:rgba(255,255,255,.05);border:1px solid var(--dkline);border-top:2px solid var(--blue);border-radius:10px;padding:clamp(1rem,1.7vw,1.6rem)">
+        <div style="font-size:clamp(2rem,5vw,4.5rem);font-weight:700;letter-spacing:-.03em;color:var(--blue);line-height:1;margin-bottom:.25em" data-count-to="75" data-suffix="%">75%</div>
+        <div style="font-size:var(--t-h3);font-weight:600;color:var(--dktext);margin-bottom:.3em">Lower platform cost</div>
+        <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.5">Versus $150K–$500K/year enterprise licensing. Custom built, VIDA owned. No per-seat ceiling.</div>
+      </div>
+      <div class="rs" data-step="3" style="background:rgba(255,255,255,.05);border:1px solid var(--dkline);border-top:2px solid var(--blue);border-radius:10px;padding:clamp(1rem,1.7vw,1.6rem)">
+        <div style="font-size:clamp(2rem,5vw,4.5rem);font-weight:700;letter-spacing:-.03em;color:var(--blue);line-height:1;margin-bottom:.25em" data-count-to="100" data-suffix="%">100%</div>
+        <div style="font-size:var(--t-h3);font-weight:600;color:var(--dktext);margin-bottom:.3em">Brand alignment</div>
+        <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.5">Every asset created within Echo is governed. Brand compliance moves from manual review to built-in guarantee.</div>
+      </div>
+    </div>
+    <div class="rs" data-step="4" style="background:rgba(23,61,237,.12);border:1px solid rgba(23,61,237,.25);border-radius:10px;padding:clamp(1rem,1.5vw,1.4rem) clamp(1.2rem,2vw,1.8rem);display:flex;align-items:center;gap:clamp(1rem,1.8vw,1.6rem)">
+      <div style="font-size:clamp(2rem,4vw,3.5rem);line-height:1;color:var(--blue);font-weight:700;flex-shrink:0;opacity:.6">"</div>
+      <div>
+        <div style="font-size:var(--t-body);color:var(--dktext);line-height:1.6;font-style:italic">The first time a campaign went live and everyone knew it was the approved version — without a single clarifying message.</div>
+        <div style="font-size:var(--t-sm);color:var(--dkdim);margin-top:.35em">First live campaign milestone, Echo v1 · Hero VIDA</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S14 WHY CUSTOM ──────────────────────────────── -->
+<section class="slide" id="s14" data-steps="2">
+  <div class="sc">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(2.5rem,5vw,5rem);align-items:start;width:100%">
+      <div>
+        <span class="tag ar">Why Custom?</span>
+        <h2 class="ar" style="font-size:var(--t-h2);font-weight:700;letter-spacing:-.025em;line-height:1.1;color:var(--ink);margin-top:.4em;margin-bottom:clamp(1.5rem,2.5vw,2.5rem)">Off-the-shelf tools solve <span style="color:var(--blue)">generic problems.</span></h2>
+        <div style="font-size:var(--t-lbl);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:clamp(.7rem,1.2vw,1.1rem)">The gap</div>
+        <div data-step="1" style="display:flex;flex-direction:column">
+          <div style="display:flex;align-items:flex-start;gap:.85em;padding:clamp(.75rem,1.2vw,1.1rem) 0;border-top:1px solid var(--line)"><div style="width:clamp(24px,2.4vw,30px);height:clamp(24px,2.4vw,30px);border-radius:6px;background:var(--bg2);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg style="width:12px;height:12px;stroke:var(--dim);fill:none;stroke-width:2;stroke-linecap:round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div><div><div style="font-size:var(--t-body);font-weight:600;color:var(--ink);margin-bottom:.12em">Figma / Notion</div><div style="font-size:var(--t-sm);color:var(--dim);line-height:1.45">Design and documentation — not brand governance. No approval workflows, no multi-brand hierarchy, no audit trail.</div></div></div>
+          <div style="display:flex;align-items:flex-start;gap:.85em;padding:clamp(.75rem,1.2vw,1.1rem) 0;border-top:1px solid var(--line)"><div style="width:clamp(24px,2.4vw,30px);height:clamp(24px,2.4vw,30px);border-radius:6px;background:var(--bg2);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg style="width:12px;height:12px;stroke:var(--dim);fill:none;stroke-width:2;stroke-linecap:round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div><div><div style="font-size:var(--t-body);font-weight:600;color:var(--ink);margin-bottom:.12em">Enterprise DAM tools</div><div style="font-size:var(--t-sm);color:var(--dim);line-height:1.45">Asset storage — not brand intelligence. $150K–$500K/year. Rigid. Not built for VIDA's multi-brand approval structure.</div></div></div>
+          <div style="display:flex;align-items:flex-start;gap:.85em;padding:clamp(.75rem,1.2vw,1.1rem) 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div style="width:clamp(24px,2.4vw,30px);height:clamp(24px,2.4vw,30px);border-radius:6px;background:var(--bg2);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg style="width:12px;height:12px;stroke:var(--dim);fill:none;stroke-width:2;stroke-linecap:round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div><div><div style="font-size:var(--t-body);font-weight:600;color:var(--ink);margin-bottom:.12em">Adobe / Bynder / Frontify</div><div style="font-size:var(--t-sm);color:var(--dim);line-height:1.45">Built for global generic enterprises. Slow to customise. Vendor-dependent roadmap. Can't adapt to VIDA's specific workflows.</div></div></div>
+        </div>
+      </div>
+      <div>
+        <span class="tag ar" style="opacity:0">&nbsp;</span>
+        <h2 class="ar" style="font-size:var(--t-h2);font-weight:700;letter-spacing:-.025em;line-height:1.1;color:var(--ink);margin-top:.4em;margin-bottom:clamp(1.5rem,2.5vw,2.5rem);opacity:0">&nbsp;</h2>
+        <div style="font-size:var(--t-lbl);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:clamp(.7rem,1.2vw,1.1rem)">Custom wins</div>
+        <div data-step="2" style="display:flex;flex-direction:column">
+          <div style="display:flex;align-items:flex-start;gap:.85em;padding:clamp(.75rem,1.2vw,1.1rem) 0;border-top:1px solid var(--line)"><div style="width:clamp(24px,2.4vw,30px);height:clamp(24px,2.4vw,30px);border-radius:6px;background:rgba(23,61,237,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg style="width:12px;height:12px;stroke:var(--blue);fill:none;stroke-width:2;stroke-linecap:round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div><div style="font-size:var(--t-body);font-weight:600;color:var(--ink);margin-bottom:.12em">Built for VIDA's workflows</div><div style="font-size:var(--t-sm);color:var(--dim);line-height:1.45">Approval hierarchy, multi-brand system, and team roles designed exactly for how VIDA operates — not a generic template.</div></div></div>
+          <div style="display:flex;align-items:flex-start;gap:.85em;padding:clamp(.75rem,1.2vw,1.1rem) 0;border-top:1px solid var(--line)"><div style="width:clamp(24px,2.4vw,30px);height:clamp(24px,2.4vw,30px);border-radius:6px;background:rgba(23,61,237,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg style="width:12px;height:12px;stroke:var(--blue);fill:none;stroke-width:2;stroke-linecap:round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div><div style="font-size:var(--t-body);font-weight:600;color:var(--ink);margin-bottom:.12em">Evolves with the business</div><div style="font-size:var(--t-sm);color:var(--dim);line-height:1.45">New brands, new markets, new workflows — Echo adapts in days, not quarters. No vendor roadmap dependency.</div></div></div>
+          <div style="display:flex;align-items:flex-start;gap:.85em;padding:clamp(.75rem,1.2vw,1.1rem) 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div style="width:clamp(24px,2.4vw,30px);height:clamp(24px,2.4vw,30px);border-radius:6px;background:rgba(23,61,237,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg style="width:12px;height:12px;stroke:var(--blue);fill:none;stroke-width:2;stroke-linecap:round" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div><div style="font-size:var(--t-body);font-weight:600;color:var(--ink);margin-bottom:.12em">VIDA owns it outright</div><div style="font-size:var(--t-sm);color:var(--dim);line-height:1.45">No per-seat ceiling. No licence gate. No dependency on a vendor's survival. The platform is yours, completely.</div></div></div>
+        </div>
+        <div data-step="2" style="margin-top:clamp(1.2rem,2.2vw,2rem);padding:clamp(.9rem,1.5vw,1.4rem) clamp(1rem,1.6vw,1.5rem);background:rgba(23,61,237,.07);border-radius:8px;border-left:3px solid var(--blue);font-size:var(--t-body);color:var(--ink);line-height:1.6;font-style:italic"><span style="font-style:normal;color:var(--blue);font-weight:600">Custom isn't expensive.</span> Generic is — in time, workarounds, and lost potential.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S15 WHY OWNPATH WINS ────────────────────────── -->
+<section class="slide dk" id="s15" data-steps="3">
+  <div class="sc">
+    <span class="tag tag-dk ar">Why Ownpath Wins</span>
+    <h2 class="ar" style="font-size:var(--t-h2);font-weight:700;letter-spacing:-.025em;line-height:1.1;color:var(--dktext);margin-top:.4em;margin-bottom:clamp(1.5rem,3vw,3rem)">Domain experts. <span style="color:var(--blue)">Domain speed.</span></h2>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(.75rem,1.4vw,1.25rem)">
+      <div class="rs" data-step="1" style="border-top:2px solid var(--blue);padding:clamp(.9rem,1.5vw,1.4rem) 0;padding-right:clamp(.5rem,.9vw,.85rem)">
+        <div style="font-size:clamp(1.4rem,2.8vw,2.5rem);font-weight:700;color:var(--blue);letter-spacing:-.02em;margin-bottom:.15em">12 mo.</div>
+        <div style="font-size:var(--t-h3);font-weight:700;color:var(--dktext);margin-bottom:.4em">Prototype to Production</div>
+        <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.6">Concept to enterprise-grade platform in 12 months with 2–3 people. AI-assisted development compressed what agencies take 2–3 years to deliver.</div>
+      </div>
+      <div class="rs" data-step="2" style="border-top:2px solid var(--blue);padding:clamp(.9rem,1.5vw,1.4rem) 0;padding-right:clamp(.5rem,.9vw,.85rem)">
+        <div style="font-size:clamp(1.4rem,2.8vw,2.5rem);font-weight:700;color:var(--blue);letter-spacing:-.02em;margin-bottom:.15em">Rapid</div>
+        <div style="font-size:var(--t-h3);font-weight:700;color:var(--dktext);margin-bottom:.4em">Iteration Cycles</div>
+        <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.6">Changes happen in days, not quarters. POC in 4 weeks. Multiple releases shipped per sprint. VIDA's feedback shapes every version.</div>
+      </div>
+      <div class="rs" data-step="3" style="border-top:2px solid var(--blue);padding:clamp(.9rem,1.5vw,1.4rem) 0;padding-right:clamp(.5rem,.9vw,.85rem)">
+        <div style="font-size:clamp(1.4rem,2.8vw,2.5rem);font-weight:700;color:var(--blue);letter-spacing:-.02em;margin-bottom:.15em">∞</div>
+        <div style="font-size:var(--t-h3);font-weight:700;color:var(--dktext);margin-bottom:.4em">Scalable by Design</div>
+        <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.6">Architecture built for growth — from one team to enterprise without re-engineering. New brands, new users, new markets. Echo grows with Hero.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S16 HOW WE WORK ─────────────────────────────── -->
+<section class="slide" id="s16" data-steps="3">
+  <div class="sc" style="justify-content:flex-start">
+    <div style="flex-shrink:0;margin-bottom:clamp(1.5rem,2.5vw,2.5rem)">
+      <span class="tag ar">How We Work</span>
+      <h2 class="ar" style="font-size:var(--t-h2);font-weight:700;letter-spacing:-.025em;line-height:1.1;color:var(--ink);margin-top:.35em">Three principles. <span style="color:var(--blue)">One outcome.</span></h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(.75rem,1.5vw,1.4rem);flex:1;min-height:0">
+      <div class="rs" data-step="1" style="border-radius:12px;background:#fff;border:1px solid var(--lines);border-top:2.5px solid var(--blue);padding:clamp(1rem,1.6vw,1.5rem);display:flex;flex-direction:column;position:relative;overflow:hidden;min-height:0">
+        <div style="position:absolute;bottom:calc(-1 * clamp(.5rem,1vw,1rem));right:clamp(.8rem,1.2vw,1.2rem);font-size:clamp(5rem,10vw,9rem);font-weight:700;line-height:1;color:transparent;-webkit-text-stroke:1px var(--bg3);user-select:none;pointer-events:none;letter-spacing:-.04em" aria-hidden="true">01</div>
+        <div style="width:clamp(32px,3vw,42px);height:clamp(32px,3vw,42px);border-radius:9px;background:rgba(23,61,237,.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-bottom:clamp(.8rem,1.4vw,1.2rem)"><svg style="width:16px;height:16px;stroke:var(--blue);fill:none;stroke-width:1.8;stroke-linecap:round" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+        <div style="font-size:var(--t-h3);font-weight:700;color:var(--ink);line-height:1.15;margin-bottom:clamp(.5rem,.9vw,.85rem)">Rapid Prototyping</div>
+        <div style="font-size:var(--t-sm);color:var(--dim);line-height:1.6;flex:1">We start building before the brief is perfect. Rough and real, so decisions happen on working software — not documents. POC within 4 weeks of engagement.</div>
+      </div>
+      <div class="rs" data-step="2" style="border-radius:12px;background:#fff;border:1px solid var(--lines);border-top:2.5px solid var(--blue);padding:clamp(1rem,1.6vw,1.5rem);display:flex;flex-direction:column;position:relative;overflow:hidden;min-height:0">
+        <div style="position:absolute;bottom:calc(-1 * clamp(.5rem,1vw,1rem));right:clamp(.8rem,1.2vw,1.2rem);font-size:clamp(5rem,10vw,9rem);font-weight:700;line-height:1;color:transparent;-webkit-text-stroke:1px var(--bg3);user-select:none;pointer-events:none;letter-spacing:-.04em" aria-hidden="true">02</div>
+        <div style="width:clamp(32px,3vw,42px);height:clamp(32px,3vw,42px);border-radius:9px;background:rgba(23,61,237,.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-bottom:clamp(.8rem,1.4vw,1.2rem)"><svg style="width:16px;height:16px;stroke:var(--blue);fill:none;stroke-width:1.8;stroke-linecap:round" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+        <div style="font-size:var(--t-h3);font-weight:700;color:var(--ink);line-height:1.15;margin-bottom:clamp(.5rem,.9vw,.85rem)">Design × Engineering in Lockstep</div>
+        <div style="font-size:var(--t-sm);color:var(--dim);line-height:1.6;flex:1">No handoff culture. Design and engineering move simultaneously from day one. What you see in the prototype is what gets built — no translation layer.</div>
+      </div>
+      <div class="rs" data-step="3" style="border-radius:12px;background:#fff;border:1px solid var(--lines);border-top:2.5px solid var(--blue);padding:clamp(1rem,1.6vw,1.5rem);display:flex;flex-direction:column;position:relative;overflow:hidden;min-height:0">
+        <div style="position:absolute;bottom:calc(-1 * clamp(.5rem,1vw,1rem));right:clamp(.8rem,1.2vw,1.2rem);font-size:clamp(5rem,10vw,9rem);font-weight:700;line-height:1;color:transparent;-webkit-text-stroke:1px var(--bg3);user-select:none;pointer-events:none;letter-spacing:-.04em" aria-hidden="true">03</div>
+        <div style="width:clamp(32px,3vw,42px);height:clamp(32px,3vw,42px);border-radius:9px;background:rgba(23,61,237,.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-bottom:clamp(.8rem,1.4vw,1.2rem)"><svg style="width:16px;height:16px;stroke:var(--blue);fill:none;stroke-width:1.8;stroke-linecap:round" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div style="font-size:var(--t-h3);font-weight:700;color:var(--ink);line-height:1.15;margin-bottom:clamp(.5rem,.9vw,.85rem)">Deep Collaboration with VIDA</div>
+        <div style="font-size:var(--t-sm);color:var(--dim);line-height:1.6;flex:1">Tight feedback loops, shared ownership, iterations shaped by your team. You're not a client being served — you're a co-builder of the product.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S17 JOURNEY 1 ───────────────────────────────── -->
+<section class="slide" id="s17" data-steps="3">
+  <div class="sc">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(3rem,7vw,7rem);align-items:center;width:100%">
+      <div>
+        <span class="tag ar">The Journey · 01</span>
+        <h2 class="ar" style="font-size:var(--t-h2);font-weight:700;letter-spacing:-.025em;line-height:1.1;color:var(--ink);margin-top:.4em;margin-bottom:clamp(1.2rem,2.2vw,2rem)">We started with <span style="color:var(--blue)">knowledge.</span></h2>
+        <p class="ar" style="font-size:var(--t-body);color:var(--mid);line-height:1.7;margin-bottom:clamp(1.2rem,2vw,2rem)">The original vision: a brand knowledge portal. A single source of truth for design system documentation, style guidelines, component references, and design token libraries.</p>
+        <div data-step="1" style="padding:clamp(.85rem,1.4vw,1.3rem);background:var(--bg2);border-radius:8px;border-left:2.5px solid var(--blue)">
+          <div style="font-size:var(--t-sm);font-weight:700;color:var(--ink);margin-bottom:.2em">The insight</div>
+          <div style="font-size:var(--t-sm);color:var(--mid);line-height:1.55">One place for every team to align on the Hero VIDA brand — replacing scattered Notion docs, Figma notes, and email threads.</div>
+        </div>
+        <div data-step="2" style="display:flex;gap:.6em;flex-wrap:wrap;margin-top:clamp(.9rem,1.6vw,1.5rem)">
+          <span style="padding:.35em .85em;background:var(--bg2);border-radius:100px;font-size:var(--t-sm);color:var(--mid);font-weight:500">Guidelines portal</span>
+          <span style="padding:.35em .85em;background:var(--bg2);border-radius:100px;font-size:var(--t-sm);color:var(--mid);font-weight:500">Token library</span>
+          <span style="padding:.35em .85em;background:var(--bg2);border-radius:100px;font-size:var(--t-sm);color:var(--mid);font-weight:500">Component docs</span>
+          <span style="padding:.35em .85em;background:rgba(23,61,237,.1);border-radius:100px;font-size:var(--t-sm);color:var(--blue);font-weight:600">POC in 4 weeks</span>
+        </div>
+      </div>
+      <div class="ar" style="display:flex;align-items:center;justify-content:center">
+        <svg viewBox="0 0 280 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:320px;height:auto">
+          <!-- Central node -->
+          <circle cx="140" cy="130" r="50" fill="rgba(23,61,237,.08)" stroke="rgba(23,61,237,.25)" stroke-width="1.5"/>
+          <text x="140" y="126" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="11" font-weight="700" fill="#173DED">Brand</text>
+          <text x="140" y="141" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="11" font-weight="700" fill="#173DED">Knowledge</text>
+          <!-- Spokes -->
+          <line x1="140" y1="80" x2="140" y2="28" stroke="#E2E2DF" stroke-width="1.5"/>
+          <line x1="183" y1="152" x2="228" y2="175" stroke="#E2E2DF" stroke-width="1.5"/>
+          <line x1="97" y1="152" x2="52" y2="175" stroke="#E2E2DF" stroke-width="1.5"/>
+          <line x1="183" y1="108" x2="228" y2="82" stroke="#E2E2DF" stroke-width="1.5"/>
+          <line x1="97" y1="108" x2="52" y2="82" stroke="#E2E2DF" stroke-width="1.5"/>
+          <!-- Outer nodes -->
+          <circle cx="140" cy="20" r="20" fill="var(--bg2)" stroke="var(--lines)" stroke-width="1.5"/>
+          <text x="140" y="24" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="8" fill="#3A3B45" font-weight="600">Guidelines</text>
+          <circle cx="242" cy="185" r="20" fill="var(--bg2)" stroke="var(--lines)" stroke-width="1.5"/>
+          <text x="242" y="189" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="8" fill="#3A3B45" font-weight="600">Tokens</text>
+          <circle cx="38" cy="185" r="20" fill="var(--bg2)" stroke="var(--lines)" stroke-width="1.5"/>
+          <text x="38" y="189" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="8" fill="#3A3B45" font-weight="600">Components</text>
+          <circle cx="242" cy="75" r="20" fill="var(--bg2)" stroke="var(--lines)" stroke-width="1.5"/>
+          <text x="242" y="79" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="8" fill="#3A3B45" font-weight="600">Brand Rules</text>
+          <circle cx="38" cy="75" r="20" fill="var(--bg2)" stroke="var(--lines)" stroke-width="1.5"/>
+          <text x="38" y="79" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="8" fill="#3A3B45" font-weight="600">Docs</text>
+          <!-- Diamonds -->
+          <polygon points="140,50 144,54 140,58 136,54" fill="#173DED"/>
+          <polygon points="208,132 212,136 208,140 204,136" fill="#173DED"/>
+          <polygon points="72,132 76,136 72,140 68,136" fill="#173DED"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S18 JOURNEY 2 ───────────────────────────────── -->
+<section class="slide" id="s18" data-steps="3">
+  <div class="sc">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(3rem,7vw,7rem);align-items:center;width:100%">
+      <div>
+        <span class="tag ar">The Journey · 02</span>
+        <h2 class="ar" style="font-size:var(--t-h2);font-weight:700;letter-spacing:-.025em;line-height:1.1;color:var(--ink);margin-top:.4em;margin-bottom:clamp(1.2rem,2.2vw,2rem)">Static knowledge<br>wasn't <span style="color:var(--blue)">enough.</span></h2>
+        <p class="ar" style="font-size:var(--t-body);color:var(--mid);line-height:1.7;margin-bottom:clamp(1.2rem,2vw,2rem)">A static knowledge base solved documentation. It didn't solve the <em>process</em> of creating, approving, and evolving brand decisions across teams.</p>
+        <div data-step="1" style="padding:clamp(.85rem,1.4vw,1.3rem);background:var(--bg2);border-radius:8px;border-left:2.5px solid var(--blue)">
+          <div style="font-size:var(--t-sm);font-weight:700;color:var(--ink);margin-bottom:.2em">The pivot</div>
+          <div style="font-size:var(--t-sm);color:var(--mid);line-height:1.55">Echo evolved from a passive reference portal into a full workflow platform — approvals, versioning, contributions, and governance built in.</div>
+        </div>
+        <div data-step="2" style="display:flex;gap:.6em;flex-wrap:wrap;margin-top:clamp(.9rem,1.6vw,1.5rem)">
+          <span style="padding:.35em .85em;background:var(--bg2);border-radius:100px;font-size:var(--t-sm);color:var(--mid);font-weight:500">Approval workflows</span>
+          <span style="padding:.35em .85em;background:var(--bg2);border-radius:100px;font-size:var(--t-sm);color:var(--mid);font-weight:500">Contribution model</span>
+          <span style="padding:.35em .85em;background:rgba(23,61,237,.1);border-radius:100px;font-size:var(--t-sm);color:var(--blue);font-weight:600">Complete React rewrite</span>
+        </div>
+      </div>
+      <!-- Before → After visual -->
+      <div class="ar" style="display:flex;flex-direction:column;gap:clamp(.75rem,1.4vw,1.3rem)">
+        <div data-step="3" style="border-radius:10px;background:var(--bg2);border:1px solid var(--lines);padding:clamp(.85rem,1.4vw,1.3rem)">
+          <div style="font-size:var(--t-lbl);letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:.6em;font-weight:600">Before</div>
+          <div style="display:flex;align-items:center;gap:.6em;font-size:var(--t-sm);color:var(--mid)">
+            <div style="padding:.3em .7em;border-radius:6px;background:var(--bg3);font-size:var(--t-lbl)">Read-only portal</div>
+            <span>→</span>
+            <div style="padding:.3em .7em;border-radius:6px;background:var(--bg3);font-size:var(--t-lbl)">WhatsApp approval</div>
+            <span>→</span>
+            <div style="padding:.3em .7em;border-radius:6px;background:var(--bg3);font-size:var(--t-lbl)">Email file</div>
+          </div>
+        </div>
+        <div data-step="3" style="border-radius:10px;background:rgba(23,61,237,.06);border:1.5px solid rgba(23,61,237,.2);padding:clamp(.85rem,1.4vw,1.3rem)">
+          <div style="font-size:var(--t-lbl);letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:.6em;font-weight:600">After pivot</div>
+          <div style="display:flex;align-items:center;gap:.6em;font-size:var(--t-sm);color:var(--mid)">
+            <div style="padding:.3em .7em;border-radius:6px;background:rgba(23,61,237,.1);font-size:var(--t-lbl);color:var(--blue);font-weight:600">Submit in Echo</div>
+            <span style="color:var(--blue)">→</span>
+            <div style="padding:.3em .7em;border-radius:6px;background:rgba(23,61,237,.1);font-size:var(--t-lbl);color:var(--blue);font-weight:600">7-stage review</div>
+            <span style="color:var(--blue)">→</span>
+            <div style="padding:.3em .7em;border-radius:6px;background:rgba(23,61,237,.1);font-size:var(--t-lbl);color:var(--blue);font-weight:600">Live ✓</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S19 JOURNEY 3 ───────────────────────────────── -->
+<section class="slide" id="s19" data-steps="3">
+  <div class="sc" style="justify-content:flex-start">
+    <div style="flex-shrink:0;margin-bottom:clamp(1.2rem,2.2vw,2rem)">
+      <span class="tag ar">The Journey · 03</span>
+      <h2 class="ar" style="font-size:var(--t-h2);font-weight:700;letter-spacing:-.025em;line-height:1.1;color:var(--ink);margin-top:.35em">A living, <span style="color:var(--blue)">collaborative ecosystem.</span></h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(.75rem,1.4vw,1.25rem);flex:1;min-height:0">
+      <div class="rs" data-step="1" style="border-radius:12px;background:#fff;border:1px solid var(--lines);border-top:2.5px solid var(--blue);padding:clamp(1rem,1.6vw,1.5rem);display:flex;flex-direction:column;min-height:0">
+        <div style="width:clamp(32px,3vw,42px);height:clamp(32px,3vw,42px);border-radius:9px;background:rgba(23,61,237,.08);display:flex;align-items:center;justify-content:center;margin-bottom:clamp(.8rem,1.4vw,1.2rem);flex-shrink:0"><svg style="width:16px;height:16px;stroke:var(--blue);fill:none;stroke-width:1.8;stroke-linecap:round" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <div style="font-size:var(--t-h3);font-weight:700;color:var(--ink);margin-bottom:.4em">Publish &amp; Review</div>
+        <div style="font-size:var(--t-sm);color:var(--dim);line-height:1.6;flex:1">End-to-end publish and review workflows. Every decision — logged, versioned, and traceable.</div>
+        <div style="margin-top:auto;padding-top:.75em;border-top:1px solid var(--line);font-size:var(--t-lbl);color:var(--blue);font-weight:600;letter-spacing:.06em">Echo Portal — Live</div>
+      </div>
+      <div class="rs" data-step="2" style="border-radius:12px;background:#fff;border:1px solid var(--lines);border-top:2.5px solid var(--blue);padding:clamp(1rem,1.6vw,1.5rem);display:flex;flex-direction:column;min-height:0">
+        <div style="width:clamp(32px,3vw,42px);height:clamp(32px,3vw,42px);border-radius:9px;background:rgba(23,61,237,.08);display:flex;align-items:center;justify-content:center;margin-bottom:clamp(.8rem,1.4vw,1.2rem);flex-shrink:0"><svg style="width:16px;height:16px;stroke:var(--blue);fill:none;stroke-width:1.8;stroke-linecap:round" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+        <div style="font-size:var(--t-h3);font-weight:700;color:var(--ink);margin-bottom:.4em">Echo Studio</div>
+        <div style="font-size:var(--t-sm);color:var(--dim);line-height:1.6;flex:1">AI-powered creative generation using Echo's brand guidelines as context. Poster variations, campaign content, assets — in-context creation.</div>
+        <div style="margin-top:auto;padding-top:.75em;border-top:1px solid var(--line);font-size:var(--t-lbl);color:var(--blue);font-weight:600;letter-spacing:.06em">POC — Demonstrated</div>
+      </div>
+      <div class="rs" data-step="3" style="border-radius:12px;background:#fff;border:1px solid var(--lines);border-top:2.5px solid var(--blue);padding:clamp(1rem,1.6vw,1.5rem);display:flex;flex-direction:column;min-height:0">
+        <div style="width:clamp(32px,3vw,42px);height:clamp(32px,3vw,42px);border-radius:9px;background:rgba(23,61,237,.08);display:flex;align-items:center;justify-content:center;margin-bottom:clamp(.8rem,1.4vw,1.2rem);flex-shrink:0"><svg style="width:16px;height:16px;stroke:var(--blue);fill:none;stroke-width:1.8;stroke-linecap:round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+        <div style="font-size:var(--t-h3);font-weight:700;color:var(--ink);margin-bottom:.4em">AI Intelligence Layer</div>
+        <div style="font-size:var(--t-sm);color:var(--dim);line-height:1.6;flex:1">RAG-powered brand compliance checks, anomaly detection, and intelligent automation — Echo as a thinking system, not just a storage system.</div>
+        <div style="margin-top:auto;padding-top:.75em;border-top:1px solid var(--line);font-size:var(--t-lbl);color:var(--dim);font-weight:600;letter-spacing:.06em">Phase 2 — Roadmap</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S20 WHAT'S NEXT ─────────────────────────────── -->
+<section class="slide dk" id="s20" data-steps="4">
+  <div class="sc" style="justify-content:flex-start">
+    <div style="flex-shrink:0;margin-bottom:clamp(1.5rem,2.5vw,2.5rem)">
+      <span class="tag tag-dk ar">What's Next</span>
+      <h2 class="ar" style="font-size:var(--t-h2);font-weight:700;letter-spacing:-.025em;color:var(--dktext);margin-top:.4em">We've built the foundation.<br><span style="color:var(--blue)">Here's what we build on it.</span></h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(.75rem,1.4vw,1.25rem)">
+      <div class="rs" data-step="1" style="background:rgba(255,255,255,.05);border:1px solid var(--dkline);border-top:2px solid var(--blue);border-radius:10px;padding:clamp(1rem,1.6vw,1.5rem)">
+        <div style="font-size:var(--t-lbl);letter-spacing:.1em;text-transform:uppercase;color:var(--blue);font-weight:600;margin-bottom:.5em">Direction 01</div>
+        <div style="font-size:var(--t-h3);font-weight:700;color:var(--dktext);margin-bottom:.4em">Echo Studio at Full Scale</div>
+        <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.55">AI-powered content generation using VIDA's brand guidelines as training context. Campaign assets, dealer materials, regional variants — generated, governed, compliant.</div>
+      </div>
+      <div class="rs" data-step="2" style="background:rgba(255,255,255,.05);border:1px solid var(--dkline);border-top:2px solid var(--blue);border-radius:10px;padding:clamp(1rem,1.6vw,1.5rem)">
+        <div style="font-size:var(--t-lbl);letter-spacing:.1em;text-transform:uppercase;color:var(--blue);font-weight:600;margin-bottom:.5em">Direction 02</div>
+        <div style="font-size:var(--t-h3);font-weight:700;color:var(--dktext);margin-bottom:.4em">Dealer &amp; Vendor Portal</div>
+        <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.55">External stakeholders with governed access to approved brand assets, co-branded templates, and campaign materials. Brand compliance at scale without a brand police.</div>
+      </div>
+      <div class="rs" data-step="3" style="background:rgba(255,255,255,.05);border:1px solid var(--dkline);border-top:2px solid var(--blue);border-radius:10px;padding:clamp(1rem,1.6vw,1.5rem)">
+        <div style="font-size:var(--t-lbl);letter-spacing:.1em;text-transform:uppercase;color:var(--blue);font-weight:600;margin-bottom:.5em">Direction 03</div>
+        <div style="font-size:var(--t-h3);font-weight:700;color:var(--dktext);margin-bottom:.4em">Enterprise Integration</div>
+        <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.55">Full DAM lifecycle, VAPT security certification, advanced analytics, and Hero ID integration across VIDA's broader tech stack. Echo as infrastructure.</div>
+      </div>
+      <div class="rs" data-step="4" style="background:rgba(23,61,237,.12);border:1px solid rgba(23,61,237,.25);border-radius:10px;padding:clamp(1rem,1.6vw,1.5rem);display:flex;align-items:center;gap:clamp(.75rem,1.4vw,1.3rem)">
+        <div style="font-size:clamp(2rem,4vw,3.5rem);flex-shrink:0;opacity:.6">→</div>
+        <div>
+          <div style="font-size:var(--t-h3);font-weight:700;color:var(--dktext);margin-bottom:.3em">Phase 2 pitching now</div>
+          <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.5">Security hardening, Echo Studio, full DAM — targeted for H2 2026. Architecture is ready. Scope is defined. Waiting on your signal.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S21 WHAT ECHO CAN CHANGE ───────────────────── -->
+<section class="slide" id="s21" data-steps="3">
+  <div class="sc">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(3rem,6vw,6rem);align-items:center;width:100%">
+      <div>
+        <span class="tag ar">The Bigger Picture</span>
+        <h2 class="ar" style="font-size:var(--t-h2);font-weight:700;letter-spacing:-.025em;line-height:1.1;color:var(--ink);margin-top:.4em;margin-bottom:clamp(1.2rem,2.2vw,2rem)">What Echo can <span style="color:var(--blue)">change for VIDA.</span></h2>
+        <div style="display:flex;flex-direction:column;gap:clamp(.65rem,1.2vw,1.1rem)">
+          <div class="rs" data-step="1" style="display:flex;align-items:flex-start;gap:clamp(.9rem,1.4vw,1.3rem);padding:clamp(.85rem,1.4vw,1.3rem) clamp(1rem,1.6vw,1.5rem);background:var(--bg2);border-radius:10px;border-left:2.5px solid var(--blue)">
+            <div style="width:clamp(30px,2.8vw,38px);height:clamp(30px,2.8vw,38px);border-radius:7px;background:rgba(23,61,237,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg style="width:14px;height:14px;stroke:var(--blue);fill:none;stroke-width:1.8;stroke-linecap:round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+            <div><div style="font-size:var(--t-body);font-weight:700;color:var(--ink);margin-bottom:.15em">Every campaign in days, not weeks</div><div style="font-size:var(--t-sm);color:var(--dim);line-height:1.5">Launch faster, iterate more, compete harder. Speed becomes a brand asset.</div></div>
+          </div>
+          <div class="rs" data-step="2" style="display:flex;align-items:flex-start;gap:clamp(.9rem,1.4vw,1.3rem);padding:clamp(.85rem,1.4vw,1.3rem) clamp(1rem,1.6vw,1.5rem);background:var(--bg2);border-radius:10px;border-left:2.5px solid var(--blue)">
+            <div style="width:clamp(30px,2.8vw,38px);height:clamp(30px,2.8vw,38px);border-radius:7px;background:rgba(23,61,237,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg style="width:14px;height:14px;stroke:var(--blue);fill:none;stroke-width:1.8;stroke-linecap:round" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+            <div><div style="font-size:var(--t-body);font-weight:700;color:var(--ink);margin-bottom:.15em">Fewer people, better output</div><div style="font-size:var(--t-sm);color:var(--dim);line-height:1.5">1 designer with Echo delivers what 3 designers + 2 developers struggled to. The quality goes up. The overhead goes down.</div></div>
+          </div>
+          <div class="rs" data-step="3" style="display:flex;align-items:flex-start;gap:clamp(.9rem,1.4vw,1.3rem);padding:clamp(.85rem,1.4vw,1.3rem) clamp(1rem,1.6vw,1.5rem);background:var(--bg2);border-radius:10px;border-left:2.5px solid var(--blue)">
+            <div style="width:clamp(30px,2.8vw,38px);height:clamp(30px,2.8vw,38px);border-radius:7px;background:rgba(23,61,237,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg style="width:14px;height:14px;stroke:var(--blue);fill:none;stroke-width:1.8;stroke-linecap:round" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+            <div><div style="font-size:var(--t-body);font-weight:700;color:var(--ink);margin-bottom:.15em">Brand grows with the business</div><div style="font-size:var(--t-sm);color:var(--dim);line-height:1.5">New brands, new markets, new teams — all onboard into the same governed system. VIDA's brand scales as fast as the business does.</div></div>
+          </div>
+        </div>
+      </div>
+      <!-- Rosy future visual -->
+      <div class="ar" style="display:flex;align-items:center;justify-content:center">
+        <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:340px;height:auto">
+          <circle cx="150" cy="150" r="130" fill="none" stroke="rgba(23,61,237,.06)" stroke-width="1"/>
+          <circle cx="150" cy="150" r="95" fill="none" stroke="rgba(23,61,237,.09)" stroke-width="1"/>
+          <circle cx="150" cy="150" r="60" fill="none" stroke="rgba(23,61,237,.14)" stroke-width="1"/>
+          <circle cx="150" cy="150" r="48" fill="var(--blue)"/>
+          <text x="150" y="146" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="12" font-weight="700" fill="#fff">Echo</text>
+          <text x="150" y="162" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="8" fill="rgba(255,255,255,.6)">Brand OS</text>
+          <!-- Orbit dots with labels -->
+          <circle cx="150" cy="50" r="22" fill="rgba(23,61,237,.15)" stroke="rgba(23,61,237,.4)" stroke-width="1.5"/>
+          <text x="150" y="47" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="7" fill="#173DED" font-weight="600">Campaign</text>
+          <text x="150" y="57" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="7" fill="#173DED" font-weight="600">Velocity</text>
+          <circle cx="265" cy="195" r="22" fill="rgba(23,61,237,.15)" stroke="rgba(23,61,237,.4)" stroke-width="1.5"/>
+          <text x="265" y="192" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="7" fill="#173DED" font-weight="600">Dealer</text>
+          <text x="265" y="202" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="7" fill="#173DED" font-weight="600">Network</text>
+          <circle cx="35" cy="195" r="22" fill="rgba(23,61,237,.15)" stroke="rgba(23,61,237,.4)" stroke-width="1.5"/>
+          <text x="35" y="192" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="7" fill="#173DED" font-weight="600">AI Brand</text>
+          <text x="35" y="202" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="7" fill="#173DED" font-weight="600">Intelligence</text>
+          <polygon points="150,80 154,84 150,88 146,84" fill="#173DED"/>
+          <polygon points="218,162 222,166 218,170 214,166" fill="#173DED"/>
+          <polygon points="82,162 86,166 82,170 78,166" fill="#173DED"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S22 RE-IMAGINE THE STACK ───────────────────── -->
+<section class="slide dk" id="s22" data-steps="3">
+  <div class="sc">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(3rem,6vw,6rem);align-items:center;width:100%">
+      <div>
+        <span class="tag tag-dk ar">The Bigger Opportunity</span>
+        <h2 class="ar" style="font-size:var(--t-h2);font-weight:700;letter-spacing:-.025em;line-height:1.1;color:var(--dktext);margin-top:.4em;margin-bottom:clamp(1.2rem,2.2vw,2rem)">Echo is one product.<br><span style="color:var(--blue)">The opportunity is much larger.</span></h2>
+        <p class="ar" style="font-size:var(--t-body);color:var(--dkdim);line-height:1.7;margin-bottom:clamp(1.2rem,2vw,2rem)">We've proven we can take a complex problem, build a custom solution fast, and ship something enterprise-grade. The same approach applies across VIDA's stack.</p>
+        <div style="display:flex;flex-direction:column;gap:clamp(.65rem,1.2vw,1.1rem)">
+          <div class="rs" data-step="1" style="padding:clamp(.85rem,1.4vw,1.3rem);background:rgba(255,255,255,.05);border:1px solid var(--dkline);border-left:2.5px solid var(--blue);border-radius:8px">
+            <div style="font-size:var(--t-body);font-weight:700;color:var(--dktext);margin-bottom:.15em">CRM &amp; Campaign Tooling</div>
+            <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.5">Custom tools for how VIDA actually manages customer relationships and campaign execution — not Salesforce retrofitted for motorcycles.</div>
+          </div>
+          <div class="rs" data-step="2" style="padding:clamp(.85rem,1.4vw,1.3rem);background:rgba(255,255,255,.05);border:1px solid var(--dkline);border-left:2.5px solid var(--blue);border-radius:8px">
+            <div style="font-size:var(--t-body);font-weight:700;color:var(--dktext);margin-bottom:.15em">Internal Knowledge &amp; Ops Tools</div>
+            <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.5">The same principle as Echo — applied to onboarding, process documentation, and operational knowledge that currently lives in people's heads.</div>
+          </div>
+          <div class="rs" data-step="3" style="padding:clamp(.85rem,1.4vw,1.3rem);background:rgba(23,61,237,.12);border:1px solid rgba(23,61,237,.25);border-radius:8px">
+            <div style="font-size:var(--t-body);font-weight:700;color:var(--dktext);margin-bottom:.15em">The same Ownpath approach</div>
+            <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.5">Rapid prototyping + Design × Engineering + deep collaboration. Wherever VIDA has a complex, domain-specific problem — we can build the right tool for it.</div>
+          </div>
+        </div>
+      </div>
+      <div class="ar" style="display:flex;align-items:center;justify-content:center">
+        <svg viewBox="0 0 300 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:340px;height:auto">
+          <circle cx="150" cy="120" r="42" fill="var(--blue)"/>
+          <text x="150" y="116" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="11" font-weight="700" fill="#fff">ECHO</text>
+          <text x="150" y="130" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="8" fill="rgba(255,255,255,.6)">Starting point</text>
+          <line x1="150" y1="78" x2="150" y2="30" stroke="rgba(23,61,237,.35)" stroke-width="1.5" stroke-dasharray="5,4"/>
+          <line x1="112" y1="140" x2="55" y2="175" stroke="rgba(23,61,237,.35)" stroke-width="1.5" stroke-dasharray="5,4"/>
+          <line x1="188" y1="140" x2="245" y2="175" stroke="rgba(23,61,237,.35)" stroke-width="1.5" stroke-dasharray="5,4"/>
+          <rect x="122" y="5" width="56" height="32" rx="6" fill="rgba(23,61,237,.2)" stroke="rgba(23,61,237,.4)" stroke-width="1.5"/>
+          <text x="150" y="24" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="8" fill="#173DED" font-weight="600">Brand OS</text>
+          <rect x="22" y="172" width="66" height="32" rx="6" fill="rgba(23,61,237,.2)" stroke="rgba(23,61,237,.4)" stroke-width="1.5"/>
+          <text x="55" y="191" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="8" fill="#173DED" font-weight="600">CRM Tools</text>
+          <rect x="212" y="172" width="66" height="32" rx="6" fill="rgba(23,61,237,.2)" stroke="rgba(23,61,237,.4)" stroke-width="1.5"/>
+          <text x="245" y="191" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="8" fill="#173DED" font-weight="600">Ops Tools</text>
+          <polygon points="150,52 154,56 150,60 146,56" fill="var(--blue)"/>
+          <polygon points="88,160 92,164 88,168 84,164" fill="var(--blue)"/>
+          <polygon points="212,160 216,164 212,168 208,164" fill="var(--blue)"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S23 LET'S KEEP BUILDING ─────────────────────── -->
+<section class="slide dk" id="s23" data-steps="3">
+  <div class="sc">
+    <span class="tag tag-dk ar">Let's Keep Building</span>
+    <h2 class="ar" style="font-size:var(--t-h2);font-weight:700;letter-spacing:-.025em;color:var(--dktext);margin-top:.4em;margin-bottom:clamp(1.5rem,3vw,3rem)">The numbers <span style="color:var(--blue)">speak for themselves.</span></h2>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(.75rem,1.4vw,1.3rem);margin-bottom:clamp(1.5rem,3vw,3rem)">
+      <div class="rs" data-step="1" style="text-align:center;padding:clamp(1rem,1.7vw,1.6rem);background:rgba(255,255,255,.05);border:1px solid var(--dkline);border-radius:10px">
+        <div style="font-size:clamp(1.8rem,4vw,3.5rem);font-weight:700;color:var(--blue);letter-spacing:-.03em;line-height:1;margin-bottom:.2em" data-count-to="65" data-suffix="%">65%</div>
+        <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.4">faster to market</div>
+      </div>
+      <div class="rs" data-step="1" style="text-align:center;padding:clamp(1rem,1.7vw,1.6rem);background:rgba(255,255,255,.05);border:1px solid var(--dkline);border-radius:10px">
+        <div style="font-size:clamp(1.8rem,4vw,3.5rem);font-weight:700;color:var(--blue);letter-spacing:-.03em;line-height:1;margin-bottom:.2em" data-count-to="75" data-suffix="%">75%</div>
+        <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.4">lower platform cost</div>
+      </div>
+      <div class="rs" data-step="2" style="text-align:center;padding:clamp(1rem,1.7vw,1.6rem);background:rgba(255,255,255,.05);border:1px solid var(--dkline);border-radius:10px">
+        <div style="font-size:clamp(1.8rem,4vw,3.5rem);font-weight:700;color:var(--blue);letter-spacing:-.03em;line-height:1;margin-bottom:.2em">5 days</div>
+        <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.4">campaign cycle vs 30+</div>
+      </div>
+      <div class="rs" data-step="2" style="text-align:center;padding:clamp(1rem,1.7vw,1.6rem);background:rgba(255,255,255,.05);border:1px solid var(--dkline);border-radius:10px">
+        <div style="font-size:clamp(1.8rem,4vw,3.5rem);font-weight:700;color:var(--blue);letter-spacing:-.03em;line-height:1;margin-bottom:.2em">12 mo.</div>
+        <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.4">prototype to production</div>
+      </div>
+    </div>
+    <div class="rs" data-step="3" style="background:rgba(23,61,237,.12);border:1px solid rgba(23,61,237,.25);border-radius:10px;padding:clamp(1rem,1.8vw,1.7rem);display:flex;align-items:center;justify-content:space-between;gap:clamp(1rem,2vw,2rem)">
+      <div>
+        <div style="font-size:var(--t-h3);font-weight:700;color:var(--dktext);margin-bottom:.3em">Ready to scope Phase 2?</div>
+        <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.5">Echo Studio · Dealer access · DAM expansion · VAPT security · Hero ID integration</div>
+      </div>
+      <div style="font-size:var(--t-lbl);letter-spacing:.1em;text-transform:uppercase;color:var(--blue);font-weight:600;white-space:nowrap;flex-shrink:0">H2 2026 →</div>
+    </div>
+  </div>
+</section>
+
+<!-- S24 THANK YOU ───────────────────────────────── -->
+<section class="slide dk" id="s24" data-steps="0">
+  <div class="sc" style="justify-content:center;align-items:center;text-align:center">
+    <div class="ar" style="display:flex;flex-direction:column;align-items:center;gap:clamp(1.5rem,3vw,3rem)">
+      <div style="display:flex;align-items:baseline;gap:.15em;line-height:1">
+        <span style="font-family:'Fraunces',serif;font-weight:900;font-style:italic;font-size:clamp(1.8rem,4.5vw,4rem);color:#fff;letter-spacing:-.03em">ownpath</span>
+        <span style="font-family:'DM Sans',sans-serif;font-weight:600;font-size:clamp(1.8rem,4.5vw,4rem);color:#fff;letter-spacing:-.02em">Studios</span>
+      </div>
+      <div style="width:clamp(40px,6vw,80px);height:1px;background:var(--dkline)"></div>
+      <div>
+        <div style="font-size:clamp(1.5rem,3.5vw,3rem);font-weight:700;letter-spacing:-.025em;color:var(--blue);margin-bottom:.3em">Any questions?</div>
+        <div style="font-size:var(--t-body);color:var(--dkdim);letter-spacing:.02em">We'd love to hear them.</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:clamp(.75rem,1.5vw,1.25rem);font-size:var(--t-sm);letter-spacing:.12em;text-transform:uppercase;color:var(--dkfaint)">
+        <span>tech@ownpath.com</span>
+        <span style="width:1px;height:.9em;background:var(--dkfaint)"></span>
+        <span>ownpath.com</span>
+        <span style="width:1px;height:.9em;background:var(--dkfaint)"></span>
+        <span>June 2026</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+/* ── PITCH DECK CONTROLLER ───────────────────────
+   Same data-step number reveals simultaneously.
+   Space / → : next step or next slide
+   ← : previous step or previous slide
+──────────────────────────────────────────────── */
+class PitchDeck{
+  constructor(){
+    this.slides=[...document.querySelectorAll('.slide')];
+    this.total=this.slides.length;
+    this.current=0;
+    this.hinted=false;
+    this.steps=this.slides.map(slide=>{
+      const els=[...slide.querySelectorAll('[data-step]')].sort((a,b)=>+a.dataset.step-+b.dataset.step);
+      const maxStep=els.length?Math.max(...els.map(e=>+e.dataset.step)):0;
+      return{els,maxStep,revealed:0};
+    });
+    this.setupObserver();this.setupKeyboard();this.setupTouch();
+    this.activateSlide(0,false);
+  }
+  activateSlide(idx,scroll=true){
+    this.slides.forEach(s=>s.classList.remove('active'));
+    this.slides[idx].classList.add('active');
+    this.current=idx;
+    if(scroll)this.slides[idx].scrollIntoView({behavior:'smooth'});
+    this.updateChrome();
+  }
+  revealNext(){
+    const s=this.steps[this.current];
+    if(s.revealed<s.maxStep){
+      s.revealed++;
+      s.els.filter(el=>+el.dataset.step===s.revealed).forEach(el=>{
+        el.classList.add('revealed');
+        el.querySelectorAll('[data-count-to]').forEach(n=>this.counter(n));
+        if(el.hasAttribute('data-count-to'))this.counter(el);
+      });
+      return true;
+    }
+    return false;
+  }
+  revealPrev(){
+    const s=this.steps[this.current];
+    if(s.revealed>0){
+      s.els.filter(el=>+el.dataset.step===s.revealed).forEach(el=>el.classList.remove('revealed'));
+      s.revealed--;return true;
+    }
+    return false;
+  }
+  goNext(){if(!this.revealNext())if(this.current<this.total-1)this.activateSlide(this.current+1);this.dismissHint();}
+  goPrev(){
+    if(!this.revealPrev()){
+      if(this.current>0){
+        const p=this.current-1;
+        const cur=this.steps[this.current];
+        cur.els.forEach(el=>el.classList.remove('revealed'));cur.revealed=0;
+        this.activateSlide(p);
+        const prev=this.steps[p];
+        prev.els.forEach(el=>el.classList.add('revealed'));prev.revealed=prev.maxStep;
+      }
+    }
+  }
+  updateChrome(){
+    const pct=this.total>1?(this.current/(this.total-1))*100:100;
+    document.getElementById('prog').style.width=pct+'%';
+    const c=document.getElementById('ctr');
+    c.textContent=String(this.current+1).padStart(2,'0')+' / '+String(this.total).padStart(2,'0');
+    c.className=this.slides[this.current].classList.contains('dk')?'':'lt';
+  }
+  dismissHint(){if(!this.hinted){document.getElementById('hint').classList.add('gone');this.hinted=true;}}
+  counter(el){
+    const t=+el.dataset.countTo,s=el.dataset.suffix||'',d=1000,t0=performance.now();
+    const tick=now=>{const p=Math.min((now-t0)/d,1);el.textContent=Math.round((1-Math.pow(1-p,3))*t)+s;if(p<1)requestAnimationFrame(tick);};
+    requestAnimationFrame(tick);
+  }
+  setupKeyboard(){
+    document.addEventListener('keydown',e=>{
+      if(['ArrowRight','ArrowDown',' '].includes(e.key)){e.preventDefault();this.goNext();}
+      else if(['ArrowLeft','ArrowUp'].includes(e.key)){e.preventDefault();this.goPrev();}
+    });
+  }
+  setupTouch(){
+    let sx,sy;
+    document.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY;},{passive:true});
+    document.addEventListener('touchend',e=>{
+      const dy=e.changedTouches[0].clientY-sy,dx=e.changedTouches[0].clientX-sx;
+      if(Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>50)dy<0?this.goNext():this.goPrev();
+    });
+  }
+  setupObserver(){
+    const io=new IntersectionObserver(entries=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting&&entry.intersectionRatio>=.6){
+          const idx=this.slides.indexOf(entry.target);
+          if(idx!==this.current){this.slides[this.current].classList.remove('active');this.slides[idx].classList.add('active');this.current=idx;this.updateChrome();}
+        }
+      });
+    },{threshold:.6});
+    this.slides.forEach(s=>io.observe(s));
+  }
+}
+window.addEventListener('DOMContentLoaded',()=>new PitchDeck());
+</script>
+</body>
+</html>
