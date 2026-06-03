@@ -94,14 +94,12 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font)}
 #s1 .mark{position:absolute;right:clamp(2rem,4vw,5rem);top:50%;transform:translateY(-54%);width:clamp(260px,38vw,520px);opacity:1;pointer-events:none}
 
 /* ═══════════════════════════════════════════════════
-   S02 — THE CHALLENGE (headline)
+   S02 — THE CHALLENGE
 ═══════════════════════════════════════════════════ */
-#s2{background:var(--dkbg)}
-.ch-hl-wrap{max-width:min(900px,90vw)}
-.ch-pre{font-size:var(--t-h3);color:var(--dim);font-weight:400;margin-bottom:.5em;letter-spacing:.01em}
-.ch-line1{font-size:var(--t-disp);font-weight:700;letter-spacing:-.03em;line-height:1;color:var(--ink)}
-.ch-line2{font-size:var(--t-disp);font-weight:700;letter-spacing:-.03em;line-height:1;color:var(--blue)}
-.ch-sub{font-size:var(--t-body);color:var(--mid);margin-top:clamp(1.5rem,3vw,3rem);max-width:40ch;line-height:1.6}
+#s2{background:#fff}
+.ch-line1{font-size:var(--t-disp);font-weight:700;letter-spacing:-.035em;line-height:1.05;color:var(--ink);margin-top:.4em}
+.ch-line2{font-size:var(--t-disp);font-weight:700;letter-spacing:-.035em;line-height:1.05;color:var(--blue)}
+.ch-sub{font-size:var(--t-body);color:var(--mid);margin-top:clamp(1.2rem,2.5vw,2.2rem);max-width:36ch;line-height:1.65}
 
 /* ═══════════════════════════════════════════════════
    S03 — CHALLENGE 1: CAPTURED IN HEADS
@@ -304,14 +302,92 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font)}
 </section>
 
 <!-- S02 THE CHALLENGE ─────────────────────────── -->
-<section class="slide dk" id="s2" data-steps="2">
-  <div class="sc">
-    <div class="ch-hl-wrap">
-      <p class="ch-pre ar">02 · The Challenge</p>
-      <h2 class="ch-line1 ar">Intelligence is the goal.</h2>
-      <h2 class="ch-line2" data-step="1">Memory is the challenge.</h2>
+<section class="slide" id="s2" data-steps="2">
+  <div style="display:grid;grid-template-columns:1fr 1fr;flex:1;min-height:0">
+
+    <!-- Left: Statement -->
+    <div style="display:flex;flex-direction:column;justify-content:center;padding:var(--pad);padding-bottom:calc(var(--pad) + 2.4rem);border-right:1px solid var(--line)">
+      <span class="tag ar">The Challenge</span>
+      <h2 class="ch-line1 ar">Intelligence<br>is the goal.</h2>
+      <div class="ar" style="width:48px;height:3px;background:var(--blue);border-radius:2px;margin:clamp(1.2rem,2.5vw,2.2rem) 0"></div>
+      <h2 class="ch-line2" data-step="1">Memory is<br>the challenge.</h2>
       <p class="ch-sub" data-step="2">VIDA's brand is complex, fast-moving, and spread across teams, tools, and time zones. The systems to manage it haven't kept pace.</p>
     </div>
+
+    <!-- Right: Fragmentation visual -->
+    <div style="background:var(--bg);display:flex;align-items:center;justify-content:center;padding:clamp(1.5rem,3vw,3rem);padding-bottom:calc(clamp(1.5rem,3vw,3rem) + 2.4rem);overflow:hidden">
+      <svg viewBox="0 0 440 500" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:100%;height:auto">
+
+        <!-- Ghost "?" background texture -->
+        <text x="220" y="350" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="280" font-weight="700" fill="rgba(23,61,237,.032)">?</text>
+
+        <!-- Outer ring connections (tool-to-tool, fragmented) -->
+        <line x1="292" y1="125" x2="365" y2="250" stroke="#E4E2DE" stroke-width="1.5" stroke-dasharray="6,5"/>
+        <line x1="365" y1="250" x2="292" y2="375" stroke="#E4E2DE" stroke-width="1.5" stroke-dasharray="6,5"/>
+        <line x1="292" y1="375" x2="147" y2="375" stroke="#E4E2DE" stroke-width="1.5" stroke-dasharray="6,5"/>
+        <line x1="147" y1="375" x2="75"  y2="250" stroke="#E4E2DE" stroke-width="1.5" stroke-dasharray="6,5"/>
+        <line x1="75"  y1="250" x2="147" y2="125" stroke="#E4E2DE" stroke-width="1.5" stroke-dasharray="6,5"/>
+        <!-- Cross-wires (chaotic wrong flows) -->
+        <line x1="147" y1="125" x2="292" y2="375" stroke="rgba(11,11,11,.06)" stroke-width="1" stroke-dasharray="3,7"/>
+        <line x1="292" y1="125" x2="147" y2="375" stroke="rgba(11,11,11,.06)" stroke-width="1" stroke-dasharray="3,7"/>
+        <line x1="75"  y1="250" x2="365" y2="250" stroke="rgba(11,11,11,.05)" stroke-width="1" stroke-dasharray="3,7"/>
+
+        <!-- Center → node spokes (only 3 of 6 — rest are broken/missing) -->
+        <line x1="268" y1="250" x2="325" y2="250" stroke="rgba(23,61,237,.28)" stroke-width="1.5" stroke-dasharray="5,4"/>
+        <line x1="244" y1="208" x2="272" y2="163" stroke="rgba(23,61,237,.22)" stroke-width="1.5" stroke-dasharray="5,4"/>
+        <line x1="196" y1="291" x2="168" y2="338" stroke="rgba(23,61,237,.22)" stroke-width="1.5" stroke-dasharray="5,4"/>
+
+        <!-- Central Brand node — dashed border, uncertain -->
+        <circle cx="220" cy="250" r="50" fill="rgba(23,61,237,.055)" stroke="rgba(23,61,237,.28)" stroke-width="1.5" stroke-dasharray="5,4"/>
+        <text x="220" y="244" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="10" font-weight="700" letter-spacing="1.5" fill="#173DED">BRAND</text>
+        <text x="220" y="261" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="9" fill="#88888F">memory?</text>
+
+        <!-- Tool nodes (hexagon, r=145 from centre) -->
+        <!-- Right: Email -->
+        <circle cx="365" cy="250" r="42" fill="#fff" stroke="#E4E2DE" stroke-width="1.5"/>
+        <text x="365" y="246" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="9.5" font-weight="700" fill="#3A3B45">Email</text>
+        <text x="365" y="260" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="8" fill="#88888F">47+ chains</text>
+
+        <!-- Top-right: Figma -->
+        <circle cx="292" cy="125" r="42" fill="#fff" stroke="#E4E2DE" stroke-width="1.5"/>
+        <text x="292" y="121" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="9.5" font-weight="700" fill="#3A3B45">Figma</text>
+        <text x="292" y="135" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="8" fill="#88888F">v4_FINAL?</text>
+
+        <!-- Top-left: Drive -->
+        <circle cx="147" cy="125" r="42" fill="#fff" stroke="#E4E2DE" stroke-width="1.5"/>
+        <text x="147" y="121" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="9.5" font-weight="700" fill="#3A3B45">Drive</text>
+        <text x="147" y="135" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="8" fill="#88888F">47 folders</text>
+
+        <!-- Left: Slack -->
+        <circle cx="75" cy="250" r="42" fill="#fff" stroke="#E4E2DE" stroke-width="1.5"/>
+        <text x="75" y="246" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="9.5" font-weight="700" fill="#3A3B45">Slack</text>
+        <text x="75" y="260" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="8" fill="#88888F">lost context</text>
+
+        <!-- Bottom-left: WhatsApp -->
+        <circle cx="147" cy="375" r="42" fill="#fff" stroke="#E4E2DE" stroke-width="1.5"/>
+        <text x="147" y="371" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="9.5" font-weight="700" fill="#3A3B45">WhatsApp</text>
+        <text x="147" y="385" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="8" fill="#88888F">18 threads</text>
+
+        <!-- Bottom-right: Notion -->
+        <circle cx="292" cy="375" r="42" fill="#fff" stroke="#E4E2DE" stroke-width="1.5"/>
+        <text x="292" y="371" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="9.5" font-weight="700" fill="#3A3B45">Notion</text>
+        <text x="292" y="385" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="8" fill="#88888F">outdated</text>
+
+        <!-- Brand mark diamonds at active spoke midpoints -->
+        <polygon points="296,250 300,254 296,258 292,254" fill="var(--blue)"/>
+        <polygon points="258,221 262,225 258,229 254,225" fill="rgba(23,61,237,.55)"/>
+        <polygon points="182,270 186,274 182,278 178,274" fill="rgba(23,61,237,.45)"/>
+
+        <!-- Floating "?" at broken connection gaps -->
+        <text x="176" y="174" font-family="'DM Sans',sans-serif" font-size="18" font-weight="700" fill="rgba(23,61,237,.2)">?</text>
+        <text x="308" y="318" font-family="'DM Sans',sans-serif" font-size="15" font-weight="700" fill="rgba(23,61,237,.17)">?</text>
+        <text x="118" y="318" font-family="'DM Sans',sans-serif" font-size="13" font-weight="700" fill="rgba(23,61,237,.14)">?</text>
+        <text x="122" y="210" font-family="'DM Sans',sans-serif" font-size="12" font-weight="700" fill="rgba(23,61,237,.12)">?</text>
+        <text x="294" y="210" font-family="'DM Sans',sans-serif" font-size="12" font-weight="700" fill="rgba(23,61,237,.12)">?</text>
+
+      </svg>
+    </div>
+
   </div>
 </section>
 
