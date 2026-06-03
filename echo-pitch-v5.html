@@ -10,13 +10,15 @@
 <style>
 /* ── TOKENS ─────────────────────────────────────── */
 :root{
-  --bg:#F7F7F5; --bg2:#EFEFED; --bg3:#E2E2DF;
+  --bg:#FAFAF8; --bg2:#F1F0EE; --bg3:#E4E2DE;
   --ink:#0B0B0B; --mid:#3A3B45; --dim:#88888F;
   --blue:#173DED; --navy:#000051;
-  --line:rgba(11,11,11,.07); --lines:rgba(11,11,11,.13);
-  --dkbg:#0B0B0B; --dktext:#fff;
-  --dkdim:rgba(255,255,255,.5); --dkfaint:rgba(255,255,255,.25);
-  --dkline:rgba(255,255,255,.1);
+  --line:rgba(11,11,11,.07); --lines:rgba(11,11,11,.12);
+  /* Alt-section vars (light equivalents, no dark) */
+  --dkbg:#F4F3F1; --dktext:#0B0B0B;
+  --dkdim:#4A4B56; --dkfaint:#88888F; --dkline:rgba(11,11,11,.09);
+  --shadow-sm:0 1px 3px rgba(0,0,0,.05),0 4px 20px rgba(0,0,0,.05);
+  --shadow-md:0 2px 8px rgba(0,0,0,.07),0 12px 40px rgba(0,0,0,.06);
   --font:'DM Sans','Helvetica Neue',sans-serif;
   --logo:'Fraunces',serif;
   --ease:cubic-bezier(.16,1,.3,1);
@@ -32,7 +34,7 @@
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%;overflow-x:hidden}
 html{scroll-snap-type:y mandatory;scroll-behavior:smooth}
-body{background:var(--dkbg);color:var(--ink);font-family:var(--font)}
+body{background:var(--bg);color:var(--ink);font-family:var(--font)}
 
 /* ── VIEWPORT BASE ───────────────────────────────── */
 .slide{width:100vw;height:100vh;height:100dvh;overflow:hidden;scroll-snap-align:start;display:flex;flex-direction:column;position:relative}
@@ -43,19 +45,18 @@ body{background:var(--dkbg);color:var(--ink);font-family:var(--font)}
 
 /* ── CHROME ──────────────────────────────────────── */
 #prog{position:fixed;top:0;left:0;height:2px;background:var(--blue);width:0%;transition:width .45s var(--ease);z-index:9999}
-#ctr{position:fixed;bottom:clamp(1.25rem,2vw,2rem);right:clamp(1.5rem,3vw,3rem);font-size:var(--t-lbl);letter-spacing:.12em;font-weight:500;color:var(--dkfaint);z-index:9999;user-select:none;transition:color .3s}
+#ctr{position:fixed;bottom:clamp(1.25rem,2vw,2rem);right:clamp(1.5rem,3vw,3rem);font-size:var(--t-lbl);letter-spacing:.12em;font-weight:500;color:var(--dim);z-index:9999;user-select:none;transition:color .3s}
 #ctr.lt{color:var(--dim)}
-#hint{position:fixed;bottom:clamp(1.25rem,2vw,2rem);left:50%;transform:translateX(-50%);font-size:var(--t-lbl);letter-spacing:.1em;color:var(--dkfaint);z-index:9999;user-select:none;transition:opacity .5s;pointer-events:none}
+#hint{position:fixed;bottom:clamp(1.25rem,2vw,2rem);left:50%;transform:translateX(-50%);font-size:var(--t-lbl);letter-spacing:.1em;color:var(--dim);z-index:9999;user-select:none;transition:opacity .5s;pointer-events:none}
 #hint.gone{opacity:0}
 
 /* ── TAG ─────────────────────────────────────────── */
 .tag{display:inline-flex;align-items:center;gap:.5em;font-size:var(--t-lbl);font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--blue);margin-bottom:clamp(.5rem,1vw,.9rem)}
 .tag::before{content:'';width:6px;height:6px;background:var(--blue);transform:rotate(45deg);flex-shrink:0}
-.tag-dk{color:var(--dkdim)}.tag-dk::before{background:var(--dkdim)}
+.tag-dk{color:var(--blue)}.tag-dk::before{background:var(--blue)}
 
-/* ── DARK SLIDE ──────────────────────────────────── */
+/* ── ALT SLIDE (warm off-white) ─────────────────── */
 .dk{background:var(--dkbg);color:var(--dktext)}
-.dk .tag{color:var(--dkdim)}.dk .tag::before{background:var(--dkdim)}
 
 /* ── AUTO-REVEAL ─────────────────────────────────── */
 .ar{opacity:0;transform:translateY(14px);transition:opacity .5s var(--ease),transform .5s var(--ease)}
@@ -79,16 +80,16 @@ body{background:var(--dkbg);color:var(--ink);font-family:var(--font)}
 /* ═══════════════════════════════════════════════════
    S01 — COVER
 ═══════════════════════════════════════════════════ */
-#s1{background:var(--dkbg);justify-content:center;align-items:center}
-.cover-inner{display:flex;flex-direction:column;align-items:center;gap:clamp(1.5rem,3vw,3rem);text-align:center}
-.cover-logo{display:flex;align-items:baseline;gap:.15em;line-height:1}
-.logo-op{font-family:var(--logo);font-weight:900;font-style:italic;font-size:clamp(2.2rem,5.5vw,5rem);color:#fff;letter-spacing:-.03em}
-.logo-st{font-family:var(--font);font-weight:600;font-size:clamp(2.2rem,5.5vw,5rem);color:#fff;letter-spacing:-.02em}
-.cover-divider{width:clamp(40px,6vw,80px);height:1px;background:var(--dkline)}
+#s1{background:#fff;justify-content:center;align-items:center}
+.cover-inner{display:flex;flex-direction:column;align-items:center;gap:clamp(1.2rem,2.5vw,2.5rem);text-align:center}
+.cover-logo{display:flex;align-items:baseline;gap:.12em;line-height:1}
+.logo-op{font-family:var(--logo);font-weight:900;font-style:italic;font-size:clamp(1.1rem,2.4vw,2.2rem);color:var(--mid);letter-spacing:-.03em}
+.logo-st{font-family:var(--font);font-weight:600;font-size:clamp(1.1rem,2.4vw,2.2rem);color:var(--mid);letter-spacing:-.02em}
+.cover-divider{width:clamp(32px,5vw,60px);height:1px;background:var(--lines)}
 .cover-sub{text-align:center}
-.cover-echo{font-size:clamp(1.1rem,2.2vw,2rem);font-weight:700;letter-spacing:-.02em;color:var(--blue);margin-bottom:.3em}
-.cover-tagline{font-size:var(--t-body);color:var(--dkdim);letter-spacing:.04em}
-.cover-meta{font-size:var(--t-lbl);letter-spacing:.14em;text-transform:uppercase;color:var(--dkfaint);margin-top:clamp(1rem,2vw,2rem)}
+.cover-echo{font-size:clamp(3.5rem,9vw,8.5rem);font-weight:700;letter-spacing:-.04em;line-height:.95;color:var(--blue);margin-bottom:.2em}
+.cover-tagline{font-size:var(--t-h3);color:var(--mid);letter-spacing:.01em;font-weight:400}
+.cover-meta{font-size:var(--t-lbl);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-top:clamp(.75rem,1.5vw,1.5rem)}
 /* Brand mark top-right */
 #s1 .mark{position:absolute;top:calc(-1 * clamp(.5rem,.8vw,1rem));right:calc(-1 * clamp(.5rem,.8vw,1rem));width:clamp(140px,18vw,220px);opacity:1;pointer-events:none}
 
@@ -97,10 +98,10 @@ body{background:var(--dkbg);color:var(--ink);font-family:var(--font)}
 ═══════════════════════════════════════════════════ */
 #s2{background:var(--dkbg)}
 .ch-hl-wrap{max-width:min(900px,90vw)}
-.ch-pre{font-size:var(--t-h3);color:var(--dkdim);font-weight:400;margin-bottom:.5em;letter-spacing:.01em}
-.ch-line1{font-size:var(--t-disp);font-weight:700;letter-spacing:-.03em;line-height:1;color:var(--dktext)}
+.ch-pre{font-size:var(--t-h3);color:var(--dim);font-weight:400;margin-bottom:.5em;letter-spacing:.01em}
+.ch-line1{font-size:var(--t-disp);font-weight:700;letter-spacing:-.03em;line-height:1;color:var(--ink)}
 .ch-line2{font-size:var(--t-disp);font-weight:700;letter-spacing:-.03em;line-height:1;color:var(--blue)}
-.ch-sub{font-size:var(--t-body);color:var(--dkdim);margin-top:clamp(1.5rem,3vw,3rem);max-width:40ch;line-height:1.6}
+.ch-sub{font-size:var(--t-body);color:var(--mid);margin-top:clamp(1.5rem,3vw,3rem);max-width:40ch;line-height:1.6}
 
 /* ═══════════════════════════════════════════════════
    S03 — CHALLENGE 1: CAPTURED IN HEADS
@@ -189,19 +190,19 @@ body{background:var(--dkbg);color:var(--ink);font-family:var(--font)}
 #s6{background:var(--dkbg)}
 .wm-layout{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,4vw,4rem);align-items:start;width:100%}
 .wm-left{}
-.wm-hl{font-size:var(--t-h2);font-weight:700;letter-spacing:-.025em;line-height:1.1;color:var(--dktext);margin-top:.4em;margin-bottom:clamp(1.5rem,3vw,3rem)}
+.wm-hl{font-size:var(--t-h2);font-weight:700;letter-spacing:-.025em;line-height:1.1;color:var(--ink);margin-top:.4em;margin-bottom:clamp(1.5rem,3vw,3rem)}
 .wm-hl em{font-style:normal;color:var(--blue)}
 .wm-stats{display:flex;flex-direction:column;gap:clamp(.75rem,1.4vw,1.3rem)}
-.wm-stat{background:rgba(255,255,255,.05);border:1px solid var(--dkline);border-left:2.5px solid var(--blue);border-radius:8px;padding:clamp(.85rem,1.4vw,1.3rem) clamp(1rem,1.6vw,1.5rem)}
+.wm-stat{background:#fff;border:1px solid var(--dkline);border-left:2.5px solid var(--blue);border-radius:8px;padding:clamp(.85rem,1.4vw,1.3rem) clamp(1rem,1.6vw,1.5rem)}
 .wm-stat-num{font-size:clamp(1.6rem,3.5vw,3rem);font-weight:700;letter-spacing:-.03em;color:var(--blue);line-height:1;margin-bottom:.15em}
-.wm-stat-lbl{font-size:var(--t-body);font-weight:600;color:var(--dktext);margin-bottom:.2em}
-.wm-stat-desc{font-size:var(--t-sm);color:var(--dkdim);line-height:1.5}
+.wm-stat-lbl{font-size:var(--t-body);font-weight:600;color:var(--ink);margin-bottom:.2em}
+.wm-stat-desc{font-size:var(--t-sm);color:var(--mid);line-height:1.5}
 .wm-right{display:flex;flex-direction:column;gap:clamp(.75rem,1.4vw,1.3rem);padding-top:clamp(1.5rem,3vw,3rem)}
-.wm-risk{background:rgba(255,255,255,.04);border:1px solid var(--dkline);border-radius:10px;padding:clamp(1rem,1.6vw,1.5rem)}
+.wm-risk{background:var(--bg2);border:1px solid var(--dkline);border-radius:10px;padding:clamp(1rem,1.6vw,1.5rem)}
 .wm-risk-icon{width:clamp(32px,3vw,42px);height:clamp(32px,3vw,42px);border-radius:9px;background:rgba(23,61,237,.2);display:flex;align-items:center;justify-content:center;margin-bottom:.75em}
 .wm-risk-icon svg{width:16px;height:16px;stroke:var(--blue);fill:none;stroke-width:1.8;stroke-linecap:round}
-.wm-risk-title{font-size:var(--t-h3);font-weight:700;color:var(--dktext);margin-bottom:.3em}
-.wm-risk-desc{font-size:var(--t-sm);color:var(--dkdim);line-height:1.55}
+.wm-risk-title{font-size:var(--t-h3);font-weight:700;color:var(--ink);margin-bottom:.3em}
+.wm-risk-desc{font-size:var(--t-sm);color:var(--mid);line-height:1.55}
 
 /* ═══════════════════════════════════════════════════
    S07 — OUR APPROACH (bridge)
@@ -212,7 +213,7 @@ body{background:var(--dkbg);color:var(--ink);font-family:var(--font)}
 .ap-hl{font-size:var(--t-h2);font-weight:700;letter-spacing:-.025em;line-height:1.1;color:var(--ink);margin-top:.35em}
 .ap-hl em{font-style:normal;color:var(--blue)}
 .ap-map{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(.75rem,1.5vw,1.4rem);flex:1;min-height:0}
-.ap-card{border-radius:12px;background:#fff;border:1px solid var(--lines);border-top:2.5px solid var(--blue);padding:clamp(1rem,1.6vw,1.5rem);display:flex;flex-direction:column;position:relative;overflow:hidden;min-height:0}
+.ap-card{border-radius:12px;background:#fff;border:1px solid var(--lines);border-top:2.5px solid var(--blue);padding:clamp(1rem,1.6vw,1.5rem);display:flex;flex-direction:column;position:relative;overflow:hidden;min-height:0;box-shadow:var(--shadow-sm)}
 .ap-ghost{position:absolute;bottom:calc(-1 * clamp(.5rem,1vw,1rem));right:clamp(.8rem,1.2vw,1.2rem);font-size:clamp(5rem,10vw,9rem);font-weight:700;line-height:1;color:transparent;-webkit-text-stroke:1px var(--bg3);user-select:none;pointer-events:none;letter-spacing:-.04em}
 .ap-icon{width:clamp(32px,3vw,42px);height:clamp(32px,3vw,42px);border-radius:9px;background:rgba(23,61,237,.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-bottom:clamp(.8rem,1.4vw,1.2rem)}
 .ap-icon svg{width:16px;height:16px;stroke:var(--blue);fill:none;stroke-width:1.8;stroke-linecap:round}
@@ -225,14 +226,14 @@ body{background:var(--dkbg);color:var(--ink);font-family:var(--font)}
 ═══════════════════════════════════════════════════ */
 #s8{background:var(--dkbg)}
 .intro-layout{display:grid;grid-template-columns:.9fr 1.1fr;height:100%;min-height:0}
-.intro-left{display:flex;flex-direction:column;justify-content:center;padding:var(--pad);border-right:1px solid var(--dkline)}
+.intro-left{display:flex;flex-direction:column;justify-content:center;padding:var(--pad);border-right:1px solid var(--line);background:#fff}
 .intro-wordmark{display:flex;align-items:baseline;gap:.12em;margin-bottom:clamp(1.2rem,2.5vw,2.5rem)}
 .intro-echo-word{font-family:var(--font);font-weight:700;font-size:clamp(2rem,5vw,4.5rem);letter-spacing:-.04em;color:var(--dktext)}
-.intro-hl{font-size:var(--t-h2);font-weight:700;letter-spacing:-.025em;line-height:1.1;color:var(--dktext);margin-bottom:clamp(1.5rem,3vw,3rem)}
+.intro-hl{font-size:var(--t-h2);font-weight:700;letter-spacing:-.025em;line-height:1.1;color:var(--ink);margin-bottom:clamp(1.5rem,3vw,3rem)}
 .intro-hl em{font-style:normal;color:var(--blue)}
 .intro-pts{display:flex;flex-direction:column;gap:clamp(.7rem,1.3vw,1.2rem)}
-.intro-pt{display:flex;align-items:flex-start;gap:.75em;font-size:var(--t-body);color:var(--dkdim)}
-.intro-pt strong{color:var(--dktext);font-weight:600}
+.intro-pt{display:flex;align-items:flex-start;gap:.75em;font-size:var(--t-body);color:var(--mid)}
+.intro-pt strong{color:var(--ink);font-weight:600}
 .intro-pt::before{content:'→';color:var(--blue);flex-shrink:0;margin-top:.05em}
 /* Right: screenshot zone */
 .intro-right{background:var(--bg2);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(1.5rem,3vw,3rem);gap:clamp(1rem,1.8vw,1.5rem);overflow:hidden}
@@ -281,8 +282,8 @@ body{background:var(--dkbg);color:var(--ink);font-family:var(--font)}
   <!-- brand mark top-right -->
   <div class="mark" aria-hidden="true">
     <svg viewBox="0 0 150 118" xmlns="http://www.w3.org/2000/svg">
-      <g fill="#fff" opacity="0.05"><rect x="0" y="0" width="22" height="22" rx="1"/><rect x="32" y="0" width="22" height="22" rx="1"/><rect x="64" y="0" width="22" height="22" rx="1"/><rect x="96" y="0" width="22" height="22" rx="1"/><rect x="128" y="0" width="22" height="22" rx="1"/><rect x="0" y="32" width="22" height="22" rx="1"/><rect x="32" y="32" width="22" height="22" rx="1"/><rect x="64" y="32" width="22" height="22" rx="1"/><rect x="96" y="32" width="22" height="22" rx="1"/><rect x="128" y="32" width="22" height="22" rx="1"/><rect x="0" y="64" width="22" height="22" rx="1"/><rect x="32" y="64" width="22" height="22" rx="1"/><rect x="64" y="64" width="22" height="22" rx="1"/><rect x="96" y="64" width="22" height="22" rx="1"/><rect x="128" y="64" width="22" height="22" rx="1"/><rect x="0" y="96" width="22" height="22" rx="1"/><rect x="32" y="96" width="22" height="22" rx="1"/><rect x="64" y="96" width="22" height="22" rx="1"/><rect x="96" y="96" width="22" height="22" rx="1"/><rect x="128" y="96" width="22" height="22" rx="1"/></g>
-      <g fill="#fff" opacity="0.55"><rect x="0" y="0" width="22" height="22" rx="1"/><rect x="64" y="0" width="22" height="22" rx="1"/><rect x="128" y="0" width="22" height="22" rx="1"/><rect x="32" y="32" width="22" height="22" rx="1"/><rect x="96" y="32" width="22" height="22" rx="1"/><rect x="0" y="64" width="22" height="22" rx="1"/><rect x="64" y="64" width="22" height="22" rx="1"/><rect x="128" y="64" width="22" height="22" rx="1"/><rect x="32" y="96" width="22" height="22" rx="1"/></g>
+      <g fill="#0B0B0B" opacity="0.04"><rect x="0" y="0" width="22" height="22" rx="1"/><rect x="32" y="0" width="22" height="22" rx="1"/><rect x="64" y="0" width="22" height="22" rx="1"/><rect x="96" y="0" width="22" height="22" rx="1"/><rect x="128" y="0" width="22" height="22" rx="1"/><rect x="0" y="32" width="22" height="22" rx="1"/><rect x="32" y="32" width="22" height="22" rx="1"/><rect x="64" y="32" width="22" height="22" rx="1"/><rect x="96" y="32" width="22" height="22" rx="1"/><rect x="128" y="32" width="22" height="22" rx="1"/><rect x="0" y="64" width="22" height="22" rx="1"/><rect x="32" y="64" width="22" height="22" rx="1"/><rect x="64" y="64" width="22" height="22" rx="1"/><rect x="96" y="64" width="22" height="22" rx="1"/><rect x="128" y="64" width="22" height="22" rx="1"/><rect x="0" y="96" width="22" height="22" rx="1"/><rect x="32" y="96" width="22" height="22" rx="1"/><rect x="64" y="96" width="22" height="22" rx="1"/><rect x="96" y="96" width="22" height="22" rx="1"/><rect x="128" y="96" width="22" height="22" rx="1"/></g>
+      <g fill="#0B0B0B" opacity="0.11"><rect x="0" y="0" width="22" height="22" rx="1"/><rect x="64" y="0" width="22" height="22" rx="1"/><rect x="128" y="0" width="22" height="22" rx="1"/><rect x="32" y="32" width="22" height="22" rx="1"/><rect x="96" y="32" width="22" height="22" rx="1"/><rect x="0" y="64" width="22" height="22" rx="1"/><rect x="64" y="64" width="22" height="22" rx="1"/><rect x="128" y="64" width="22" height="22" rx="1"/><rect x="32" y="96" width="22" height="22" rx="1"/></g>
       <g fill="#173DED"><polygon points="27,16 38,27 27,38 16,27"/><polygon points="91,16 102,27 91,38 80,27"/><polygon points="59,48 70,59 59,70 48,59"/><polygon points="123,48 134,59 123,70 112,59"/><polygon points="27,80 38,91 27,102 16,91"/></g>
     </svg>
   </div>
@@ -417,22 +418,22 @@ body{background:var(--dkbg);color:var(--ink);font-family:var(--font)}
         <h2 class="wm-hl ar">At VIDA's scale,<br>this isn't <em>inconvenient.</em><br>It's expensive.</h2>
       </div>
       <div class="wm-right">
-        <div class="wm-stat rs" data-step="1">
+        <div class="wm-stat rs" data-step="1" style="background:#fff;box-shadow:var(--shadow-sm)">
           <div class="wm-stat-num">30+</div>
           <div class="wm-stat-lbl">Days per campaign cycle</div>
           <div class="wm-stat-desc">Manual approvals, disconnected tools, and version confusion add weeks to every launch.</div>
         </div>
-        <div class="wm-stat rs" data-step="2">
+        <div class="wm-stat rs" data-step="2" style="background:#fff;box-shadow:var(--shadow-sm)">
           <div class="wm-stat-num">3–5×</div>
           <div class="wm-stat-lbl">More people than necessary</div>
           <div class="wm-stat-desc">Without governed tools, every task requires more coordination — designers, developers, reviewers, managers.</div>
         </div>
-        <div class="wm-risk" data-step="3">
+        <div class="wm-risk" data-step="3" style="background:#fff;border:1px solid var(--line);box-shadow:var(--shadow-sm)">
           <div class="wm-risk-icon"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
           <div class="wm-risk-title">Brand integrity at risk</div>
           <div class="wm-risk-desc">Every unapproved asset, inconsistent execution, and undocumented decision compounds. At scale, brand inconsistency becomes a systemic problem — not just a design one.</div>
         </div>
-        <div class="wm-risk" data-step="4">
+        <div class="wm-risk" data-step="4" style="background:#fff;border:1px solid var(--line);box-shadow:var(--shadow-sm)">
           <div class="wm-risk-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
           <div class="wm-risk-title">Speed is a competitive advantage</div>
           <div class="wm-risk-desc">Competitors who can launch brand-compliant campaigns in days — not months — move faster in market. VIDA's internal friction slows what should be fast.</div>
@@ -681,35 +682,35 @@ body{background:var(--dkbg);color:var(--ink);font-family:var(--font)}
     </div>
     <!-- Chaos grid -->
     <div style="flex:1;min-height:0;position:relative;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(2,1fr);gap:clamp(.5rem,.9vw,.85rem)">
-      <div class="rs" data-step="1" style="border-radius:8px;border:1px dashed rgba(255,255,255,.15);padding:clamp(.7rem,1.2vw,1.1rem);display:flex;flex-direction:column;gap:.4em;transform:rotate(-1.5deg)">
+      <div class="rs" data-step="1" style="border-radius:8px;border:1px dashed rgba(11,11,11,.14);padding:clamp(.7rem,1.2vw,1.1rem);display:flex;flex-direction:column;gap:.4em;transform:rotate(-1.5deg)">
         <div style="font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,100,100,.7);font-weight:600">WhatsApp</div>
         <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.4">"Is this the final version? Which file do I use?"</div>
-        <div style="margin-top:auto;font-size:var(--t-lbl);color:rgba(255,255,255,.2)">7:43 PM · Read</div>
+        <div style="margin-top:auto;font-size:var(--t-lbl);color:var(--dim)">7:43 PM · Read</div>
       </div>
-      <div class="rs" data-step="1" style="border-radius:8px;border:1px dashed rgba(255,255,255,.15);padding:clamp(.7rem,1.2vw,1.1rem);display:flex;flex-direction:column;gap:.4em;transform:rotate(.8deg)">
+      <div class="rs" data-step="1" style="border-radius:8px;border:1px dashed rgba(11,11,11,.14);padding:clamp(.7rem,1.2vw,1.1rem);display:flex;flex-direction:column;gap:.4em;transform:rotate(.8deg)">
         <div style="font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,100,100,.7);font-weight:600">Email</div>
         <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.4">FWD: FWD: RE: RE: Brand assets — please use v3_FINAL2</div>
-        <div style="margin-top:auto;font-size:var(--t-lbl);color:rgba(255,255,255,.2)">+23 attachments</div>
+        <div style="margin-top:auto;font-size:var(--t-lbl);color:var(--dim)">+23 attachments</div>
       </div>
-      <div class="rs" data-step="2" style="border-radius:8px;border:1px dashed rgba(255,255,255,.15);padding:clamp(.7rem,1.2vw,1.1rem);display:flex;flex-direction:column;gap:.4em;transform:rotate(-1deg)">
+      <div class="rs" data-step="2" style="border-radius:8px;border:1px dashed rgba(11,11,11,.14);padding:clamp(.7rem,1.2vw,1.1rem);display:flex;flex-direction:column;gap:.4em;transform:rotate(-1deg)">
         <div style="font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,100,100,.7);font-weight:600">Figma</div>
         <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.4">vida_brand_v2_FINAL_v4_approved_USE-THIS.fig</div>
-        <div style="margin-top:auto;font-size:var(--t-lbl);color:rgba(255,255,255,.2)">Last edited: ???</div>
+        <div style="margin-top:auto;font-size:var(--t-lbl);color:var(--dim)">Last edited: ???</div>
       </div>
       <div class="rs" data-step="2" style="border-radius:8px;border:1px solid rgba(200,50,50,.3);background:rgba(200,50,50,.07);padding:clamp(.7rem,1.2vw,1.1rem);display:flex;flex-direction:column;gap:.4em;transform:rotate(1.5deg)">
         <div style="font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(200,50,50,.9);font-weight:600">⚠ Wrong version live</div>
         <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.4">Someone used the old logo on the campaign. Now it's on billboards.</div>
         <div style="margin-top:auto;font-size:var(--t-lbl);color:rgba(200,50,50,.6)">Critical · No audit trail</div>
       </div>
-      <div class="rs" data-step="3" style="border-radius:8px;border:1px dashed rgba(255,255,255,.15);padding:clamp(.7rem,1.2vw,1.1rem);display:flex;flex-direction:column;gap:.4em;transform:rotate(.5deg)">
+      <div class="rs" data-step="3" style="border-radius:8px;border:1px dashed rgba(11,11,11,.14);padding:clamp(.7rem,1.2vw,1.1rem);display:flex;flex-direction:column;gap:.4em;transform:rotate(.5deg)">
         <div style="font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,100,100,.7);font-weight:600">Slack</div>
         <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.4">"Quick call? Need to align on this before we send to print."</div>
-        <div style="margin-top:auto;font-size:var(--t-lbl);color:rgba(255,255,255,.2)">3 designers, 2 devs involved</div>
+        <div style="margin-top:auto;font-size:var(--t-lbl);color:var(--dim)">3 designers, 2 devs involved</div>
       </div>
-      <div class="rs" data-step="3" style="border-radius:8px;border:1px dashed rgba(255,255,255,.15);padding:clamp(.7rem,1.2vw,1.1rem);display:flex;flex-direction:column;gap:.4em;transform:rotate(-2deg)">
+      <div class="rs" data-step="3" style="border-radius:8px;border:1px dashed rgba(11,11,11,.14);padding:clamp(.7rem,1.2vw,1.1rem);display:flex;flex-direction:column;gap:.4em;transform:rotate(-2deg)">
         <div style="font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,100,100,.7);font-weight:600">Google Drive</div>
         <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.4">VIDA Brand Assets &gt; 2024 &gt; New &gt; Actually New &gt; Final &gt; Use This</div>
-        <div style="margin-top:auto;font-size:var(--t-lbl);color:rgba(255,255,255,.2)">47 folders · No naming convention</div>
+        <div style="margin-top:auto;font-size:var(--t-lbl);color:var(--dim)">47 folders · No naming convention</div>
       </div>
       <div class="rs" data-step="4" style="grid-column:span 2;border-radius:8px;border:1px solid rgba(200,50,50,.3);background:rgba(200,50,50,.05);padding:clamp(.7rem,1.2vw,1.1rem);display:flex;align-items:center;gap:clamp(1rem,2vw,2rem)">
         <div style="font-size:clamp(2rem,5vw,4rem);flex-shrink:0">📞</div>
@@ -797,20 +798,20 @@ body{background:var(--dkbg);color:var(--ink);font-family:var(--font)}
     <span class="tag tag-dk ar">Impact</span>
     <h2 class="ar" style="font-size:var(--t-h2);font-weight:700;letter-spacing:-.025em;color:var(--dktext);margin-top:.4em;margin-bottom:clamp(1.5rem,3vw,3rem)">Measurable from <span style="color:var(--blue)">day one.</span></h2>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(.75rem,1.4vw,1.3rem);margin-bottom:clamp(1rem,1.8vw,1.7rem)">
-      <div class="rs" data-step="1" style="background:rgba(255,255,255,.05);border:1px solid var(--dkline);border-top:2px solid var(--blue);border-radius:10px;padding:clamp(1rem,1.7vw,1.6rem)">
-        <div style="font-size:clamp(2rem,5vw,4.5rem);font-weight:700;letter-spacing:-.03em;color:var(--blue);line-height:1;margin-bottom:.25em" data-count-to="65" data-suffix="%">65%</div>
-        <div style="font-size:var(--t-h3);font-weight:600;color:var(--dktext);margin-bottom:.3em">Faster to market</div>
-        <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.5">Campaign cycles compress from months to days. Bottlenecks eliminated by Echo's governed workflow.</div>
+      <div class="rs" data-step="1" style="background:#fff;border:1px solid var(--line);border-top:2.5px solid var(--blue);border-radius:12px;padding:clamp(1rem,1.7vw,1.6rem);box-shadow:var(--shadow-sm)">
+        <div style="font-size:clamp(2.5rem,5.5vw,5rem);font-weight:700;letter-spacing:-.04em;color:var(--blue);line-height:1;margin-bottom:.25em" data-count-to="65" data-suffix="%">65%</div>
+        <div style="font-size:var(--t-h3);font-weight:600;color:var(--ink);margin-bottom:.3em">Faster to market</div>
+        <div style="font-size:var(--t-sm);color:var(--mid);line-height:1.5">Campaign cycles compress from months to days. Bottlenecks eliminated by Echo's governed workflow.</div>
       </div>
-      <div class="rs" data-step="2" style="background:rgba(255,255,255,.05);border:1px solid var(--dkline);border-top:2px solid var(--blue);border-radius:10px;padding:clamp(1rem,1.7vw,1.6rem)">
-        <div style="font-size:clamp(2rem,5vw,4.5rem);font-weight:700;letter-spacing:-.03em;color:var(--blue);line-height:1;margin-bottom:.25em" data-count-to="75" data-suffix="%">75%</div>
-        <div style="font-size:var(--t-h3);font-weight:600;color:var(--dktext);margin-bottom:.3em">Lower platform cost</div>
-        <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.5">Versus $150K–$500K/year enterprise licensing. Custom built, VIDA owned. No per-seat ceiling.</div>
+      <div class="rs" data-step="2" style="background:#fff;border:1px solid var(--line);border-top:2.5px solid var(--blue);border-radius:12px;padding:clamp(1rem,1.7vw,1.6rem);box-shadow:var(--shadow-sm)">
+        <div style="font-size:clamp(2.5rem,5.5vw,5rem);font-weight:700;letter-spacing:-.04em;color:var(--blue);line-height:1;margin-bottom:.25em" data-count-to="75" data-suffix="%">75%</div>
+        <div style="font-size:var(--t-h3);font-weight:600;color:var(--ink);margin-bottom:.3em">Lower platform cost</div>
+        <div style="font-size:var(--t-sm);color:var(--mid);line-height:1.5">Versus $150K–$500K/year enterprise licensing. Custom built, VIDA owned. No per-seat ceiling.</div>
       </div>
-      <div class="rs" data-step="3" style="background:rgba(255,255,255,.05);border:1px solid var(--dkline);border-top:2px solid var(--blue);border-radius:10px;padding:clamp(1rem,1.7vw,1.6rem)">
-        <div style="font-size:clamp(2rem,5vw,4.5rem);font-weight:700;letter-spacing:-.03em;color:var(--blue);line-height:1;margin-bottom:.25em" data-count-to="100" data-suffix="%">100%</div>
-        <div style="font-size:var(--t-h3);font-weight:600;color:var(--dktext);margin-bottom:.3em">Brand alignment</div>
-        <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.5">Every asset created within Echo is governed. Brand compliance moves from manual review to built-in guarantee.</div>
+      <div class="rs" data-step="3" style="background:#fff;border:1px solid var(--line);border-top:2.5px solid var(--blue);border-radius:12px;padding:clamp(1rem,1.7vw,1.6rem);box-shadow:var(--shadow-sm)">
+        <div style="font-size:clamp(2.5rem,5.5vw,5rem);font-weight:700;letter-spacing:-.04em;color:var(--blue);line-height:1;margin-bottom:.25em" data-count-to="100" data-suffix="%">100%</div>
+        <div style="font-size:var(--t-h3);font-weight:600;color:var(--ink);margin-bottom:.3em">Brand alignment</div>
+        <div style="font-size:var(--t-sm);color:var(--mid);line-height:1.5">Every asset created within Echo is governed. Brand compliance moves from manual review to built-in guarantee.</div>
       </div>
     </div>
     <div class="rs" data-step="4" style="background:rgba(23,61,237,.12);border:1px solid rgba(23,61,237,.25);border-radius:10px;padding:clamp(1rem,1.5vw,1.4rem) clamp(1.2rem,2vw,1.8rem);display:flex;align-items:center;gap:clamp(1rem,1.8vw,1.6rem)">
@@ -1042,20 +1043,20 @@ body{background:var(--dkbg);color:var(--ink);font-family:var(--font)}
       <h2 class="ar" style="font-size:var(--t-h2);font-weight:700;letter-spacing:-.025em;color:var(--dktext);margin-top:.4em">We've built the foundation.<br><span style="color:var(--blue)">Here's what we build on it.</span></h2>
     </div>
     <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(.75rem,1.4vw,1.25rem)">
-      <div class="rs" data-step="1" style="background:rgba(255,255,255,.05);border:1px solid var(--dkline);border-top:2px solid var(--blue);border-radius:10px;padding:clamp(1rem,1.6vw,1.5rem)">
+      <div class="rs" data-step="1" style="background:#fff;border:1px solid var(--line);border-top:2.5px solid var(--blue);border-radius:12px;padding:clamp(1rem,1.6vw,1.5rem);box-shadow:var(--shadow-sm)">
         <div style="font-size:var(--t-lbl);letter-spacing:.1em;text-transform:uppercase;color:var(--blue);font-weight:600;margin-bottom:.5em">Direction 01</div>
-        <div style="font-size:var(--t-h3);font-weight:700;color:var(--dktext);margin-bottom:.4em">Echo Studio at Full Scale</div>
-        <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.55">AI-powered content generation using VIDA's brand guidelines as training context. Campaign assets, dealer materials, regional variants — generated, governed, compliant.</div>
+        <div style="font-size:var(--t-h3);font-weight:700;color:var(--ink);margin-bottom:.4em">Echo Studio at Full Scale</div>
+        <div style="font-size:var(--t-sm);color:var(--mid);line-height:1.55">AI-powered content generation using VIDA's brand guidelines as training context. Campaign assets, dealer materials, regional variants — generated, governed, compliant.</div>
       </div>
-      <div class="rs" data-step="2" style="background:rgba(255,255,255,.05);border:1px solid var(--dkline);border-top:2px solid var(--blue);border-radius:10px;padding:clamp(1rem,1.6vw,1.5rem)">
+      <div class="rs" data-step="2" style="background:#fff;border:1px solid var(--line);border-top:2.5px solid var(--blue);border-radius:12px;padding:clamp(1rem,1.6vw,1.5rem);box-shadow:var(--shadow-sm)">
         <div style="font-size:var(--t-lbl);letter-spacing:.1em;text-transform:uppercase;color:var(--blue);font-weight:600;margin-bottom:.5em">Direction 02</div>
-        <div style="font-size:var(--t-h3);font-weight:700;color:var(--dktext);margin-bottom:.4em">Dealer &amp; Vendor Portal</div>
-        <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.55">External stakeholders with governed access to approved brand assets, co-branded templates, and campaign materials. Brand compliance at scale without a brand police.</div>
+        <div style="font-size:var(--t-h3);font-weight:700;color:var(--ink);margin-bottom:.4em">Dealer &amp; Vendor Portal</div>
+        <div style="font-size:var(--t-sm);color:var(--mid);line-height:1.55">External stakeholders with governed access to approved brand assets, co-branded templates, and campaign materials. Brand compliance at scale without a brand police.</div>
       </div>
-      <div class="rs" data-step="3" style="background:rgba(255,255,255,.05);border:1px solid var(--dkline);border-top:2px solid var(--blue);border-radius:10px;padding:clamp(1rem,1.6vw,1.5rem)">
+      <div class="rs" data-step="3" style="background:#fff;border:1px solid var(--line);border-top:2.5px solid var(--blue);border-radius:12px;padding:clamp(1rem,1.6vw,1.5rem);box-shadow:var(--shadow-sm)">
         <div style="font-size:var(--t-lbl);letter-spacing:.1em;text-transform:uppercase;color:var(--blue);font-weight:600;margin-bottom:.5em">Direction 03</div>
-        <div style="font-size:var(--t-h3);font-weight:700;color:var(--dktext);margin-bottom:.4em">Enterprise Integration</div>
-        <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.55">Full DAM lifecycle, VAPT security certification, advanced analytics, and Hero ID integration across VIDA's broader tech stack. Echo as infrastructure.</div>
+        <div style="font-size:var(--t-h3);font-weight:700;color:var(--ink);margin-bottom:.4em">Enterprise Integration</div>
+        <div style="font-size:var(--t-sm);color:var(--mid);line-height:1.55">Full DAM lifecycle, VAPT security certification, advanced analytics, and Hero ID integration across VIDA's broader tech stack. Echo as infrastructure.</div>
       </div>
       <div class="rs" data-step="4" style="background:rgba(23,61,237,.12);border:1px solid rgba(23,61,237,.25);border-radius:10px;padding:clamp(1rem,1.6vw,1.5rem);display:flex;align-items:center;gap:clamp(.75rem,1.4vw,1.3rem)">
         <div style="font-size:clamp(2rem,4vw,3.5rem);flex-shrink:0;opacity:.6">→</div>
@@ -1124,16 +1125,16 @@ body{background:var(--dkbg);color:var(--ink);font-family:var(--font)}
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(3rem,6vw,6rem);align-items:center;width:100%">
       <div>
         <span class="tag tag-dk ar">The Bigger Opportunity</span>
-        <h2 class="ar" style="font-size:var(--t-h2);font-weight:700;letter-spacing:-.025em;line-height:1.1;color:var(--dktext);margin-top:.4em;margin-bottom:clamp(1.2rem,2.2vw,2rem)">Echo is one product.<br><span style="color:var(--blue)">The opportunity is much larger.</span></h2>
-        <p class="ar" style="font-size:var(--t-body);color:var(--dkdim);line-height:1.7;margin-bottom:clamp(1.2rem,2vw,2rem)">We've proven we can take a complex problem, build a custom solution fast, and ship something enterprise-grade. The same approach applies across VIDA's stack.</p>
+        <h2 class="ar" style="font-size:var(--t-h2);font-weight:700;letter-spacing:-.025em;line-height:1.1;color:var(--ink);margin-top:.4em;margin-bottom:clamp(1.2rem,2.2vw,2rem)">Echo is one product.<br><span style="color:var(--blue)">The opportunity is much larger.</span></h2>
+        <p class="ar" style="font-size:var(--t-body);color:var(--mid);line-height:1.7;margin-bottom:clamp(1.2rem,2vw,2rem)">We've proven we can take a complex problem, build a custom solution fast, and ship something enterprise-grade. The same approach applies across VIDA's stack.</p>
         <div style="display:flex;flex-direction:column;gap:clamp(.65rem,1.2vw,1.1rem)">
-          <div class="rs" data-step="1" style="padding:clamp(.85rem,1.4vw,1.3rem);background:rgba(255,255,255,.05);border:1px solid var(--dkline);border-left:2.5px solid var(--blue);border-radius:8px">
-            <div style="font-size:var(--t-body);font-weight:700;color:var(--dktext);margin-bottom:.15em">CRM &amp; Campaign Tooling</div>
-            <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.5">Custom tools for how VIDA actually manages customer relationships and campaign execution — not Salesforce retrofitted for motorcycles.</div>
+          <div class="rs" data-step="1" style="padding:clamp(.85rem,1.4vw,1.3rem);background:#fff;border:1px solid var(--line);border-left:2.5px solid var(--blue);border-radius:8px;box-shadow:var(--shadow-sm)">
+            <div style="font-size:var(--t-body);font-weight:700;color:var(--ink);margin-bottom:.15em">CRM &amp; Campaign Tooling</div>
+            <div style="font-size:var(--t-sm);color:var(--mid);line-height:1.5">Custom tools for how VIDA actually manages customer relationships and campaign execution — not Salesforce retrofitted for motorcycles.</div>
           </div>
-          <div class="rs" data-step="2" style="padding:clamp(.85rem,1.4vw,1.3rem);background:rgba(255,255,255,.05);border:1px solid var(--dkline);border-left:2.5px solid var(--blue);border-radius:8px">
-            <div style="font-size:var(--t-body);font-weight:700;color:var(--dktext);margin-bottom:.15em">Internal Knowledge &amp; Ops Tools</div>
-            <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.5">The same principle as Echo — applied to onboarding, process documentation, and operational knowledge that currently lives in people's heads.</div>
+          <div class="rs" data-step="2" style="padding:clamp(.85rem,1.4vw,1.3rem);background:#fff;border:1px solid var(--line);border-left:2.5px solid var(--blue);border-radius:8px;box-shadow:var(--shadow-sm)">
+            <div style="font-size:var(--t-body);font-weight:700;color:var(--ink);margin-bottom:.15em">Internal Knowledge &amp; Ops Tools</div>
+            <div style="font-size:var(--t-sm);color:var(--mid);line-height:1.5">The same principle as Echo — applied to onboarding, process documentation, and operational knowledge that currently lives in people's heads.</div>
           </div>
           <div class="rs" data-step="3" style="padding:clamp(.85rem,1.4vw,1.3rem);background:rgba(23,61,237,.12);border:1px solid rgba(23,61,237,.25);border-radius:8px">
             <div style="font-size:var(--t-body);font-weight:700;color:var(--dktext);margin-bottom:.15em">The same Ownpath approach</div>
@@ -1170,21 +1171,21 @@ body{background:var(--dkbg);color:var(--ink);font-family:var(--font)}
     <span class="tag tag-dk ar">Let's Keep Building</span>
     <h2 class="ar" style="font-size:var(--t-h2);font-weight:700;letter-spacing:-.025em;color:var(--dktext);margin-top:.4em;margin-bottom:clamp(1.5rem,3vw,3rem)">The numbers <span style="color:var(--blue)">speak for themselves.</span></h2>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(.75rem,1.4vw,1.3rem);margin-bottom:clamp(1.5rem,3vw,3rem)">
-      <div class="rs" data-step="1" style="text-align:center;padding:clamp(1rem,1.7vw,1.6rem);background:rgba(255,255,255,.05);border:1px solid var(--dkline);border-radius:10px">
-        <div style="font-size:clamp(1.8rem,4vw,3.5rem);font-weight:700;color:var(--blue);letter-spacing:-.03em;line-height:1;margin-bottom:.2em" data-count-to="65" data-suffix="%">65%</div>
-        <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.4">faster to market</div>
+      <div class="rs" data-step="1" style="text-align:center;padding:clamp(1rem,1.7vw,1.6rem);background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-sm)">
+        <div style="font-size:clamp(2rem,4.5vw,4rem);font-weight:700;color:var(--blue);letter-spacing:-.04em;line-height:1;margin-bottom:.2em" data-count-to="65" data-suffix="%">65%</div>
+        <div style="font-size:var(--t-sm);color:var(--mid);line-height:1.4">faster to market</div>
       </div>
-      <div class="rs" data-step="1" style="text-align:center;padding:clamp(1rem,1.7vw,1.6rem);background:rgba(255,255,255,.05);border:1px solid var(--dkline);border-radius:10px">
-        <div style="font-size:clamp(1.8rem,4vw,3.5rem);font-weight:700;color:var(--blue);letter-spacing:-.03em;line-height:1;margin-bottom:.2em" data-count-to="75" data-suffix="%">75%</div>
-        <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.4">lower platform cost</div>
+      <div class="rs" data-step="1" style="text-align:center;padding:clamp(1rem,1.7vw,1.6rem);background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-sm)">
+        <div style="font-size:clamp(2rem,4.5vw,4rem);font-weight:700;color:var(--blue);letter-spacing:-.04em;line-height:1;margin-bottom:.2em" data-count-to="75" data-suffix="%">75%</div>
+        <div style="font-size:var(--t-sm);color:var(--mid);line-height:1.4">lower platform cost</div>
       </div>
-      <div class="rs" data-step="2" style="text-align:center;padding:clamp(1rem,1.7vw,1.6rem);background:rgba(255,255,255,.05);border:1px solid var(--dkline);border-radius:10px">
-        <div style="font-size:clamp(1.8rem,4vw,3.5rem);font-weight:700;color:var(--blue);letter-spacing:-.03em;line-height:1;margin-bottom:.2em">5 days</div>
-        <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.4">campaign cycle vs 30+</div>
+      <div class="rs" data-step="2" style="text-align:center;padding:clamp(1rem,1.7vw,1.6rem);background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-sm)">
+        <div style="font-size:clamp(2rem,4.5vw,4rem);font-weight:700;color:var(--blue);letter-spacing:-.04em;line-height:1;margin-bottom:.2em">5 days</div>
+        <div style="font-size:var(--t-sm);color:var(--mid);line-height:1.4">campaign cycle vs 30+</div>
       </div>
-      <div class="rs" data-step="2" style="text-align:center;padding:clamp(1rem,1.7vw,1.6rem);background:rgba(255,255,255,.05);border:1px solid var(--dkline);border-radius:10px">
-        <div style="font-size:clamp(1.8rem,4vw,3.5rem);font-weight:700;color:var(--blue);letter-spacing:-.03em;line-height:1;margin-bottom:.2em">12 mo.</div>
-        <div style="font-size:var(--t-sm);color:var(--dkdim);line-height:1.4">prototype to production</div>
+      <div class="rs" data-step="2" style="text-align:center;padding:clamp(1rem,1.7vw,1.6rem);background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-sm)">
+        <div style="font-size:clamp(2rem,4.5vw,4rem);font-weight:700;color:var(--blue);letter-spacing:-.04em;line-height:1;margin-bottom:.2em">12 mo.</div>
+        <div style="font-size:var(--t-sm);color:var(--mid);line-height:1.4">prototype to production</div>
       </div>
     </div>
     <div class="rs" data-step="3" style="background:rgba(23,61,237,.12);border:1px solid rgba(23,61,237,.25);border-radius:10px;padding:clamp(1rem,1.8vw,1.7rem);display:flex;align-items:center;justify-content:space-between;gap:clamp(1rem,2vw,2rem)">
@@ -1202,19 +1203,19 @@ body{background:var(--dkbg);color:var(--ink);font-family:var(--font)}
   <div class="sc" style="justify-content:center;align-items:center;text-align:center">
     <div class="ar" style="display:flex;flex-direction:column;align-items:center;gap:clamp(1.5rem,3vw,3rem)">
       <div style="display:flex;align-items:baseline;gap:.15em;line-height:1">
-        <span style="font-family:'Fraunces',serif;font-weight:900;font-style:italic;font-size:clamp(1.8rem,4.5vw,4rem);color:#fff;letter-spacing:-.03em">ownpath</span>
-        <span style="font-family:'DM Sans',sans-serif;font-weight:600;font-size:clamp(1.8rem,4.5vw,4rem);color:#fff;letter-spacing:-.02em">Studios</span>
+        <span style="font-family:'Fraunces',serif;font-weight:900;font-style:italic;font-size:clamp(1.8rem,4.5vw,4rem);color:var(--ink);letter-spacing:-.03em">ownpath</span>
+        <span style="font-family:'DM Sans',sans-serif;font-weight:600;font-size:clamp(1.8rem,4.5vw,4rem);color:var(--ink);letter-spacing:-.02em">Studios</span>
       </div>
-      <div style="width:clamp(40px,6vw,80px);height:1px;background:var(--dkline)"></div>
+      <div style="width:clamp(40px,6vw,80px);height:1px;background:var(--lines)"></div>
       <div>
         <div style="font-size:clamp(1.5rem,3.5vw,3rem);font-weight:700;letter-spacing:-.025em;color:var(--blue);margin-bottom:.3em">Any questions?</div>
-        <div style="font-size:var(--t-body);color:var(--dkdim);letter-spacing:.02em">We'd love to hear them.</div>
+        <div style="font-size:var(--t-body);color:var(--mid);letter-spacing:.02em">We'd love to hear them.</div>
       </div>
-      <div style="display:flex;align-items:center;gap:clamp(.75rem,1.5vw,1.25rem);font-size:var(--t-sm);letter-spacing:.12em;text-transform:uppercase;color:var(--dkfaint)">
+      <div style="display:flex;align-items:center;gap:clamp(.75rem,1.5vw,1.25rem);font-size:var(--t-sm);letter-spacing:.12em;text-transform:uppercase;color:var(--dim)">
         <span>tech@ownpath.com</span>
-        <span style="width:1px;height:.9em;background:var(--dkfaint)"></span>
+        <span style="width:1px;height:.9em;background:var(--dim)"></span>
         <span>ownpath.com</span>
-        <span style="width:1px;height:.9em;background:var(--dkfaint)"></span>
+        <span style="width:1px;height:.9em;background:var(--dim)"></span>
         <span>June 2026</span>
       </div>
     </div>
