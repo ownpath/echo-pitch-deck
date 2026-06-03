@@ -314,78 +314,20 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font)}
       <p class="ch-sub" data-step="2">VIDA's brand is complex, fast-moving, and spread across teams, tools, and time zones. The systems to manage it haven't kept pace.</p>
     </div>
 
-    <!-- Right: Fragmentation visual -->
-    <div style="background:var(--bg);display:flex;align-items:center;justify-content:center;padding:clamp(1.5rem,3vw,3rem);padding-bottom:calc(clamp(1.5rem,3vw,3rem) + 2.4rem);overflow:hidden">
-      <svg viewBox="0 0 440 500" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:100%;height:auto">
-
-        <!-- Ghost "?" background texture -->
-        <text x="220" y="350" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="280" font-weight="700" fill="rgba(23,61,237,.032)">?</text>
-
-        <!-- Outer ring connections (tool-to-tool, fragmented) -->
-        <line x1="292" y1="125" x2="365" y2="250" stroke="#E4E2DE" stroke-width="1.5" stroke-dasharray="6,5"/>
-        <line x1="365" y1="250" x2="292" y2="375" stroke="#E4E2DE" stroke-width="1.5" stroke-dasharray="6,5"/>
-        <line x1="292" y1="375" x2="147" y2="375" stroke="#E4E2DE" stroke-width="1.5" stroke-dasharray="6,5"/>
-        <line x1="147" y1="375" x2="75"  y2="250" stroke="#E4E2DE" stroke-width="1.5" stroke-dasharray="6,5"/>
-        <line x1="75"  y1="250" x2="147" y2="125" stroke="#E4E2DE" stroke-width="1.5" stroke-dasharray="6,5"/>
-        <!-- Cross-wires (chaotic wrong flows) -->
-        <line x1="147" y1="125" x2="292" y2="375" stroke="rgba(11,11,11,.06)" stroke-width="1" stroke-dasharray="3,7"/>
-        <line x1="292" y1="125" x2="147" y2="375" stroke="rgba(11,11,11,.06)" stroke-width="1" stroke-dasharray="3,7"/>
-        <line x1="75"  y1="250" x2="365" y2="250" stroke="rgba(11,11,11,.05)" stroke-width="1" stroke-dasharray="3,7"/>
-
-        <!-- Center → node spokes (only 3 of 6 — rest are broken/missing) -->
-        <line x1="268" y1="250" x2="325" y2="250" stroke="rgba(23,61,237,.28)" stroke-width="1.5" stroke-dasharray="5,4"/>
-        <line x1="244" y1="208" x2="272" y2="163" stroke="rgba(23,61,237,.22)" stroke-width="1.5" stroke-dasharray="5,4"/>
-        <line x1="196" y1="291" x2="168" y2="338" stroke="rgba(23,61,237,.22)" stroke-width="1.5" stroke-dasharray="5,4"/>
-
-        <!-- Central Brand node — dashed border, uncertain -->
-        <circle cx="220" cy="250" r="50" fill="rgba(23,61,237,.055)" stroke="rgba(23,61,237,.28)" stroke-width="1.5" stroke-dasharray="5,4"/>
-        <text x="220" y="244" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="10" font-weight="700" letter-spacing="1.5" fill="#173DED">BRAND</text>
-        <text x="220" y="261" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="9" fill="#88888F">memory?</text>
-
-        <!-- Tool nodes (hexagon, r=145 from centre) -->
-        <!-- Right: Email -->
-        <circle cx="365" cy="250" r="42" fill="#fff" stroke="#E4E2DE" stroke-width="1.5"/>
-        <text x="365" y="246" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="9.5" font-weight="700" fill="#3A3B45">Email</text>
-        <text x="365" y="260" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="8" fill="#88888F">47+ chains</text>
-
-        <!-- Top-right: Figma -->
-        <circle cx="292" cy="125" r="42" fill="#fff" stroke="#E4E2DE" stroke-width="1.5"/>
-        <text x="292" y="121" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="9.5" font-weight="700" fill="#3A3B45">Figma</text>
-        <text x="292" y="135" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="8" fill="#88888F">v4_FINAL?</text>
-
-        <!-- Top-left: Drive -->
-        <circle cx="147" cy="125" r="42" fill="#fff" stroke="#E4E2DE" stroke-width="1.5"/>
-        <text x="147" y="121" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="9.5" font-weight="700" fill="#3A3B45">Drive</text>
-        <text x="147" y="135" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="8" fill="#88888F">47 folders</text>
-
-        <!-- Left: Slack -->
-        <circle cx="75" cy="250" r="42" fill="#fff" stroke="#E4E2DE" stroke-width="1.5"/>
-        <text x="75" y="246" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="9.5" font-weight="700" fill="#3A3B45">Slack</text>
-        <text x="75" y="260" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="8" fill="#88888F">lost context</text>
-
-        <!-- Bottom-left: WhatsApp -->
-        <circle cx="147" cy="375" r="42" fill="#fff" stroke="#E4E2DE" stroke-width="1.5"/>
-        <text x="147" y="371" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="9.5" font-weight="700" fill="#3A3B45">WhatsApp</text>
-        <text x="147" y="385" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="8" fill="#88888F">18 threads</text>
-
-        <!-- Bottom-right: Notion -->
-        <circle cx="292" cy="375" r="42" fill="#fff" stroke="#E4E2DE" stroke-width="1.5"/>
-        <text x="292" y="371" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="9.5" font-weight="700" fill="#3A3B45">Notion</text>
-        <text x="292" y="385" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="8" fill="#88888F">outdated</text>
-
-        <!-- Brand mark diamonds at active spoke midpoints -->
-        <polygon points="296,250 300,254 296,258 292,254" fill="var(--blue)"/>
-        <polygon points="258,221 262,225 258,229 254,225" fill="rgba(23,61,237,.55)"/>
-        <polygon points="182,270 186,274 182,278 178,274" fill="rgba(23,61,237,.45)"/>
-
-        <!-- Floating "?" at broken connection gaps -->
-        <text x="176" y="174" font-family="'DM Sans',sans-serif" font-size="18" font-weight="700" fill="rgba(23,61,237,.2)">?</text>
-        <text x="308" y="318" font-family="'DM Sans',sans-serif" font-size="15" font-weight="700" fill="rgba(23,61,237,.17)">?</text>
-        <text x="118" y="318" font-family="'DM Sans',sans-serif" font-size="13" font-weight="700" fill="rgba(23,61,237,.14)">?</text>
-        <text x="122" y="210" font-family="'DM Sans',sans-serif" font-size="12" font-weight="700" fill="rgba(23,61,237,.12)">?</text>
-        <text x="294" y="210" font-family="'DM Sans',sans-serif" font-size="12" font-weight="700" fill="rgba(23,61,237,.12)">?</text>
-
-      </svg>
+    <!-- Right: Three clean problem stats -->
+    <div style="background:var(--bg);display:flex;flex-direction:column;justify-content:center;padding:var(--pad);padding-bottom:calc(var(--pad) + 2.4rem)">
+      <div style="border-top:1px solid var(--line);padding:clamp(1.8rem,3.5vw,3.5rem) 0">
+        <div style="font-size:clamp(3.5rem,8vw,7rem);font-weight:700;letter-spacing:-.04em;color:var(--blue);line-height:1;margin-bottom:.3em">5+</div>
+        <div style="font-size:var(--t-h3);font-weight:500;color:var(--mid)">tools managing brand, none talking to each other</div>
+      </div>
+      <div style="border-top:1px solid var(--line);padding:clamp(1.8rem,3.5vw,3.5rem) 0">
+        <div style="font-size:clamp(3.5rem,8vw,7rem);font-weight:700;letter-spacing:-.04em;color:var(--blue);line-height:1;margin-bottom:.3em">30+</div>
+        <div style="font-size:var(--t-h3);font-weight:500;color:var(--mid)">days lost per campaign cycle to manual coordination</div>
+      </div>
+      <div style="border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:clamp(1.8rem,3.5vw,3.5rem) 0">
+        <div style="font-size:clamp(3.5rem,8vw,7rem);font-weight:700;letter-spacing:-.04em;color:var(--ink);line-height:1;margin-bottom:.3em">0</div>
+        <div style="font-size:var(--t-h3);font-weight:500;color:var(--mid)">single source of truth for brand decisions</div>
+      </div>
     </div>
 
   </div>
